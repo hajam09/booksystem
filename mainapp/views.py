@@ -24,10 +24,6 @@ def signup(request):
 		email = request.POST['email']
 		password = request.POST['password']
 		birthDate = request.POST['birthDate']
-		address = request.POST['address']
-		city = request.POST['city']
-		zipcode = request.POST['zipcode']
-		country = request.POST['country']
 		gender = request.POST['gender']
 		listOfUserGenre = str(request.POST['listofgenre'].split(","))
 
@@ -42,7 +38,7 @@ def signup(request):
 			user = User.objects.create_user(username=email, email=email, password=password, first_name=fname, last_name=sname)
 
 			#Creating the profile for the user
-			user.customeraccountprofile_set.create(birthDate=birthDate, address=address, city=city, zipcode=zipcode, country=country, gender=gender, userfavouritegenre=listOfUserGenre)
+			user.customeraccountprofile_set.create(birthDate=birthDate, gender=gender, userfavouritegenre=listOfUserGenre)
 			return render(request,'mainapp/login.html', {})
 		return HttpResponse("An account already exists for this email address, please try again!")
 	return render(request,'mainapp/signup.html', {})
@@ -96,10 +92,6 @@ def update_profile(request):
 	print("user_pk value is {} and customer_details is {}".format(user_pk, customer_details.pk))
 	context = {"fullname": fullname,
 				"email": customer_account.email,
-				"address": customer_details.address,
-				"city": customer_details.city,
-				"zipcode": customer_details.zipcode,
-				"country": customer_details.country,
 				"userfavouritegenre": customer_details.userfavouritegenre}
 
 	if request.method == "PUT":
@@ -109,10 +101,6 @@ def update_profile(request):
 		fname = " ".join(fullname[:len(fullname)-1])
 		sname = "".join(fullname[len(fullname)-1])
 		email = put.get('email')
-		address = put.get('address')
-		city = put.get('city')
-		zipcode = put.get('zipcode')
-		country = put.get('country')
 		listofgenre = str(put.get('listofgenre').split(","))
 
 		User.objects.filter(pk=int(user_pk)).update(username=email, email=email, first_name=fname, last_name=sname)
@@ -124,7 +112,7 @@ def update_profile(request):
 			u.save()
 
 		#Updating the user profile
-		CustomerAccountProfile.objects.filter(pk=int(customer_details.pk)).update(address=address, city=city, zipcode=zipcode, country=country, userfavouritegenre=listofgenre)
+		CustomerAccountProfile.objects.filter(pk=int(customer_details.pk)).update(userfavouritegenre=listofgenre)
 		return HttpResponse("Your details are updated!")
 	print("AA")
 	return render(request,'mainapp/profilepage.html', context)
