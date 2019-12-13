@@ -1,0 +1,189 @@
+{% extends "mainapp/base.html" %}
+{% load static %}
+{% block content %}
+<div class="container">
+	<form class="form-horizontal" role="form" method="post"><!--action="{% url 'mainapp:signup' %}"-->
+        {% csrf_token %}
+		<h2>Update Profile</h2>
+		<div class="form-group">
+			<label for="fullname" class="col-sm-3 control-label">Full Name</label>
+			<div class="col-sm-9">
+				<input type="text" id="fullname" name="fullname" placeholder="Full Name" class="form-control" maxlength="30" required/>
+			</div>
+		</div>
+		<div class="form-group">
+            <label for="email" class="col-sm-3 control-label">Email</label>
+            <div class="col-sm-9">
+                <input type="email" id="email" name="email" placeholder="Email" class="form-control" required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="password" class="col-sm-3 control-label">Password</label>
+            <div class="col-sm-9">
+                <input type="password" id="password" name="password" placeholder="Leave blank if you don't want to change the password!" minlength="8" class="form-control"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="address" class="col-sm-3 control-label">Address</label>
+            <div class="col-sm-9">
+                <input type="text" id="address" name="address" placeholder="Full Address" class="form-control" required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="city" class="col-sm-3 control-label">City</label>
+            <div class="col-sm-9">
+                <input type="text" id="city" name="city" placeholder="City" class="form-control"required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="postal" class="col-sm-3 control-label">Postal / Zip Code</label>
+            <div class="col-sm-9">
+                <input type="text" id="zipcode" name="zipcode" placeholder="Postal / Zip Code" class="form-control" required/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="country" class="col-sm-3 control-label">Country</label>
+            <div class="col-sm-9">
+                <select id="country" name="country" class="form-control"></select>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="genres" class="col-sm-3 control-label">Genres (Choose atleast 3)</label>
+            <div class="col-sm-9">
+                <input id="currentgenre" list="browsers" name="browser" placeholder="Add a genre" class="form-control"><br>
+                <button onclick="addgenres(this);return false;" class="btn btn-info" id="addgenre" type="submit">Add Genre</button>
+                <datalist id="browsers"></datalist>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="genres" class="col-sm-3 control-label">Your Chosen Genres</label>
+            <div class="col-sm-9">
+                <ul class="list-group" id="usergenre" name="genrevalue"></ul>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-9 col-sm-offset-3">
+                <button type="submit" class="btn btn-primary btn-block" onclick="postToUpdate();return false;">Update My Profile</button>
+            </div>
+        </div>
+
+
+    </form>
+</div>
+<script type="text/javascript">
+    window.onload = updatepage;
+
+    function postToUpdate(){
+        var fullname = document.getElementById("fullname").value;
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+        var address = document.getElementById("address").value;
+        var city = document.getElementById("city").value;
+        var zipcode = document.getElementById("zipcode").value;
+        var country = document.getElementById("country").value;
+        var usergenre = document.getElementById("usergenre");
+        console.log(usergenre);
+        var listofgenre = [];
+        for (var ii = 0; ii < usergenre.childNodes.length; ii++){listofgenre.push(usergenre.childNodes[ii].id);}
+
+        if(fullname != null && fullname != "", email != null && email != "", address != null && address != "", city != null && city != "", zipcode != null && zipcode != "", country != null && country != "", listofgenre.length>=3)
+        {//new password legnth not validated so user can entery less than 8 characters.
+            listofgenre = String(listofgenre);
+
+            $.ajax({
+                type: "PUT",
+                data: {
+                    fullname: fullname,
+                    email: email,
+                    password: password,
+                    address: address,
+                    city: city,
+                    zipcode: zipcode,
+                    country: country,
+                    listofgenre: listofgenre,
+                    csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                },
+                success: function(info){
+                    if(info=="Your details are updated!"){
+                        alert(info);
+                        var url = "{% url 'mainapp:index' %}";
+                        //document.location.href = url;
+                    }
+                }
+            })
+        }
+        else{
+            alert("Please Fill All Required Field");
+            return false;
+        }
+    }
+
+    function updatepage(){
+        getprofileitems();
+        var countries = ['Afganistan', 'Albania', 'Algeria', 'American Samoa', 'Andorra', 'Angola', 'Anguilla', 'Antigua & Barbuda', 'Argentina', 'Armenia', 'Aruba', 'Australia', 'Austria', 'Azerbaijan', 'Bahamas', 'Bahrain', 'Bangladesh', 'Barbados', 'Belarus', 'Belgium', 'Belize', 'Benin', 'Bermuda', 'Bhutan', 'Bolivia', 'Bonaire', 'Bosnia & Herzegovina', 'Botswana', 'Brazil', 'British Indian Ocean Ter', 'Brunei', 'Bulgaria', 'Burkina Faso', 'Burundi', 'Cambodia', 'Cameroon', 'Canada', 'Canary Islands', 'Cape Verde', 'Cayman Islands', 'Central African Republic', 'Chad', 'Channel Islands', 'Chile', 'China', 'Christmas Island', 'Cocos Island', 'Colombia', 'Comoros', 'Congo', 'Cook Islands', 'Costa Rica', 'Cote DIvoire', 'Croatia', 'Cuba', 'Curaco', 'Cyprus', 'Czech Republic', 'Denmark', 'Djibouti', 'Dominica', 'Dominican Republic', 'East Timor', 'Ecuador', 'Egypt', 'El Salvador', 'Equatorial Guinea', 'Eritrea', 'Estonia', 'Ethiopia', 'Falkland Islands', 'Faroe Islands', 'Fiji', 'Finland', 'France', 'French Guiana', 'French Polynesia', 'French Southern Ter', 'Gabon', 'Gambia', 'Georgia', 'Germany', 'Ghana', 'Gibraltar', 'Great Britain', 'Greece', 'Greenland', 'Grenada', 'Guadeloupe', 'Guam', 'Guatemala', 'Guinea', 'Guyana', 'Haiti', 'Hawaii', 'Honduras', 'Hong Kong', 'Hungary', 'Iceland', 'Indonesia', 'India', 'Iran', 'Iraq', 'Ireland', 'Isle of Man', 'Israel', 'Italy', 'Jamaica', 'Japan', 'Jordan', 'Kazakhstan', 'Kenya', 'Kiribati', 'Korea North', 'Korea Sout', 'Kuwait', 'Kyrgyzstan', 'Laos', 'Latvia', 'Lebanon', 'Lesotho', 'Liberia', 'Libya', 'Liechtenstein', 'Lithuania', 'Luxembourg', 'Macau', 'Macedonia', 'Madagascar', 'Malaysia', 'Malawi', 'Maldives', 'Mali', 'Malta', 'Marshall Islands', 'Martinique', 'Mauritania', 'Mauritius', 'Mayotte', 'Mexico', 'Midway Islands', 'Moldova', 'Monaco', 'Mongolia', 'Montserrat', 'Morocco', 'Mozambique', 'Myanmar', 'Nambia', 'Nauru', 'Nepal', 'Netherland Antilles', 'Netherlands', 'Nevis', 'New Caledonia', 'New Zealand', 'Nicaragua', 'Niger', 'Nigeria', 'Niue', 'Norfolk Island', 'Norway', 'Oman', 'Pakistan', 'Palau Island', 'Palestine', 'Panama', 'Papua New Guinea', 'Paraguay', 'Peru', 'Phillipines', 'Pitcairn Island', 'Poland', 'Portugal', 'Puerto Rico', 'Qatar', 'Republic of Montenegro', 'Republic of Serbia', 'Reunion', 'Romania', 'Russia', 'Rwanda', 'St Barthelemy', 'St Eustatius', 'St Helena', 'St Kitts-Nevis', 'St Lucia', 'St Maarten', 'St Pierre & Miquelon', 'St Vincent & Grenadines', 'Saipan', 'Samoa', 'Samoa American', 'San Marino', 'Sao Tome & Principe', 'Saudi Arabia', 'Senegal', 'Seychelles', 'Sierra Leone', 'Singapore', 'Slovakia', 'Slovenia', 'Solomon Islands', 'Somalia', 'South Africa', 'Spain', 'Sri Lanka', 'Sudan', 'Suriname', 'Swaziland', 'Sweden', 'Switzerland', 'Syria', 'Tahiti', 'Taiwan', 'Tajikistan', 'Tanzania', 'Thailand', 'Togo', 'Tokelau', 'Tonga', 'Trinidad & Tobago', 'Tunisia', 'Turkey', 'Turkmenistan', 'Turks & Caicos Is', 'Tuvalu', 'Uganda', 'United Kingdom', 'Ukraine', 'United Arab Erimates', 'United States of America', 'Uraguay', 'Uzbekistan', 'Vanuatu', 'Vatican City State', 'Venezuela', 'Vietnam', 'Virgin Islands (Brit)', 'Virgin Islands (USA)', 'Wake Island', 'Wallis & Futana Is', 'Yemen', 'Zaire', 'Zambia', 'Zimbabwe'];
+        var genreslist = ['Action and adventure', 'Anthology', 'Autobiography', 'Biography', 'Book review', 'Classic', 'Comic book', 'Crime', 'Dictionary', 'Drama', 'Encyclopedia', 'Essay', 'Fable', 'Fairy Tale', 'Fan Fiction', 'Fantasy', 'Historical Fiction', 'Horror', 'Humor', 'Legend', 'Memoir', 'Mystery', 'Mythology', 'Realistic Fiction', 'Romance', 'Science Fiction', 'Self-Help Book', 'Speech', 'Suspense', 'Textbook', 'Thriller'];
+        updatecountries(countries);
+        updategenres(genreslist);
+    }
+
+
+    function updatecountries(countries){
+        $.ajax({
+            success: function(){
+                for(var i=0; i<countries.length;i++){
+                    $("#country").append("<option value="+countries[i]+">"+countries[i]+"</option>");
+                }
+            }
+        })
+    }
+
+    function addgenres(buttonELement){
+        var ugenre = document.getElementById("currentgenre").value;
+        if(ugenre && !document.getElementById(ugenre)){
+            $("#usergenre").append('<div id="'+ugenre+'"<li name="genrename" class="list-group-item" id="'+ugenre+'">'+ugenre+'</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger">Delete</button></div>');
+            document.getElementById("currentgenre").value = "";
+            var genreElementID = ugenre+"option";
+            var deletegenreoption = document.getElementById(genreElementID);
+            deletegenreoption.remove();
+        }
+    }
+
+    function deletegenre(buttonELement){
+        var parent = buttonELement.parentNode.id;
+        var el = document.getElementById(parent);
+        el.remove();
+        var genreslist = ['Action and adventure', 'Anthology', 'Autobiography', 'Biography', 'Book review', 'Classic', 'Comic book', 'Crime', 'Dictionary', 'Drama', 'Encyclopedia', 'Essay', 'Fable', 'Fairy Tale', 'Fan Fiction', 'Fantasy', 'Historical Fiction', 'Horror', 'Humor', 'Legend', 'Memoir', 'Mystery', 'Mythology', 'Realistic Fiction', 'Romance', 'Science Fiction', 'Self-Help Book', 'Speech', 'Suspense', 'Textbook', 'Thriller'];
+        updategenres(genreslist)
+    }
+
+    function updategenres(genreslist){
+        console.log("updategenres");
+        $.ajax({
+            success: function(){
+                for(var j=0; j<genreslist.length; j++){
+                    var ell = genreslist[j]+"option"
+                    if(!document.getElementById(ell) && !document.getElementById(genreslist[j])){
+                        $("#browsers").append('<option id="'+genreslist[j]+'option" value="'+genreslist[j]+'">')
+                    }
+                }
+            }
+        })
+    }
+
+    function getprofileitems(){
+        document.getElementById('fullname').value = "{{fullname}}";
+        document.getElementById('email').value = "{{email}}";
+        document.getElementById('address').value = "{{address}}";
+        document.getElementById('city').value = "{{city}}";
+        document.getElementById('zipcode').value = "{{zipcode}}";
+
+        var genrelist = "{{userfavouritegenre}}".replace(/[[\]]/g,'').replace(/&/g,'').replace(/#/g,'').replace(/;/g,'').replace(/[0-9]/g, '').replace(/, /g, ',').split(",");
+
+        for(var i=0; i<genrelist.length; i++){
+            $("#usergenre").append('<div id="'+genrelist[i]+'"<li name="genrename" class="list-group-item" id="'+genrelist[i]+'">'+genrelist[i]+'</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger">Delete</button></div>');
+        }
+    }
+    console.log("AA");
+</script>
+{% endblock %}
