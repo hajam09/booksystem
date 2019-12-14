@@ -116,3 +116,7 @@ def update_profile(request):
 		return HttpResponse("Your details are updated!")
 	print("AA")
 	return render(request,'mainapp/profilepage.html', context)
+
+def user_shelf(request):
+	context = {}
+	return render(request,'mainapp/usershelf.html', context)
