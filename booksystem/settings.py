@@ -129,3 +129,28 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
                     os.path.join(BASE_DIR, 'static'),
 )
+
+"""
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR + '/mainapp', 'static'),
+)
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+INTERNAL_IPS = ['127.0.0.1']
+
+"""
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'qmwebprog2019@gmail.com'
+EMAIL_HOST_PASSWORD = 'OneAuction'
+EMAIL_PORT = 587

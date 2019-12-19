@@ -1,20 +1,23 @@
 {% extends "mainapp/base.html" %}
 {% load static %}
 <style type="text/css">
-.carousel {
-  width:640px;
-  height:360px;
-}
+    .carousel {
+        width:640px;
+        height:360px;
+    }
+    h4:hover {
+        cursor: pointer;
+    }
 </style>
 {% block content %}
 <!-- Start of Image Carousel & Search -->
 <div class="container">
 
-	<form class="col-xl-12" id="searchForm" method="post">{% csrf_token %}
+	<form class="col-xl-12" id="searchForm">
 		<div class="input-group col-md-12">
 			<input style="  font-size: 15px !important;" type="text" name="booksearch" class="form-control input-lg" placeholder="Search for book"/>
 			<span class="input-group-btn">
-				<button style="background-color: white; border-style:none; border-left: solid 1px #ccc;" class="btn btn-info btn-lg" type="submit">
+				<button style="background-color: white; border-style:none; border-left: solid 1px #ccc;" class="btn btn-info btn-lg" type="submit" onclick="makeSearch();return false;">
 					<i style="color:black;" class="glyphicon glyphicon-search"></i>
 				</button>
 			</span>
@@ -59,5 +62,100 @@
         </a>
     </div>
 </div>
+<div class="container">
+    <div>
+        <ul class="list-group list-group-flush" id="searchresult"></ul>
+    </div>
+</div>
 <!-- End of Image Carousel & Search -->
+<script type="text/javascript">
+
+    function searchByISBN(isbn) {
+
+        var result = []
+        var makerequest = "https://www.googleapis.com/books/v1/volumes?q=isbn:"+isbn;
+
+        $.get(makerequest, function(response) {
+            for (var i = 0; i<response.items.length; i++) {
+                result.push();
+            }
+        });
+        console.log("KHIFO");
+    }
+
+    function makeSearch() {
+        var list = document.getElementById("searchresult");
+        while (list.hasChildNodes()) {
+            list.removeChild(list.firstChild);
+        }
+        var booksearch = document.getElementsByName("booksearch")[0].value;
+        var makerequest = "https://www.googleapis.com/books/v1/volumes?q="+booksearch;//+":keyes&key=AIzaSyALnLIg8cf5Z6SdBIX5HzP5i-qKYmwyUiA";
+
+        var all_books = [];
+
+        $.get(makerequest, function(response) {
+            console.log(response.items);
+            var elem = document.querySelector('#myCarousel');
+            if(elem) {
+                elem.parentNode.removeChild(elem);
+            }
+            for (var i = 0; i<response.items.length; i++) {
+                try {
+                    //Required Attributes
+                    var uid = response.items[i].id;
+                    var etag = response.items[i].etag;
+                    var volumeinfo = response.items[i].volumeInfo.title;
+                    var authors = response.items[i].volumeInfo.authors;
+                    var averageRating = response.items[i].volumeInfo.averageRating;
+                    var ratingsCount = response.items[i].volumeInfo.ratingsCount;
+                    var thumbnail = response.items[i].volumeInfo.imageLinks.thumbnail;
+                    var categories = response.items[i].volumeInfo.categories;
+                    var isbn_13= response.items[i].volumeInfo.industryIdentifiers[0].identifier;
+                    var isbn_10= response.items[i].volumeInfo.industryIdentifiers[1].identifier;
+                    console.log(isbn_13, isbn_10);
+                    
+
+                    var industryIdentifiers = response.items[i].volumeInfo.industryIdentifiers;
+                    if(industryIdentifiers.length==2) {
+                        if(!ratingsCount) {
+                            ratingsCount = 0;
+                        }
+                        if(!averageRating) {
+                            averageRating = 0.0
+                        }
+
+                        averageRating = averageRating.toFixed(1)
+
+                        var checkElement = document.getElementById(uid);
+
+                        if (!checkElement) {
+                            $("#searchresult").append('<div class="row" id=' + uid + '><br><div class="col-sm-2"><img alt="" src=' + thumbnail + ' style="height: 150px; width: 150px" /></div><div class="col-sm-8"><h4><a style="cursor: pointer;" onclick="bookPage('+isbn_13+','+isbn_10+')">' + volumeinfo + '</a></h4><p> Authors:' + authors + '</p><p>' + ratingsCount + ' ratings, '+averageRating+' average rating</p></div></div>');
+                        }
+                        all_books.push(response.items[i]);
+                    }
+                }
+                catch(err){
+                    console.log(err);
+                }
+            }
+
+            //Send to server to create a model for the book and add to csv
+            $.ajax({
+                type: "POST",
+                data: {
+                    book: JSON.stringify(all_books)
+                },
+                success: function() {
+                    console.log("DONE");
+                }
+            })
+
+        });
+    }
+
+    var bookPage = function(isbn_13, isbn_10) {
+        console.log(isbn_13, isbn_10);
+        window.location.href = "book_page/"+isbn_13+"/"+isbn_10;
+    }
+</script>
 {% endblock %}

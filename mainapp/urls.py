@@ -10,4 +10,5 @@ urlpatterns = [
 	path('passwordforgotten/', views.passwordforgotten, name='passwordforgotten'),#NoteDone
 	path('update_profile/', views.update_profile, name='update_profile'),
 	path('user_shelf/', views.user_shelf, name='user_shelf'),
+	path('book_page/<slug:isbn_13>/<slug:isbn_10>/', views.book_page, name='book_page'),
 ]
