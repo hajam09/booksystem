@@ -57,21 +57,18 @@ def index(request):
 				except:
 					ratingsCount = 0
 
+				try:
+					thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
+				except:
+					thumbnail = None
+
 				#Add book to system if not exist
 				checkBookExist = Books.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
 				if(len(checkBookExist)==0):
 					print("New book")
 					Books.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title)
 					with open('book_info.csv', 'a') as csv_file:
-						#fieldnames = ['uid', 'isbn_13', 'isbn_10', 'title', 'authors', 'publisher', 'categories', 'averageRating', 'ratingsCount']
-						#writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
-						#writer.writeheader()
-						# towrite = {'uid':uid, 'isbn_13':ISBN_13,
-						# 			'isbn_10':ISBN_10, 'title':title,
-						# 			'authors': authors, 'publisher': publisher,
-						# 			'categories': categories, 'averageRating': averageRating,
-						# 			'ratingsCount': ratingsCount}
-						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+categories+","+str(float(averageRating))+","+str(ratingsCount)
+						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+thumbnail
 						csv_file.write(towrite)
 	return render(request,'mainapp/frontpage.html',{})
 
@@ -180,13 +177,17 @@ def user_shelf(request):
 	return render(request,'mainapp/usershelf.html', context)
 
 def book_page(request, isbn_13, isbn_10):
-	print("isbn_13, isbn_10", isbn_13, isbn_10)
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
 	line = None
+	#Need threading to improve search efficiency
 	for row in csv_file:
 		if((row[1]==isbn_13 or row[1]=="0"+isbn_13)  and (row[2]==isbn_10 or row[2]=="0"+isbn_10)):
 			line = row
 			break
-	print(line)
-	context = {}
+	context = {'isbn_13':line[1], 'isbn_10': line[2],
+				'title': line[3], 'authors': line[4],
+				'publisher': line[5], 'categories': line[6],
+				'averageRating': line[7], 'ratingsCount': line[8],
+				'thumbnail': line[9]}
+	print(context)
 	return render(request,'mainapp/book.html', context)
