@@ -9,7 +9,7 @@ from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Books
-import string, random, csv
+import string, random, csv, re
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
@@ -43,7 +43,8 @@ def index(request):
 				ISBN_10 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
 				try:
 					categories = book['volumeInfo']['categories']
-					categories = "/".join(categories)
+					categories = "".join(categories)
+					categories = re.sub("[,&]", "|", categories)
 				except:
 					categories = "None"
 				

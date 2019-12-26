@@ -18,8 +18,6 @@
                 		{{title}} by <a href="http://www.google.com/search?q={{authors}}">{{authors}}</a><br>
                 			<div id="star-rating">
                 			</div>
-							<span class="fa fa-2x"><h5>({{ratingsCount}}) Votes</h5></span>	
-							<a href="javascript:void(0);">109 customer reviews need to chage</a>
 						</h2>
                     <hr>
                     <h3 class="price-container">
@@ -168,6 +166,8 @@
 				$('#star-rating').append('<i class="fa fa-star fa-2x text-muted"></i>');
 			}
 		}
+		$('#star-rating').append('<span class="fa fa-2x"><h5>&nbsp;&nbsp;({{ratingsCount}}) Votes</h5></span>');
+		$('#star-rating').append('<a href="javascript:void(0);">&nbsp;&nbsp;109 customer reviews need to chage</a>');
 
 		var isbn_13 = "{{isbn_13}}";
 		var isbn_10 = "{{isbn_10}}";
@@ -175,6 +175,7 @@
 		var authors = "{{authors}}";//
 		var publisher = "{{publisher}}";//
 		var categories = "{{categories}}";//
+		console.log(categories);
 		var averageRating = "{{averageRating}}";
 		var ratingsCount = "{{ratingsCount}}";//
 		var thumbnail = "{{thumbnail}}";//
