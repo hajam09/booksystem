@@ -61,6 +61,7 @@ def index(request):
 					thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
 				except:
 					thumbnail = None
+				description = book['volumeInfo']['description']
 
 				#Add book to system if not exist
 				checkBookExist = Books.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
@@ -70,6 +71,11 @@ def index(request):
 					with open('book_info.csv', 'a') as csv_file:
 						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+thumbnail
 						csv_file.write(towrite)
+
+					text_file = open("book_descriptions.txt", "a")
+					item_to_write = ISBN_13 + "|" + ISBN_10 + "|" + description + "\n"
+					text_file.write(item_to_write)
+					text_file.close()
 	return render(request,'mainapp/frontpage.html',{})
 
 @csrf_exempt
