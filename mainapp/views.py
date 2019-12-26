@@ -201,7 +201,7 @@ def book_page(request, isbn_13, isbn_10):
 	for row in file:
 		c_line = row.split("|")
 		if((c_line[0]==isbn_13 or c_line[0]=="0"+isbn_13) and (c_line[1]==isbn_10 or c_line[1]=="0"+isbn_10)):
-			description_line = c_line[2]
+			description_line = c_line[2].strip()
 			break
 
 	context = {'isbn_13':line[1], 'isbn_10': line[2],
@@ -209,5 +209,4 @@ def book_page(request, isbn_13, isbn_10):
 				'publisher': line[5], 'categories': line[6],
 				'averageRating': line[7], 'ratingsCount': line[8],
 				'thumbnail': line[9], 'description': description_line}
-	print(context)
 	return render(request,'mainapp/book.html', context)
