@@ -61,8 +61,12 @@ def index(request):
 					thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
 				except:
 					thumbnail = None
-				description = book['volumeInfo']['description']
 
+				try:
+					description = book['volumeInfo']['description']
+				except Exception as e:
+					description = "None"
+				
 				#Add book to system if not exist
 				checkBookExist = Books.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
 				if(len(checkBookExist)==0):
@@ -190,10 +194,20 @@ def book_page(request, isbn_13, isbn_10):
 		if((row[1]==isbn_13 or row[1]=="0"+isbn_13)  and (row[2]==isbn_10 or row[2]=="0"+isbn_10)):
 			line = row
 			break
+
+	#Need to read file book_description file to get the description
+	file = open("book_descriptions.txt", "r").readlines()
+	description_line = None
+	for row in file:
+		c_line = row.split("|")
+		if((c_line[0]==isbn_13 or c_line[0]=="0"+isbn_13) and (c_line[1]==isbn_10 or c_line[1]=="0"+isbn_10)):
+			description_line = c_line[2]
+			break
+
 	context = {'isbn_13':line[1], 'isbn_10': line[2],
 				'title': line[3], 'authors': line[4],
 				'publisher': line[5], 'categories': line[6],
 				'averageRating': line[7], 'ratingsCount': line[8],
-				'thumbnail': line[9]}
+				'thumbnail': line[9], 'description': description_line}
 	print(context)
 	return render(request,'mainapp/book.html', context)
