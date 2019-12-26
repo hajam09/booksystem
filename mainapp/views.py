@@ -204,11 +204,18 @@ def book_page(request, isbn_13, isbn_10):
 		if((c_line[0]==isbn_13 or c_line[0]=="0"+isbn_13) and (c_line[1]==isbn_10 or c_line[1]=="0"+isbn_10)):
 			description_line = c_line[2].strip()
 			break
+	categories = replace_last_occurence(line[7], '|', ' & ', 1)
+	categories = re.sub("[|]", ", ", categories)
+	print(categories)
 
 	context = {'isbn_13':line[1], 'isbn_10': line[2],
 				'title': line[3], 'authors': line[4],
 				'publisher': line[5], 'publishedDate': line[6] ,
-				'categories': line[7], 'averageRating': line[8],
+				'categories': categories, 'averageRating': line[8],
 				'ratingsCount': line[9], 'thumbnail': line[10],
 				'description': description_line}
 	return render(request,'mainapp/book.html', context)
+
+def replace_last_occurence(s, old, new, occurrence):
+	li = s.rsplit(old, occurrence)
+	return new.join(li)
