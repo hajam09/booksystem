@@ -33,7 +33,7 @@ def index(request):
 					publisher = "None"
 				try:
 					publishedDate = book['volumeInfo']['publishedDate']
-				except Exception as e:
+				except:
 					publishedDate = "None"
 				try:
 					description = book['volumeInfo']['description']
@@ -60,7 +60,7 @@ def index(request):
 				try:
 					thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
 				except:
-					thumbnail = None
+					thumbnail = "None"
 
 				try:
 					description = book['volumeInfo']['description']
@@ -73,7 +73,7 @@ def index(request):
 					print("New book")
 					Books.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title)
 					with open('book_info.csv', 'a') as csv_file:
-						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+thumbnail
+						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+publishedDate+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+thumbnail
 						csv_file.write(towrite)
 
 					text_file = open("book_descriptions.txt", "a")
@@ -206,7 +206,8 @@ def book_page(request, isbn_13, isbn_10):
 
 	context = {'isbn_13':line[1], 'isbn_10': line[2],
 				'title': line[3], 'authors': line[4],
-				'publisher': line[5], 'categories': line[6],
-				'averageRating': line[7], 'ratingsCount': line[8],
-				'thumbnail': line[9], 'description': description_line}
+				'publisher': line[5], 'publishedDate': line[6] ,
+				'categories': line[7], 'averageRating': line[8],
+				'ratingsCount': line[9], 'thumbnail': line[10],
+				'description': description_line}
 	return render(request,'mainapp/book.html', context)
