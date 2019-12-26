@@ -21,15 +21,12 @@
 						</h2>
                     <hr>
                     <h3 class="price-container">
-							{{averageRating}}
-							<small>*includes tax</small>
+							<button class="btn btn-white btn-default" id="add-to-favourites"><i class="fa fa-star"></i> Add to Favourites </button>
+                            <button class="btn btn-white btn-default" id="reading-now"><i class="fa fa-envelope"></i> Reading Now</button>
+							<button class="btn btn-white btn-default" id="to-read"><i class="fa fa-envelope"></i> I need to read this</button>
+                            <button class="btn btn-white btn-default" id="have-read"><i class="fa fa-envelope"></i> I have read this</button>
 						</h3>
-                    <div class="certified">
-                        <ul>
-                            <li><a href="javascript:void(0);">Delivery time<span>7 Working Days</span></a></li>
-                            <li><a href="javascript:void(0);">Certified<span>Quality Assured</span></a></li>
-                        </ul>
-                    </div>
+                    
                     <hr>
                     <div class="description description-tabs">
                         <ul id="myTab" class="nav nav-pills">
@@ -171,15 +168,22 @@
 
 		var isbn_13 = "{{isbn_13}}";
 		var isbn_10 = "{{isbn_10}}";
-		var title = "{{title}}";//
-		var authors = "{{authors}}";//
-		var publisher = "{{publisher}}";//
-		var categories = "{{categories}}";//
-		console.log(categories);
-		var averageRating = "{{averageRating}}";
-		var ratingsCount = "{{ratingsCount}}";//
-		var thumbnail = "{{thumbnail}}";//
-		var description = "{{description}}";//
+
+        $('#add-to-favourites').click(function() {
+            console.log("add-to-favourites clicked");
+        });
+
+        $('#reading-now').click(function() {
+            console.log("reading-now clicked");
+        });
+
+        $('#to-read').click(function() {
+            console.log("to-read clicked");
+        });
+
+        $('#have-read').click(function() {
+            console.log("have-read clicked");
+        });
 	}
 </script>
 {% endblock %}
