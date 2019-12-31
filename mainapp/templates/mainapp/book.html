@@ -165,25 +165,65 @@
 		}
 		$('#star-rating').append('<span class="fa fa-2x"><h5>&nbsp;&nbsp;({{ratingsCount}}) Votes</h5></span>');
 		$('#star-rating').append('<a href="javascript:void(0);">&nbsp;&nbsp;109 customer reviews need to chage</a>');
-
-		var isbn_13 = "{{isbn_13}}";
-		var isbn_10 = "{{isbn_10}}";
-
-        $('#add-to-favourites').click(function() {
-            console.log("add-to-favourites clicked");
-        });
-
-        $('#reading-now').click(function() {
-            console.log("reading-now clicked");
-        });
-
-        $('#to-read').click(function() {
-            console.log("to-read clicked");
-        });
-
-        $('#have-read').click(function() {
-            console.log("have-read clicked");
-        });
 	}
+
+    var isbn_13 = "{{isbn_13}}";
+    var isbn_10 = "{{isbn_10}}";
+
+    $('#add-to-favourites').click(function() {
+        console.log("add-to-favourites clicked");
+
+        $.ajax({
+            type: "PUT",
+            data: {
+                functionality: 'add-to-favourites',
+                isbn_13: "{{isbn_13}}",
+                isbn_10: "{{isbn_10}}",
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            }
+        })
+    });
+
+    $('#reading-now').click(function() {
+        console.log("reading-now clicked");
+
+        $.ajax({
+            type: "PUT",
+            data: {
+                functionality: 'reading-now',
+                isbn_13: "{{isbn_13}}",
+                isbn_10: "{{isbn_10}}",
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            }
+        })
+    });
+
+    $('#to-read').click(function() {
+        console.log("to-read clicked");
+
+        $.ajax({
+            type: "PUT",
+            data: {
+                functionality: 'to-read',
+                isbn_13: "{{isbn_13}}",
+                isbn_10: "{{isbn_10}}",
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            }
+        })
+    });
+
+    $('#have-read').click(function() {
+        console.log("have-read clicked");
+
+        $.ajax({
+            type: "PUT",
+            data: {
+                functionality: 'have-read',
+                isbn_13: "{{isbn_13}}",
+                isbn_10: "{{isbn_10}}",
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            }
+        })
+    });
 </script>
 {% endblock %}

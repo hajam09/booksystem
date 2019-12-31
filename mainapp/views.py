@@ -187,7 +187,27 @@ def user_shelf(request):
 	context = {}
 	return render(request,'mainapp/usershelf.html', context)
 
+@csrf_exempt
 def book_page(request, isbn_13, isbn_10):
+
+	# Ajax requests when the buttons are clicked on the book.html
+	if request.method == "PUT":
+		print("AA")
+		put = QueryDict(request.body)
+		functionality = put.get("functionality")
+		isbn_13 = put.get("isbn_13")
+		isbn_10 = put.get("isbn_10")
+
+		if(functionality=="add-to-favourites"):
+			pass
+		elif(functionality=="reading-now"):
+			pass
+		elif(functionality=="to-read"):
+			pass
+		elif(functionality=="have-read"):
+			pass
+		print(functionality, isbn_13, isbn_10)
+
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
 	line = None
 	#Need threading to improve search efficiency
@@ -214,6 +234,7 @@ def book_page(request, isbn_13, isbn_10):
 				'categories': categories, 'averageRating': line[8],
 				'ratingsCount': line[9], 'thumbnail': line[10],
 				'description': description_line}
+
 	return render(request,'mainapp/book.html', context)
 
 def replace_last_occurence(s, old, new, occurrence):
