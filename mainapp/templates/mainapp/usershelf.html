@@ -24,8 +24,10 @@
 			<p>Recently viewed books here</p>
 		</div>
 		<div id="favourites" class="tab-pane fade">
-			<h3>favourite books</h3>
-			<p>favourite books here</p>
+			<h3>Favourite Books</h3>
+			<div>
+				<ul class="list-group list-group-flush" id="favourite-book-result"></ul>
+			</div>
 		</div>
 		<div id="readingnow" class="tab-pane fade">
 			<h3>reading books</h3>
@@ -47,6 +49,32 @@
 </div>
 <script type="text/javascript">
 	window.onload = function() {
+		var favourite_Book = "{{favourite_Book}}";
+		var reading_Book = "{{reading_Book}}";
+		var to_read_Book = "{{to_read_Book}}";
+		var have_read_Book = "{{have_read_Book}}";
+
+		"{% for books in favourite_Book %}"
+			var uid = "{{books.isbn_13}}/{{books.isbn_10}}"
+			var isbn_13 = "{{books.isbn_13}}";
+			var isbn_10 = "{{books.isbn_10}}";
+			$("#favourite-book-result").append('<div class="row" id=' + uid + '><div class="col-sm-8"> <h4><a style="cursor: pointer;" onclick="bookPage('+isbn_13+','+isbn_10+')">' + "{{books.title}}" + '</a></h4> </div> </div>');
+			console.log("{{books.title}}");
+		"{% endfor %}"
+
+		console.log(favourite_Book);
+		console.log(reading_Book);
+		console.log(to_read_Book);
+		console.log(have_read_Book);
 	}
+
+	var bookPage = function(isbn_13, isbn_10) {
+		var current_URL = window.location.href;
+		current_URL = current_URL.split("/");
+		current_URL = current_URL.slice(0, 3);
+		current_URL[1]="//";
+		current_URL = current_URL.join("");
+        window.location = current_URL+"/book_page/"+isbn_13+"/"+isbn_10;
+    }
 </script>
 {% endblock %}

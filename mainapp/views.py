@@ -203,20 +203,19 @@ def update_profile(request):
 	return render(request,'mainapp/profilepage.html', context)
 
 def user_shelf(request):
-	"""
+
 	user_pk = request.user.pk
-	if(not user_pk):
-		return redirect('mainapp:login')
-	#Get all the favourite Book
+
 	customer_account = User.objects.get(pk=user_pk)
 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-	Publication.objects.all()
 
-	"Article.objects.filter(publications__id=1)
-	<QuerySet [<Article: Django lets you build Web apps easily>, <Article: NASA uses Python>]>"
-	"""
+	#Need to check if the Book are already in favourites, reading now, to read and have read.
+	favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
+	reading_Book = Book.objects.filter(readingnow__id=customer_details.pk)
+	to_read_Book = Book.objects.filter(toread__id=customer_details.pk)
+	have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
 
-	context = {}
+	context = {'favourite_Book':favourite_Book, 'reading_Book':reading_Book, 'to_read_Book':to_read_Book, 'have_read_Book':have_read_Book}
 	return render(request,'mainapp/usershelf.html', context)
 
 @csrf_exempt
