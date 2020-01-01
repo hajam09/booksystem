@@ -24,6 +24,7 @@ def index(request):
 				uid = book['id']
 				etag = book['etag']
 				title = book['volumeInfo']['title']
+				title = title.replace(",", "/cma/")
 				authors = book['volumeInfo']['authors']
 				authors.sort()
 				authors = "/".join(authors)
@@ -39,8 +40,19 @@ def index(request):
 					description = book['volumeInfo']['description']
 				except:
 					description = "None"
-				ISBN_13 = book['volumeInfo']['industryIdentifiers'][0]['identifier']
-				ISBN_10 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
+				#In the response ISBN10 and ISBN13 position may change
+				ISBN_13 = None
+				ISBN_10 = None
+				if(book['volumeInfo']['industryIdentifiers'][0]['type'] == "ISBN_10"):
+					ISBN_10 = book['volumeInfo']['industryIdentifiers'][0]['identifier']
+				elif(book['volumeInfo']['industryIdentifiers'][0]['type'] == "ISBN_13"):
+					ISBN_13 = book['volumeInfo']['industryIdentifiers'][0]['identifier']
+
+				if(book['volumeInfo']['industryIdentifiers'][1]['type'] == "ISBN_10"):
+					ISBN_10 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
+				elif(book['volumeInfo']['industryIdentifiers'][1]['type'] == "ISBN_13"):
+					ISBN_13 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
+
 				try:
 					categories = book['volumeInfo']['categories']
 					categories = "".join(categories)
@@ -67,6 +79,13 @@ def index(request):
 					description = book['volumeInfo']['description']
 				except Exception as e:
 					description = "None"
+
+				#Need to add leading zero's to ISBN 10 and 13.
+				# remaining_zero = "0"*(10-len(ISBN_10))
+				# ISBN_10 = remaining_zero+ISBN_10
+				# remaining_zero = ""
+				# remaining_zero = "0"*(13-len(ISBN_13))
+				# ISBN_13 = remaining_zero+ISBN_13
 				
 				#Add book to system if not exist
 				checkBookExist = Books.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
@@ -190,32 +209,85 @@ def user_shelf(request):
 @csrf_exempt
 def book_page(request, isbn_13, isbn_10):
 
+	user_pk = request.user.pk
+
 	# Ajax requests when the buttons are clicked on the book.html
 	if request.method == "PUT":
-		print("AA")
+		if(not user_pk):
+			return redirect('mainapp:login')
 		put = QueryDict(request.body)
 		functionality = put.get("functionality")
 		isbn_13 = put.get("isbn_13")
 		isbn_10 = put.get("isbn_10")
+		print(isbn_10, isbn_13)
 
+		customer_account = User.objects.get(pk=user_pk)
+		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+
+		b1 = Books.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 		if(functionality=="add-to-favourites"):
-			pass
+			favourite_books = CustomerAccountProfile.objects.filter(favourites__isbn_13=isbn_13, favourites__isbn_10=isbn_10)
+			if(len(favourite_books)==0):
+				customer_details.favourites.add(b1)
+				print("add-to-favourites added")
+				return HttpResponse("new_object")
+			else:
+				customer_details.favourites.remove(b1)
+			return HttpResponse("remove_object")
 		elif(functionality=="reading-now"):
-			pass
+			reading_books = CustomerAccountProfile.objects.filter(readingnow__isbn_13=isbn_13, readingnow__isbn_10=isbn_10)
+			if(len(reading_books)==0):
+				customer_details.readingnow.add(b1)
+				print("reading-now")
+				return HttpResponse("new_object")
+			else:
+				customer_details.readingnow.remove(b1)
+			return HttpResponse("remove_object")
 		elif(functionality=="to-read"):
-			pass
+			to_read_books = CustomerAccountProfile.objects.filter(toread__isbn_13=isbn_13, toread__isbn_10=isbn_10)
+			if(len(to_read_books)==0):
+				customer_details.toread.add(b1)
+				print("to-read")
+				return HttpResponse("new_object")
+			else:
+				customer_details.toread.remove(b1)
+			return HttpResponse("remove_object")
 		elif(functionality=="have-read"):
-			pass
-		print(functionality, isbn_13, isbn_10)
+			have_read_books = CustomerAccountProfile.objects.filter(haveread__isbn_13=isbn_13, haveread__isbn_10=isbn_10)
+			if(len(have_read_books)==0):
+				customer_details.haveread.add(b1)
+				print("have-read")
+				return HttpResponse("new_object")
+			else:
+				customer_details.haveread.remove(b1)
+			return HttpResponse("remove_object")
+
+	#Need to add leading zero's to ISBN 10 and 13.
+	remaining_zero = "0"*(10-len(isbn_10))
+	isbn_10 = remaining_zero+isbn_10
+	remaining_zero = ""
+	remaining_zero = "0"*(13-len(isbn_13))
+	isbn_13 = remaining_zero+isbn_13
+
+	#Need to check if the books are already in favourites, reading now, to read and have read.
+	in_favourite_books = CustomerAccountProfile.objects.filter(favourites__isbn_13=isbn_13, favourites__isbn_10=isbn_10)
+	in_reading_books = CustomerAccountProfile.objects.filter(readingnow__isbn_13=isbn_13, readingnow__isbn_10=isbn_10)
+	in_to_read_books = CustomerAccountProfile.objects.filter(toread__isbn_13=isbn_13, toread__isbn_10=isbn_10)
+	in_have_read_books = CustomerAccountProfile.objects.filter(haveread__isbn_13=isbn_13, haveread__isbn_10=isbn_10)
+
+	in_favourite_books = True if len(in_favourite_books) != 0 else False
+	in_reading_books = True if len(in_reading_books) != 0 else False
+	in_to_read_books = True if len(in_to_read_books) != 0 else False
+	in_have_read_books = True if len(in_have_read_books) != 0 else False
 
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
 	line = None
+
 	#Need threading to improve search efficiency
 	for row in csv_file:
-		if((row[1]==isbn_13 or row[1]=="0"+isbn_13)  and (row[2]==isbn_10 or row[2]=="0"+isbn_10)):
+		if(row[1]==isbn_13 and row[2]==isbn_10):
 			line = row
 			break
-
 	#Need to read file book_description file to get the description
 	file = open("book_descriptions.txt", "r").readlines()
 	description_line = None
@@ -224,16 +296,18 @@ def book_page(request, isbn_13, isbn_10):
 		if((c_line[0]==isbn_13 or c_line[0]=="0"+isbn_13) and (c_line[1]==isbn_10 or c_line[1]=="0"+isbn_10)):
 			description_line = c_line[2].strip()
 			break
+
 	categories = replace_last_occurence(line[7], '|', ' & ', 1)
 	categories = re.sub("[|]", ", ", categories)
-	print(categories)
 
 	context = {'isbn_13':line[1], 'isbn_10': line[2],
 				'title': line[3], 'authors': line[4],
 				'publisher': line[5], 'publishedDate': line[6] ,
 				'categories': categories, 'averageRating': line[8],
 				'ratingsCount': line[9], 'thumbnail': line[10],
-				'description': description_line}
+				'description': description_line, 'in_favourite_books': in_favourite_books,
+				'in_reading_books': in_reading_books, 'in_to_read_books': in_to_read_books,
+				'in_have_read_books': in_have_read_books}
 
 	return render(request,'mainapp/book.html', context)
 

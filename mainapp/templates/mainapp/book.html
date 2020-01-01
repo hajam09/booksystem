@@ -153,11 +153,11 @@
 	window.onload = function() {
 		//Need to code so that averageRating variable is not decimal and dounder to nearest integer
 		var averageRating = "{{averageRating}}";
-		console.log(averageRating);
+		//console.log(averageRating);
 		for (var i = 0; i < averageRating; i++) {
 			$('#star-rating').append('<i class="fa fa-star fa-2x text-primary">&nbsp;&nbsp;</i>');
 		}
-		console.log(i);
+		//console.log(i);
 		if (i!=5) {
 			for (var j = i; j < 5; j++) {
 				$('#star-rating').append('<i class="fa fa-star fa-2x text-muted"></i>');
@@ -165,14 +165,48 @@
 		}
 		$('#star-rating').append('<span class="fa fa-2x"><h5>&nbsp;&nbsp;({{ratingsCount}}) Votes</h5></span>');
 		$('#star-rating').append('<a href="javascript:void(0);">&nbsp;&nbsp;109 customer reviews need to chage</a>');
+
+        var in_favourite_books = "{{in_favourite_books}}";
+        var in_reading_books = "{{in_reading_books}}";
+        var in_to_read_books = "{{in_to_read_books}}";
+        var in_have_read_books = "{{in_have_read_books}}";
+
+        if (in_favourite_books=="True") {
+            document.getElementById("add-to-favourites").style.background="#24ad52";
+        }
+        else {
+            document.getElementById("add-to-favourites").style.background="#ffffff";
+        }
+
+        if (in_reading_books=="True") {
+            document.getElementById("reading-now").style.background="#24ad52";
+        }
+        else {
+            document.getElementById("reading-now").style.background="#ffffff";
+        }
+
+        if (in_to_read_books=="True") {
+            document.getElementById("to-read").style.background="#24ad52";
+        }
+        else {
+            document.getElementById("to-read").style.background="#ffffff";
+        }
+
+        if (in_have_read_books=="True") {
+            document.getElementById("have-read").style.background="#24ad52";
+        }
+        else {
+            document.getElementById("have-read").style.background="#ffffff";
+        }
+
+
+        console.log(in_favourite_books, in_reading_books, in_to_read_books, in_have_read_books);
 	}
 
     var isbn_13 = "{{isbn_13}}";
     var isbn_10 = "{{isbn_10}}";
 
     $('#add-to-favourites').click(function() {
-        console.log("add-to-favourites clicked");
-
         $.ajax({
             type: "PUT",
             data: {
@@ -180,6 +214,14 @@
                 isbn_13: "{{isbn_13}}",
                 isbn_10: "{{isbn_10}}",
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(message) {
+                if(message=="new_object") {
+                    document.getElementById("add-to-favourites").style.background="#24ad52";
+                }
+                if(message=="remove_object") {
+                    document.getElementById("add-to-favourites").style.background="#ffffff";
+                }
             }
         })
     });
@@ -194,6 +236,14 @@
                 isbn_13: "{{isbn_13}}",
                 isbn_10: "{{isbn_10}}",
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(message) {
+                if(message=="new_object") {
+                    document.getElementById("reading-now").style.background="#24ad52";
+                }
+                if(message=="remove_object") {
+                    document.getElementById("reading-now").style.background="#ffffff";
+                }
             }
         })
     });
@@ -208,6 +258,14 @@
                 isbn_13: "{{isbn_13}}",
                 isbn_10: "{{isbn_10}}",
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(message) {
+                if(message=="new_object") {
+                    document.getElementById("to-read").style.background="#24ad52";
+                }
+                if(message=="remove_object") {
+                    document.getElementById("to-read").style.background="#ffffff";
+                }
             }
         })
     });
@@ -222,6 +280,14 @@
                 isbn_13: "{{isbn_13}}",
                 isbn_10: "{{isbn_10}}",
                 csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(message) {
+                if(message=="new_object") {
+                    document.getElementById("have-read").style.background="#24ad52";
+                }
+                if(message=="remove_object") {
+                    document.getElementById("have-read").style.background="#ffffff";
+                }
             }
         })
     });
