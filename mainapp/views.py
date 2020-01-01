@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .models import CustomerAccountProfile, Books
+from .models import CustomerAccountProfile, Book
 import string, random, csv, re
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
@@ -88,10 +88,10 @@ def index(request):
 				# ISBN_13 = remaining_zero+ISBN_13
 				
 				#Add book to system if not exist
-				checkBookExist = Books.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
+				checkBookExist = Book.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
 				if(len(checkBookExist)==0):
 					print("New book")
-					Books.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title)
+					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title)
 					with open('book_info.csv', 'a') as csv_file:
 						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+publishedDate+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+thumbnail
 						csv_file.write(towrite)
@@ -203,6 +203,19 @@ def update_profile(request):
 	return render(request,'mainapp/profilepage.html', context)
 
 def user_shelf(request):
+	"""
+	user_pk = request.user.pk
+	if(not user_pk):
+		return redirect('mainapp:login')
+	#Get all the favourite Book
+	customer_account = User.objects.get(pk=user_pk)
+	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+	Publication.objects.all()
+
+	"Article.objects.filter(publications__id=1)
+	<QuerySet [<Article: Django lets you build Web apps easily>, <Article: NASA uses Python>]>"
+	"""
+
 	context = {}
 	return render(request,'mainapp/usershelf.html', context)
 
@@ -211,56 +224,9 @@ def book_page(request, isbn_13, isbn_10):
 
 	user_pk = request.user.pk
 
-	# Ajax requests when the buttons are clicked on the book.html
 	if request.method == "PUT":
 		if(not user_pk):
 			return redirect('mainapp:login')
-		put = QueryDict(request.body)
-		functionality = put.get("functionality")
-		isbn_13 = put.get("isbn_13")
-		isbn_10 = put.get("isbn_10")
-		print(isbn_10, isbn_13)
-
-		customer_account = User.objects.get(pk=user_pk)
-		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-
-		b1 = Books.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
-		if(functionality=="add-to-favourites"):
-			favourite_books = CustomerAccountProfile.objects.filter(favourites__isbn_13=isbn_13, favourites__isbn_10=isbn_10)
-			if(len(favourite_books)==0):
-				customer_details.favourites.add(b1)
-				print("add-to-favourites added")
-				return HttpResponse("new_object")
-			else:
-				customer_details.favourites.remove(b1)
-			return HttpResponse("remove_object")
-		elif(functionality=="reading-now"):
-			reading_books = CustomerAccountProfile.objects.filter(readingnow__isbn_13=isbn_13, readingnow__isbn_10=isbn_10)
-			if(len(reading_books)==0):
-				customer_details.readingnow.add(b1)
-				print("reading-now")
-				return HttpResponse("new_object")
-			else:
-				customer_details.readingnow.remove(b1)
-			return HttpResponse("remove_object")
-		elif(functionality=="to-read"):
-			to_read_books = CustomerAccountProfile.objects.filter(toread__isbn_13=isbn_13, toread__isbn_10=isbn_10)
-			if(len(to_read_books)==0):
-				customer_details.toread.add(b1)
-				print("to-read")
-				return HttpResponse("new_object")
-			else:
-				customer_details.toread.remove(b1)
-			return HttpResponse("remove_object")
-		elif(functionality=="have-read"):
-			have_read_books = CustomerAccountProfile.objects.filter(haveread__isbn_13=isbn_13, haveread__isbn_10=isbn_10)
-			if(len(have_read_books)==0):
-				customer_details.haveread.add(b1)
-				print("have-read")
-				return HttpResponse("new_object")
-			else:
-				customer_details.haveread.remove(b1)
-			return HttpResponse("remove_object")
 
 	#Need to add leading zero's to ISBN 10 and 13.
 	remaining_zero = "0"*(10-len(isbn_10))
@@ -268,17 +234,6 @@ def book_page(request, isbn_13, isbn_10):
 	remaining_zero = ""
 	remaining_zero = "0"*(13-len(isbn_13))
 	isbn_13 = remaining_zero+isbn_13
-
-	#Need to check if the books are already in favourites, reading now, to read and have read.
-	in_favourite_books = CustomerAccountProfile.objects.filter(favourites__isbn_13=isbn_13, favourites__isbn_10=isbn_10)
-	in_reading_books = CustomerAccountProfile.objects.filter(readingnow__isbn_13=isbn_13, readingnow__isbn_10=isbn_10)
-	in_to_read_books = CustomerAccountProfile.objects.filter(toread__isbn_13=isbn_13, toread__isbn_10=isbn_10)
-	in_have_read_books = CustomerAccountProfile.objects.filter(haveread__isbn_13=isbn_13, haveread__isbn_10=isbn_10)
-
-	in_favourite_books = True if len(in_favourite_books) != 0 else False
-	in_reading_books = True if len(in_reading_books) != 0 else False
-	in_to_read_books = True if len(in_to_read_books) != 0 else False
-	in_have_read_books = True if len(in_have_read_books) != 0 else False
 
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
 	line = None
@@ -300,15 +255,82 @@ def book_page(request, isbn_13, isbn_10):
 	categories = replace_last_occurence(line[7], '|', ' & ', 1)
 	categories = re.sub("[|]", ", ", categories)
 
+	if user_pk:
+		#If user is logged we can get more personal data
+		customer_account = User.objects.get(pk=user_pk)
+		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+
+		b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
+
+		# Ajax requests when the buttons are clicked on the book.html
+		if request.method == "PUT":
+			put = QueryDict(request.body)
+			functionality = put.get("functionality")
+			isbn_13 = put.get("isbn_13")
+			isbn_10 = put.get("isbn_10")
+
+			if(functionality=="add-to-favourites"):
+				favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
+				if(b1 not in favourite_Book):
+					customer_details.favourites.add(b1)
+					return HttpResponse("new_object")
+				else:
+					customer_details.favourites.remove(b1)
+					return HttpResponse("remove_object")
+			elif(functionality=="reading-now"):
+				reading_Book = Book.objects.filter(readingnow__id=customer_details.pk)
+				if(b1 not in reading_Book):
+					customer_details.readingnow.add(b1)
+					return HttpResponse("new_object")
+				else:
+					customer_details.readingnow.remove(b1)
+					return HttpResponse("remove_object")
+			elif(functionality=="to-read"):
+				toread_Book = Book.objects.filter(toread__id=customer_details.pk)
+				if(b1 not in toread_Book):
+					customer_details.toread.add(b1)
+					return HttpResponse("new_object")
+				else:
+					customer_details.toread.remove(b1)
+					return HttpResponse("remove_object")
+			elif(functionality=="have-read"):
+				have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
+				if(b1 not in have_read_Book):
+					customer_details.haveread.add(b1)
+					return HttpResponse("new_object")
+				else:
+					customer_details.haveread.remove(b1)
+					return HttpResponse("remove_object")
+
+		#Need to check if the Book are already in favourites, reading now, to read and have read.
+		in_favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
+		in_reading_Book = Book.objects.filter(readingnow__id=customer_details.pk)
+		in_to_read_Book = Book.objects.filter(toread__id=customer_details.pk)
+		in_have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
+
+		in_favourite_Book = True if b1 in in_favourite_Book else False
+		in_reading_Book = True if b1 in in_reading_Book else False
+		in_to_read_Book = True if b1 in in_to_read_Book else False
+		in_have_read_Book = True if b1 in in_have_read_Book else False
+
+		context = {'isbn_13':line[1], 'isbn_10': line[2],
+					'title': line[3], 'authors': line[4],
+					'publisher': line[5], 'publishedDate': line[6] ,
+					'categories': categories, 'averageRating': line[8],
+					'ratingsCount': line[9], 'thumbnail': line[10],
+					'description': description_line, 'in_favourite_Book': in_favourite_Book,
+					'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
+					'in_have_read_Book': in_have_read_Book}
+		return render(request,'mainapp/book.html', context)
+
 	context = {'isbn_13':line[1], 'isbn_10': line[2],
 				'title': line[3], 'authors': line[4],
 				'publisher': line[5], 'publishedDate': line[6] ,
 				'categories': categories, 'averageRating': line[8],
 				'ratingsCount': line[9], 'thumbnail': line[10],
-				'description': description_line, 'in_favourite_books': in_favourite_books,
-				'in_reading_books': in_reading_books, 'in_to_read_books': in_to_read_books,
-				'in_have_read_books': in_have_read_books}
-
+				'description': description_line, 'in_favourite_Book': False,
+				'in_reading_Book': False, 'in_to_read_Book': False,
+				'in_have_read_Book': False}
 	return render(request,'mainapp/book.html', context)
 
 def replace_last_occurence(s, old, new, occurrence):

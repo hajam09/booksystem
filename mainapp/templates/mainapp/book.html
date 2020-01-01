@@ -163,13 +163,14 @@
 				$('#star-rating').append('<i class="fa fa-star fa-2x text-muted"></i>');
 			}
 		}
+        
 		$('#star-rating').append('<span class="fa fa-2x"><h5>&nbsp;&nbsp;({{ratingsCount}}) Votes</h5></span>');
 		$('#star-rating').append('<a href="javascript:void(0);">&nbsp;&nbsp;109 customer reviews need to chage</a>');
 
-        var in_favourite_books = "{{in_favourite_books}}";
-        var in_reading_books = "{{in_reading_books}}";
-        var in_to_read_books = "{{in_to_read_books}}";
-        var in_have_read_books = "{{in_have_read_books}}";
+        var in_favourite_books = "{{in_favourite_Book}}";
+        var in_reading_books = "{{in_reading_Book}}";
+        var in_to_read_books = "{{in_to_read_Book}}";
+        var in_have_read_books = "{{in_have_read_Book}}";
 
         if (in_favourite_books=="True") {
             document.getElementById("add-to-favourites").style.background="#24ad52";
@@ -198,9 +199,6 @@
         else {
             document.getElementById("have-read").style.background="#ffffff";
         }
-
-
-        console.log(in_favourite_books, in_reading_books, in_to_read_books, in_have_read_books);
 	}
 
     var isbn_13 = "{{isbn_13}}";
