@@ -25,9 +25,18 @@
 		</div>
 		<div id="favourites" class="tab-pane fade">
 			<h3>Favourite Books</h3>
-			<div>
-				<ul class="list-group list-group-flush" id="favourite-book-result"></ul>
-			</div>
+			<table class="table" id="table">
+				<thead>
+					<tr>
+						<th scope="col">Book Title / Page</th>
+						<th scope="col">Categories</th>
+						<th scope="col">Average Rating</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				<tbody id="favourite-book-result">
+				</tbody>
+			</table>
 		</div>
 		<div id="readingnow" class="tab-pane fade">
 			<h3>reading books</h3>
@@ -58,7 +67,14 @@
 			var uid = "{{books.isbn_13}}/{{books.isbn_10}}"
 			var isbn_13 = "{{books.isbn_13}}";
 			var isbn_10 = "{{books.isbn_10}}";
-			$("#favourite-book-result").append('<div class="row" id=' + uid + '><div class="col-sm-8"> <h4><a style="cursor: pointer;" onclick="bookPage('+isbn_13+','+isbn_10+')">' + "{{books.title}}" + '</a></h4> </div> </div>');
+
+			var book_name = "<a style='cursor: pointer;' onclick='bookPage("+isbn_13+","+isbn_10+")'>" + "{{books.title}}" + "</a>";
+			var categories = "categories";
+			var average_rating = 0.0;
+			var action = "actiom";
+
+			$("table").find('tbody').append("<tr><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>£ " + average_rating + "</td><td>" + action + "</td></tr>");
+
 			console.log("{{books.title}}");
 		"{% endfor %}"
 
