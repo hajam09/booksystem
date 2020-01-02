@@ -54,8 +54,19 @@
 			</table>
 		</div>
 		<div id="toread" class="tab-pane fade">
-			<h3>To read</h3>
-			<p>To read books here</p>
+			<h3>To Read Books</h3>
+			<table class="table" id="toread-table">
+				<thead>
+					<tr>
+						<th scope="col">Book Title / Page</th>
+						<th scope="col">Categories</th>
+						<th scope="col">Average Rating</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				<tbody id="toread-result">
+				</tbody>
+			</table>
 		</div>
 		<div id="haveread" class="tab-pane fade">
 			<h3>Have Read</h3>
@@ -100,7 +111,51 @@
 			$("#reading-now-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
 		"{% endfor %}"
 
+		"{% for books in to_read_Book %}"
+			var uid = "{{books.isbn_13}}/{{books.isbn_10}}"
+			var isbn_13 = "{{books.isbn_13}}";
+			var isbn_10 = "{{books.isbn_10}}";
+			var book_name = "<a style='cursor: pointer;' onclick='bookPage("+isbn_13+","+isbn_10+")'>" + "{{books.title}}" + "</a>";
+			var categories = "{{books.categories}}";
+			var average_rating = "{{books.average_rating}}";
+			var action = "<button type='button' class='btn btn-danger' onclick='removefromtoread("+isbn_13+","+isbn_10+")'>Remove From To Read</button>";
 
+			$("#toread-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+
+		"{% endfor %}"
+
+	}
+
+	function removefromtoread(isbn_13, isbn_10) {
+		isbn_13 = isbn_13.toString()
+		isbn_10 = isbn_10.toString()
+
+		var remaining_zero = "0".repeat(13-isbn_13.length)
+		isbn_13 = remaining_zero+isbn_13
+		remaining_zero = ""
+		remaining_zero = "0".repeat(10-isbn_10.length)
+		isbn_10 = remaining_zero+isbn_10
+
+		$.ajax({
+            type: "PUT",
+            data: {
+                functionality: 'remove-from-toread',
+                isbn_13: isbn_13,
+                isbn_10: isbn_10,
+                //csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(message) {
+                if(message=="remove_object_success") {
+                	var table = document.getElementById("toread-table");
+                	for (var i = 0, row; row = table.rows[i]; i++) {
+                		var table_id = isbn_13+"/"+isbn_10;
+                		if (row.id==table_id) {
+                			document.getElementById("toread-table").deleteRow(i);
+                		}
+                	}
+                }
+            }
+        })
 	}
 
 	function removefromreadingnow(isbn_13, isbn_10) {
