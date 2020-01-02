@@ -4,9 +4,9 @@
 <div class="container">
 	<!-- Nav tabs nav-tabs -->
 	<ul class="nav nav-pills">
-		<li class="active"><a data-toggle="tab" href="#rated">Rated/Reviewed Books</a></li>
+		<li><a data-toggle="tab" href="#rated">Rated/Reviewed Books</a></li>
 		<li><a data-toggle="tab" href="#recentlyviewed">Recently Viewed</a></li>
-		<li><a data-toggle="tab" href="#favourites">Favourites</a></li>
+		<li class="active"><a data-toggle="tab" href="#favourites">Favourites</a></li>
 		<li><a data-toggle="tab" href="#readingnow">Reading Now</a></li>
 		<li><a data-toggle="tab" href="#toread">To Read</a></li>
 		<li><a data-toggle="tab" href="#haveread">Have Read</a></li>
@@ -15,7 +15,7 @@
 
 	<!-- Tab panes -->
 	<div class="tab-content">
-		<div id="rated" class="tab-pane fade in active">
+		<div id="rated" class="tab-pane fade">
 			<h3>Rated</h3>
 			<p>Rated or reviewed books should come here</p>
 		</div>
@@ -23,7 +23,7 @@
 			<h3>Recentyle viewewd</h3>
 			<p>Recently viewed books here</p>
 		</div>
-		<div id="favourites" class="tab-pane fade">
+		<div id="favourites" class="tab-pane fade in active">
 			<h3>Favourite Books</h3>
 			<table class="table" id="table">
 				<thead>
@@ -65,23 +65,50 @@
 
 		"{% for books in favourite_Book %}"
 			var uid = "{{books.isbn_13}}/{{books.isbn_10}}"
+			console.log(uid);
 			var isbn_13 = "{{books.isbn_13}}";
 			var isbn_10 = "{{books.isbn_10}}";
 
 			var book_name = "<a style='cursor: pointer;' onclick='bookPage("+isbn_13+","+isbn_10+")'>" + "{{books.title}}" + "</a>";
-			var categories = "categories";
-			var average_rating = 0.0;
-			var action = "actiom";
+			var categories = "{{books.categories}}";
+			var average_rating = "{{books.average_rating}}";
+			var action = "<button type='button' class='btn btn-danger' onclick='removefromfavourites("+isbn_13+","+isbn_10+")'>Remove From Favourites</button>";
 
-			$("table").find('tbody').append("<tr><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>£ " + average_rating + "</td><td>" + action + "</td></tr>");
-
-			console.log("{{books.title}}");
+			$("table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
 		"{% endfor %}"
+	}
 
-		console.log(favourite_Book);
-		console.log(reading_Book);
-		console.log(to_read_Book);
-		console.log(have_read_Book);
+	function removefromfavourites(isbn_13, isbn_10) {
+		isbn_13 = isbn_13.toString()
+		isbn_10 = isbn_10.toString()
+
+		var remaining_zero = "0".repeat(13-isbn_13.length)
+		isbn_13 = remaining_zero+isbn_13
+		remaining_zero = ""
+		remaining_zero = "0".repeat(10-isbn_10.length)
+		isbn_10 = remaining_zero+isbn_10
+
+		$.ajax({
+            type: "PUT",
+            data: {
+                functionality: 'add-to-favourites',
+                objective: 'remove-from-favourites',
+                isbn_13: isbn_13,
+                isbn_10: isbn_10,
+                //csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(message) {
+                if(message=="remove_object") {
+                	var table = document.getElementById("table");
+                	for (var i = 0, row; row = table.rows[i]; i++) {
+                		var table_id = isbn_13+"/"+isbn_10;
+                		if (row.id==table_id) {
+                			document.getElementById("table").deleteRow(i);
+                		}
+                	}
+                }
+            }
+        })
 	}
 
 	var bookPage = function(isbn_13, isbn_10) {

@@ -202,6 +202,7 @@ def update_profile(request):
 	print("AA")
 	return render(request,'mainapp/profilepage.html', context)
 
+@csrf_exempt
 def user_shelf(request):
 
 	user_pk = request.user.pk
@@ -215,8 +216,53 @@ def user_shelf(request):
 	to_read_Book = Book.objects.filter(toread__id=customer_details.pk)
 	have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
 
-	context = {'favourite_Book':favourite_Book, 'reading_Book':reading_Book, 'to_read_Book':to_read_Book, 'have_read_Book':have_read_Book}
+	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
+
+	# Ajax requests when the buttons are clicked to remove the books from the list.
+	if request.method == "PUT":
+		put = QueryDict(request.body)
+		functionality = put.get("functionality")
+		objective = put.get("objective")
+		isbn_13 = put.get("isbn_13")
+		isbn_10 = put.get("isbn_10")
+		print(isbn_10, isbn_13)
+
+		#Need to add leading zero's to ISBN 10 and 13.
+		remaining_zero = "0"*(10-len(isbn_10))
+		isbn_10 = remaining_zero+isbn_10
+		remaining_zero = ""
+		remaining_zero = "0"*(13-len(isbn_13))
+		isbn_13 = remaining_zero+isbn_13
+
+		b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
+		print(b1)
+
+		if(functionality=="add-to-favourites" and objective=="remove-from-favourites"):
+			if(b1 in favourite_Book):
+				customer_details.favourites.remove(b1)
+				return HttpResponse("remove_object")
+			return HttpResponse("remove_object_failure")
+
+	#Get categories and average_rating for favourite_books from csv
+	favourite_book = []
+	for i in favourite_Book:
+		line = get_row_from_csv(i.isbn_13, i.isbn_10, csv_file)
+
+		categories = replace_last_occurence(line[7], '|', ' & ', 1)
+		categories = re.sub("[|]", ", ", categories)
+
+		book_attributes = {"isbn_13": i.isbn_13, "isbn_10": i.isbn_10, "title": i.title, "categories": categories, "average_rating": line[8]}
+		favourite_book.append(book_attributes)
+
+	context = {'favourite_Book':favourite_book, 'reading_Book':reading_Book, 'to_read_Book':to_read_Book, 'have_read_Book':have_read_Book}
 	return render(request,'mainapp/usershelf.html', context)
+
+def get_row_from_csv(isbn_13, isbn_10, csv_file):
+	for row in csv_file:
+		if(row[1]==isbn_13 and row[2]==isbn_10):
+			return row
+	return None
+
 
 @csrf_exempt
 def book_page(request, isbn_13, isbn_10):
