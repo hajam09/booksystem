@@ -271,6 +271,7 @@ def user_shelf(request):
 		categories = re.sub("[|]", ", ", categories)
 
 		book_attributes = {"isbn_13": i.isbn_13, "isbn_10": i.isbn_10, "title": i.title, "categories": categories, "average_rating": line[8]}
+		#favourite_Book[i] = book_attributes
 		favourite_book.append(book_attributes)
 
 	for j in reading_Book:
@@ -280,6 +281,7 @@ def user_shelf(request):
 		categories = re.sub("[|]", ", ", categories)
 
 		book_attributes = {"isbn_13": j.isbn_13, "isbn_10": j.isbn_10, "title": j.title, "categories": categories, "average_rating": line[8]}
+		#reading_Book[i] = book_attributes
 		reading_now_book.append(book_attributes)
 
 	for k in to_read_Book:
@@ -289,6 +291,7 @@ def user_shelf(request):
 		categories = re.sub("[|]", ", ", categories)
 
 		book_attributes = {"isbn_13": k.isbn_13, "isbn_10": k.isbn_10, "title": k.title, "categories": categories, "average_rating": line[8]}
+		#to_read_Book[i] = book_attributes
 		toread_book.append(book_attributes)
 
 	for l in have_read_Book:
@@ -298,6 +301,7 @@ def user_shelf(request):
 		categories = re.sub("[|]", ", ", categories)
 
 		book_attributes = {"isbn_13": l.isbn_13, "isbn_10": l.isbn_10, "title": l.title, "categories": categories, "average_rating": line[8]}
+		#have_read_Book[i] = book_attributes
 		haveread_book.append(book_attributes)
 
 	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book}
