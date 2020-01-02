@@ -4,9 +4,9 @@
 <div class="container">
 	<!-- Nav tabs nav-tabs -->
 	<ul class="nav nav-pills">
-		<li><a data-toggle="tab" href="#rated">Rated/Reviewed Books</a></li>
+		<li class="active"><a data-toggle="tab" href="#rated">Rated/Reviewed Books</a></li>
 		<li><a data-toggle="tab" href="#recentlyviewed">Recently Viewed</a></li>
-		<li class="active"><a data-toggle="tab" href="#favourites">Favourites</a></li>
+		<li><a data-toggle="tab" href="#favourites">Favourites</a></li>
 		<li><a data-toggle="tab" href="#readingnow">Reading Now</a></li>
 		<li><a data-toggle="tab" href="#toread">To Read</a></li>
 		<li><a data-toggle="tab" href="#haveread">Have Read</a></li>
@@ -15,7 +15,7 @@
 
 	<!-- Tab panes -->
 	<div class="tab-content">
-		<div id="rated" class="tab-pane fade">
+		<div id="rated" class="tab-pane fade in active">
 			<h3>Rated</h3>
 			<p>Rated or reviewed books should come here</p>
 		</div>
@@ -23,7 +23,7 @@
 			<h3>Recentyle viewewd</h3>
 			<p>Recently viewed books here</p>
 		</div>
-		<div id="favourites" class="tab-pane fade in active">
+		<div id="favourites" class="tab-pane fade">
 			<h3>Favourite Books</h3>
 			<table class="table" id="favourites-table">
 				<thead>
@@ -143,7 +143,7 @@
 			var book_name = "<a style='cursor: pointer;' onclick='bookPage("+isbn_13+","+isbn_10+")'>" + "{{books.title}}" + "</a>";
 			var categories = "{{books.categories}}";
 			var average_rating = "{{books.average_rating}}";
-			var action = "<button type='button' class='btn btn-danger' onclick='removefromhaveread("+isbn_13+","+isbn_10+")'>Remove From To Read</button>";
+			var action = "<button type='button' class='btn btn-danger' onclick='removefromhaveread("+isbn_13+","+isbn_10+")'>Remove From To Have Read</button>";
 
 			$("#have-read-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
 		"{% endfor %}"
