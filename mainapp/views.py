@@ -216,9 +216,10 @@ def user_shelf(request):
 	to_read_Book = Book.objects.filter(toread__id=customer_details.pk)
 	have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
 
-	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
+	
 
 	# Ajax requests when the buttons are clicked to remove the books from the list.
+	#Need to change this to delete REQUEST
 	if request.method == "PUT":
 		put = QueryDict(request.body)
 		functionality = put.get("functionality")
@@ -235,18 +236,23 @@ def user_shelf(request):
 		isbn_13 = remaining_zero+isbn_13
 
 		b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
-		print(b1)
 
-		if(functionality=="add-to-favourites" and objective=="remove-from-favourites"):
+		if(functionality=="remove-from-favourites"):
 			if(b1 in favourite_Book):
 				customer_details.favourites.remove(b1)
-				return HttpResponse("remove_object")
+				return HttpResponse("remove_object_success")
+			return HttpResponse("remove_object_failure")
+		elif(functionality=="remove-from-reading-now"):
+			if(b1 in reading_Book):
+				customer_details.readingnow.remove(b1)
+				return HttpResponse("remove_object_success")
 			return HttpResponse("remove_object_failure")
 
 	#Get categories and average_rating for favourite_books from csv
 	favourite_book = []
+	reading_now_book = []
 	for i in favourite_Book:
-		line = get_row_from_csv(i.isbn_13, i.isbn_10, csv_file)
+		line = get_row_from_csv(i.isbn_13, i.isbn_10)
 
 		categories = replace_last_occurence(line[7], '|', ' & ', 1)
 		categories = re.sub("[|]", ", ", categories)
@@ -254,10 +260,20 @@ def user_shelf(request):
 		book_attributes = {"isbn_13": i.isbn_13, "isbn_10": i.isbn_10, "title": i.title, "categories": categories, "average_rating": line[8]}
 		favourite_book.append(book_attributes)
 
-	context = {'favourite_Book':favourite_book, 'reading_Book':reading_Book, 'to_read_Book':to_read_Book, 'have_read_Book':have_read_Book}
+	for j in reading_Book:
+		line = get_row_from_csv(j.isbn_13, j.isbn_10)
+
+		categories = replace_last_occurence(line[7], '|', ' & ', 1)
+		categories = re.sub("[|]", ", ", categories)
+
+		book_attributes = {"isbn_13": j.isbn_13, "isbn_10": j.isbn_10, "title": j.title, "categories": categories, "average_rating": line[8]}
+		reading_now_book.append(book_attributes)
+
+	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':to_read_Book, 'have_read_Book':have_read_Book}
 	return render(request,'mainapp/usershelf.html', context)
 
-def get_row_from_csv(isbn_13, isbn_10, csv_file):
+def get_row_from_csv(isbn_13, isbn_10):
+	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
 	for row in csv_file:
 		if(row[1]==isbn_13 and row[2]==isbn_10):
 			return row

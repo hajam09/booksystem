@@ -25,7 +25,7 @@
 		</div>
 		<div id="favourites" class="tab-pane fade in active">
 			<h3>Favourite Books</h3>
-			<table class="table" id="table">
+			<table class="table" id="favourites-table">
 				<thead>
 					<tr>
 						<th scope="col">Book Title / Page</th>
@@ -34,13 +34,24 @@
 						<th scope="col">Action</th>
 					</tr>
 				</thead>
-				<tbody id="favourite-book-result">
+				<tbody id="favourite-result">
 				</tbody>
 			</table>
 		</div>
 		<div id="readingnow" class="tab-pane fade">
-			<h3>reading books</h3>
-			<p>reading books here</p>
+			<h3>Reading Now Books</h3>
+			<table class="table" id="reading-now-table">
+				<thead>
+					<tr>
+						<th scope="col">Book Title / Page</th>
+						<th scope="col">Categories</th>
+						<th scope="col">Average Rating</th>
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				<tbody id="reading-now-result">
+				</tbody>
+			</table>
 		</div>
 		<div id="toread" class="tab-pane fade">
 			<h3>To read</h3>
@@ -73,8 +84,55 @@
 			var average_rating = "{{books.average_rating}}";
 			var action = "<button type='button' class='btn btn-danger' onclick='removefromfavourites("+isbn_13+","+isbn_10+")'>Remove From Favourites</button>";
 
-			$("table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+			$("#favourites-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
 		"{% endfor %}"
+
+		"{% for books in reading_Book %}"
+			var uid = "{{books.isbn_13}}/{{books.isbn_10}}"
+			var isbn_13 = "{{books.isbn_13}}";
+			var isbn_10 = "{{books.isbn_10}}";
+
+			var book_name = "<a style='cursor: pointer;' onclick='bookPage("+isbn_13+","+isbn_10+")'>" + "{{books.title}}" + "</a>";
+			var categories = "{{books.categories}}";
+			var average_rating = "{{books.average_rating}}";
+			var action = "<button type='button' class='btn btn-danger' onclick='removefromreadingnow("+isbn_13+","+isbn_10+")'>Remove From Reading</button>";
+
+			$("#reading-now-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+		"{% endfor %}"
+
+
+	}
+
+	function removefromreadingnow(isbn_13, isbn_10) {
+		isbn_13 = isbn_13.toString()
+		isbn_10 = isbn_10.toString()
+
+		var remaining_zero = "0".repeat(13-isbn_13.length)
+		isbn_13 = remaining_zero+isbn_13
+		remaining_zero = ""
+		remaining_zero = "0".repeat(10-isbn_10.length)
+		isbn_10 = remaining_zero+isbn_10
+
+		$.ajax({
+            type: "PUT",
+            data: {
+                functionality: 'remove-from-reading-now',
+                isbn_13: isbn_13,
+                isbn_10: isbn_10,
+                //csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(message) {
+                if(message=="remove_object_success") {
+                	var table = document.getElementById("reading-now-table");
+                	for (var i = 0, row; row = table.rows[i]; i++) {
+                		var table_id = isbn_13+"/"+isbn_10;
+                		if (row.id==table_id) {
+                			document.getElementById("reading-now-table").deleteRow(i);
+                		}
+                	}
+                }
+            }
+        })
 	}
 
 	function removefromfavourites(isbn_13, isbn_10) {
@@ -90,19 +148,18 @@
 		$.ajax({
             type: "PUT",
             data: {
-                functionality: 'add-to-favourites',
-                objective: 'remove-from-favourites',
+                functionality: 'remove-from-favourites',
                 isbn_13: isbn_13,
                 isbn_10: isbn_10,
                 //csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
             },
             success: function(message) {
-                if(message=="remove_object") {
-                	var table = document.getElementById("table");
+                if(message=="remove_object_success") {
+                	var table = document.getElementById("favourites-table");
                 	for (var i = 0, row; row = table.rows[i]; i++) {
                 		var table_id = isbn_13+"/"+isbn_10;
                 		if (row.id==table_id) {
-                			document.getElementById("table").deleteRow(i);
+                			document.getElementById("favourites-table").deleteRow(i);
                 		}
                 	}
                 }
