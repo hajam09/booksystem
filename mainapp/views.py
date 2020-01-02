@@ -252,11 +252,18 @@ def user_shelf(request):
 				customer_details.toread.remove(b1)
 				return HttpResponse("remove_object_success")
 			return HttpResponse("remove_object_failure")
+		elif(functionality=="remove-from-haveread"):
+			if(b1 in have_read_Book):
+				customer_details.haveread.remove(b1)
+				return HttpResponse("remove_object_success")
+			return HttpResponse("remove_object_failure")
+
 
 	#Get categories and average_rating for favourite_books from csv
 	favourite_book = []
 	reading_now_book = []
 	toread_book = []
+	haveread_book = []
 	for i in favourite_Book:
 		line = get_row_from_csv(i.isbn_13, i.isbn_10)
 
@@ -284,7 +291,16 @@ def user_shelf(request):
 		book_attributes = {"isbn_13": k.isbn_13, "isbn_10": k.isbn_10, "title": k.title, "categories": categories, "average_rating": line[8]}
 		toread_book.append(book_attributes)
 
-	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':have_read_Book}
+	for l in have_read_Book:
+		line = get_row_from_csv(l.isbn_13, l.isbn_10)
+
+		categories = replace_last_occurence(line[7], '|', ' & ', 1)
+		categories = re.sub("[|]", ", ", categories)
+
+		book_attributes = {"isbn_13": l.isbn_13, "isbn_10": l.isbn_10, "title": l.title, "categories": categories, "average_rating": line[8]}
+		haveread_book.append(book_attributes)
+
+	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book}
 	return render(request,'mainapp/usershelf.html', context)
 
 def get_row_from_csv(isbn_13, isbn_10):
