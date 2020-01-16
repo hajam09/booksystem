@@ -25,9 +25,12 @@ def index(request):
 				etag = book['etag']
 				title = book['volumeInfo']['title']
 				title = title.replace(",", "/cma/")
-				authors = book['volumeInfo']['authors']
-				authors.sort()
-				authors = "/".join(authors)
+				try:
+					authors = book['volumeInfo']['authors']
+					authors.sort()
+					authors = "/".join(authors)
+				except:
+					authors = "None"
 				try:
 					publisher = book['volumeInfo']['publisher']
 				except:
