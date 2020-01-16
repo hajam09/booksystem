@@ -153,11 +153,11 @@
 		isbn_13 = isbn_13.toString()
 		isbn_10 = isbn_10.toString()
 
-		var remaining_zero = "0".repeat(13-isbn_13.length)
-		isbn_13 = remaining_zero+isbn_13
-		remaining_zero = ""
-		remaining_zero = "0".repeat(10-isbn_10.length)
-		isbn_10 = remaining_zero+isbn_10
+		// var remaining_zero = "0".repeat(13-isbn_13.length)
+		// isbn_13 = remaining_zero+isbn_13
+		// remaining_zero = ""
+		// remaining_zero = "0".repeat(10-isbn_10.length)
+		// isbn_10 = remaining_zero+isbn_10
 
 		$.ajax({
             type: "PUT",

@@ -27,12 +27,13 @@ def index(request):
 				title = title.replace(",", "/cma/")
 				try:
 					authors = book['volumeInfo']['authors']
-					authors.sort()
-					authors = "/".join(authors)
+					authors = authors[0].replace(",", "|")
 				except:
 					authors = "None"
+				
 				try:
 					publisher = book['volumeInfo']['publisher']
+					publisher = publisher.replace(",", "|")
 				except:
 					publisher = "None"
 				try:
@@ -58,6 +59,7 @@ def index(request):
 
 				try:
 					categories = book['volumeInfo']['categories']
+					
 					categories = "".join(categories)
 					categories = re.sub("[,&]", "|", categories)
 				except:
@@ -80,15 +82,15 @@ def index(request):
 
 				try:
 					description = book['volumeInfo']['description']
-				except Exception as e:
+				except:
 					description = "None"
 
 				#Need to add leading zero's to ISBN 10 and 13.
-				# remaining_zero = "0"*(10-len(ISBN_10))
-				# ISBN_10 = remaining_zero+ISBN_10
-				# remaining_zero = ""
-				# remaining_zero = "0"*(13-len(ISBN_13))
-				# ISBN_13 = remaining_zero+ISBN_13
+				remaining_zero = "0"*(10-len(ISBN_10))
+				ISBN_10 = remaining_zero+ISBN_10
+				remaining_zero = ""
+				remaining_zero = "0"*(13-len(ISBN_13))
+				ISBN_13 = remaining_zero+ISBN_13
 				
 				#Add book to system if not exist
 				checkBookExist = Book.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
@@ -320,7 +322,7 @@ def get_row_from_csv(isbn_13, isbn_10):
 
 @csrf_exempt
 def book_page(request, isbn_13, isbn_10):
-
+	print(isbn_13, isbn_10)
 	user_pk = request.user.pk
 
 	if request.method == "PUT":
@@ -333,6 +335,8 @@ def book_page(request, isbn_13, isbn_10):
 	remaining_zero = ""
 	remaining_zero = "0"*(13-len(isbn_13))
 	isbn_13 = remaining_zero+isbn_13
+
+	print(isbn_13, isbn_10)
 
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
 	line = None
@@ -353,6 +357,9 @@ def book_page(request, isbn_13, isbn_10):
 
 	categories = replace_last_occurence(line[7], '|', ' & ', 1)
 	categories = re.sub("[|]", ", ", categories)
+
+	#Set of books to display for suggestions.
+	item_based_recommendation = get_item_based_recommendation(csv_file)
 
 	if user_pk:
 		#If user is logged we can get more personal data
@@ -414,12 +421,12 @@ def book_page(request, isbn_13, isbn_10):
 
 		context = {'isbn_13':line[1], 'isbn_10': line[2],
 					'title': line[3], 'authors': line[4],
-					'publisher': line[5], 'publishedDate': line[6] ,
+					'publisher': line[5].replace("|", ","), 'publishedDate': line[6] ,
 					'categories': categories, 'averageRating': line[8],
 					'ratingsCount': line[9], 'thumbnail': line[10],
 					'description': description_line, 'in_favourite_Book': in_favourite_Book,
 					'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
-					'in_have_read_Book': in_have_read_Book}
+					'in_have_read_Book': in_have_read_Book, 'item_based_recommendation': item_based_recommendation}
 		return render(request,'mainapp/book.html', context)
 
 	context = {'isbn_13':line[1], 'isbn_10': line[2],
@@ -429,8 +436,21 @@ def book_page(request, isbn_13, isbn_10):
 				'ratingsCount': line[9], 'thumbnail': line[10],
 				'description': description_line, 'in_favourite_Book': False,
 				'in_reading_Book': False, 'in_to_read_Book': False,
-				'in_have_read_Book': False}
+				'in_have_read_Book': False, 'item_based_recommendation': item_based_recommendation}
 	return render(request,'mainapp/book.html', context)
+
+def get_item_based_recommendation(csv_file):
+	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
+	books_Objects = []
+	counter = 0
+	for line in csv_file:
+		counter+=1
+		if(len(books_Objects)==11):
+			return books_Objects[1:]
+		book_item = {'isbn_13':line[1], 'isbn_10': line[2], 'title': line[3].replace("/cma/", ","), 'thumbnail': line[10]}
+		books_Objects.append(book_item)
+		counter+=1
+	return []
 
 def replace_last_occurence(s, old, new, occurrence):
 	li = s.rsplit(old, occurrence)
