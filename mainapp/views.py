@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django.http import HttpResponse, Http404, QueryDict
+from django.http import HttpResponse, Http404, QueryDict, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
@@ -143,6 +143,7 @@ def login(request):
 			auth_login(request, user)
 		else:
 			return HttpResponse("Sorry! Username and Password didn't match, Please try again!")
+	
 	return render(request,'mainapp/login.html', {})
 
 @csrf_exempt
@@ -326,8 +327,10 @@ def book_page(request, isbn_13, isbn_10):
 	user_pk = request.user.pk
 
 	if request.method == "PUT":
+		print("break 1")
 		if(not user_pk):
-			return redirect('mainapp:login')
+			print("break 2")
+			return render(request,'mainapp/login.html', {})
 
 	#Need to add leading zero's to ISBN 10 and 13.
 	remaining_zero = "0"*(10-len(isbn_10))
@@ -343,7 +346,7 @@ def book_page(request, isbn_13, isbn_10):
 
 	#Need threading to improve search efficiency
 	for row in csv_file:
-		if(row[1]==isbn_13 and row[2]==isbn_10):
+		if(row[1]==isbn_13 or row[2]==isbn_10):#used to be and instead of or
 			line = row
 			break
 	#Need to read file book_description file to get the description

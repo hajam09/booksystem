@@ -50,12 +50,29 @@
                     alert("Sorry! Username and Password didn't match, Please try again!")
                 }
                 else{
-                    var url = "{% url 'mainapp:index' %}"
-                    document.location.href = url;
+                    var previous_URL = document.referrer;                    
+                    previous_URL = previous_URL.split("/");
+
+                    if(previous_URL[3]=="signup" || previous_URL[3]=="login"){
+                        var authority = previous_URL.slice(0, 3);
+                        authority[1]="//";
+                        authority = authority.join("");
+                        //var url = "{% url 'mainapp:index' %}"
+                        var final_URL = authority+"/"
+                        window.location = final_URL;
+                        return;
+                    } else {
+                        var authority = previous_URL.slice(0, 3);
+                        authority[1]="//";
+                        authority = authority.join("");
+                        var fragment = previous_URL.slice(3);
+                        fragment = fragment.join("/");
+                        var final_URL = authority+"/"+fragment
+                        window.location = final_URL;
+                    }
                 }
             }
         })
     }
-    console.log("AA");
 </script>
 {% endblock %}
