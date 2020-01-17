@@ -346,6 +346,10 @@
                 if(message=="remove_object") {
                     document.getElementById("add-to-favourites").style.background="#ffffff";
                 }
+                if(message=="not_authenticated") {
+                    var url = "{% url 'mainapp:login' %}";
+                    document.location.href = url;
+                }
             }
         })
     });
@@ -367,6 +371,10 @@
                 }
                 if(message=="remove_object") {
                     document.getElementById("reading-now").style.background="#ffffff";
+                }
+                if(message=="not_authenticated") {
+                    var url = "{% url 'mainapp:login' %}";
+                    document.location.href = url;
                 }
             }
         })
@@ -390,6 +398,10 @@
                 if(message=="remove_object") {
                     document.getElementById("to-read").style.background="#ffffff";
                 }
+                if(message=="not_authenticated") {
+                    var url = "{% url 'mainapp:login' %}";
+                    document.location.href = url;
+                }
             }
         })
     });
@@ -411,6 +423,10 @@
                 }
                 if(message=="remove_object") {
                     document.getElementById("have-read").style.background="#ffffff";
+                }
+                if(message=="not_authenticated") {
+                    var url = "{% url 'mainapp:login' %}";
+                    document.location.href = url;
                 }
             }
         })

@@ -326,11 +326,8 @@ def book_page(request, isbn_13, isbn_10):
 	print(isbn_13, isbn_10)
 	user_pk = request.user.pk
 
-	if request.method == "PUT":
-		print("break 1")
-		if(not user_pk):
-			print("break 2")
-			return render(request,'mainapp/login.html', {})
+	if request.method == "PUT" and not user_pk:
+		return HttpResponse("not_authenticated")
 
 	#Need to add leading zero's to ISBN 10 and 13.
 	remaining_zero = "0"*(10-len(isbn_10))
