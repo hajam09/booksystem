@@ -76,8 +76,8 @@
                                 </form>
 
                                 <div class="chat-body no-padding profile-message">
-                                    <ul>
-                                        <li class="message">
+                                    <ul id="reviews-list">
+                                        <!-- <li class="message">
                                             <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online">
                                             <span class="message-text"> 
 													<a href="javascript:void(0);" class="username">
@@ -101,32 +101,7 @@
                                                     <small class="text-muted pull-right ultra-light"> Posted 1 year ago </small>
                                                 </li>
                                             </ul>
-                                        </li>
-                                        <li class="message">
-                                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" class="online">
-                                            <span class="message-text"> 
-													<a href="javascript:void(0);" class="username">
-														Aragon Zarko 
-														<span class="badge">Purchase Verified</span>
-                                            <span class="pull-right">
-															<i class="fa fa-star fa-2x text-primary"></i>
-															<i class="fa fa-star fa-2x text-primary"></i>
-															<i class="fa fa-star fa-2x text-primary"></i>
-															<i class="fa fa-star fa-2x text-primary"></i>
-															<i class="fa fa-star fa-2x text-primary"></i>
-														</span>
-                                            </a>
-                                            Excellent product, love it!
-                                            </span>
-                                            <ul class="list-inline font-xs">
-                                                <li>
-                                                    <a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-up"></i> This was helpful (22)</a>
-                                                </li>
-                                                <li class="pull-right">
-                                                    <small class="text-muted pull-right ultra-light"> Posted 1 year ago </small>
-                                                </li>
-                                            </ul>
-                                        </li>
+                                        </li> -->
                                     </ul>
                                 </div>
                             </div>
@@ -178,6 +153,15 @@
                 if(message=="not_authenticated") {
                     var url = "{% url 'mainapp:login' %}";
                     document.location.href = url;
+                }
+                
+                if (message.split("&nbsp;")[0]=="revew_created_successfully") {
+                    var review_data = message.split("&nbsp;");
+                    var user_full_name = review_data[1];
+                    var review_message = review_data[2];
+                    var creation_date = review_data[3];
+
+                    $("#reviews-list").append('<li class="message"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+' <span class="pull-right"><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-muted"></i></span></a>'+review_message+'</span><ul class="list-inline font-xs"><li><a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-up"></i> This was helpful (22)</a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: '+creation_date+'</small></li></ul></li>');
                 }
             }
         })
@@ -302,7 +286,7 @@
 		}
         
 		$('#star-rating').append('<span class="fa fa-2x"><h5>&nbsp;&nbsp;({{ratingsCount}}) Votes</h5></span>');
-		$('#star-rating').append('<a href="javascript:void(0);">&nbsp;&nbsp;109 customer reviews need to chage</a>');
+		$('#star-rating').append('<a href="javascript:void(0);">&nbsp;&nbsp;{{book_reviews|length}} customer reviews</a>');
 
         var in_favourite_books = "{{in_favourite_Book}}";
         var in_reading_books = "{{in_reading_Book}}";
@@ -336,6 +320,20 @@
         else {
             document.getElementById("have-read").style.background="#ffffff";
         }
+
+        if ("{{book_reviews|length}}"==0) {
+            //No reviews exists for this book.
+            $("#reviews-list").append("<p>No reviews has been made for this item!</p>");
+        } else {
+            "{% for reviews in book_reviews %}"
+                var user_full_name = "{{reviews.customerID.userid.first_name}} {{reviews.customerID.userid.last_name}}"
+                $("#reviews-list").append('<li class="message"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+' <span class="pull-right"><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-muted"></i></span></a>{{reviews.description}}</span><ul class="list-inline font-xs"><li><a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-up"></i> This was helpful (22)</a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: {{reviews.created_at}} </small></li></ul></li>');
+            "{% endfor %}"
+        }
+
+        "{% for reviews in book_reviews %}"
+            //console.log("#############", "{{reviews}}", "{{reviews.bookID}}");
+        "{% endfor %}"
 
         "{% for books in item_based_recommendation %}"
             var isbn_13 = "{{books.isbn_13}}";

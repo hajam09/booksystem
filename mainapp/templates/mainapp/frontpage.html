@@ -141,13 +141,13 @@
                         var checkElement = document.getElementById(uid);
 
                         if (!checkElement) {
-                            $("#searchresult").append('<div class="row" id=' + uid + '><br><div class="col-sm-2"><img alt="" src=' + thumbnail + ' style="height: 150px; width: 150px" /></div><div class="col-sm-8"><h4><a style="cursor: pointer;" onclick="bookPage('+isbn_13+','+isbn_10+')">' + volumeinfo + '</a></h4><p> Authors:' + authors + '</p><p>' + ratingsCount + ' ratings, '+averageRating+' average rating</p></div></div>');
+                            $("#searchresult").append('<div class="row" id=' + uid + '><br><div class="col-sm-2"><img alt="" src=' + thumbnail + ' style="height: 150px; width: 150px" /></div><div class="col-sm-8"><h4><a style="cursor: pointer;" onclick="goToBookPage('+isbn_13+','+isbn_10+')">' + volumeinfo + '</a></h4><p> Authors:' + authors + '</p><p>' + ratingsCount + ' ratings, '+averageRating+' average rating</p></div></div>');
                         }
                         all_books.push(response.items[i]);
                     }
                 }
                 catch(err){
-                    console.log(err);
+                    //console.log(err);
                 }
             }
 
@@ -165,8 +165,8 @@
         });
     }
 
-    var bookPage = function(isbn_13, isbn_10) {
-        console.log(isbn_13, isbn_10);
+    var goToBookPage = function(isbn_13, isbn_10) {
+        console.log(isbn_13, isbn_10, "Inside goToBookPage function");
         window.location.href = "book_page/"+isbn_13+"/"+isbn_10;
     }
 </script>

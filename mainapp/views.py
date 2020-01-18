@@ -8,10 +8,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .models import CustomerAccountProfile, Book
+from .models import CustomerAccountProfile, Book, Review
 import string, random, csv, re
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
+from datetime import datetime as dt
 # Create your views here.
 
 """
@@ -369,17 +370,30 @@ def book_page(request, isbn_13, isbn_10):
 	#Set of books to display for suggestions.
 	item_based_recommendation = get_item_based_recommendation(csv_file)
 
+	#Need to get all the reviews associated with the book.
+	b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
+	book_reviews = Review.objects.filter(bookID=b1.pk)
+
 	if user_pk:
 		#If user is logged we can get more personal data
 		customer_account = User.objects.get(pk=user_pk)
 		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
 
-		b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
-
+		#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
+		# Ajax requests when the review button is clicked on the book.html
 		if request.method == "POST":
-			print("Making review")
+			functionality = request.POST['functionality']
+			if functionality == "create-review":
+				isbn_13 = request.POST['isbn_13']
+				isbn_10 = request.POST['isbn_10']
+				user_review = request.POST['user_review']#Need to sanitise the review
+				created_date = dt.now()
+				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, created_at=created_date)
+				full_name = customer_account.first_name + " " + customer_account.last_name
+				response_items = ["revew_created_successfully&nbsp;", full_name+"&nbsp;", user_review+"&nbsp;", created_date]
+				return HttpResponse(response_items)
 
-		# Ajax requests when the buttons are clicked on the book.html
+		# Ajax requests when the one of the four buttons are clicked on the book.html
 		if request.method == "PUT":
 			put = QueryDict(request.body)
 			functionality = put.get("functionality")
@@ -437,7 +451,8 @@ def book_page(request, isbn_13, isbn_10):
 					'ratingsCount': line[9], 'thumbnail': line[10],
 					'description': description_line, 'in_favourite_Book': in_favourite_Book,
 					'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
-					'in_have_read_Book': in_have_read_Book, 'item_based_recommendation': item_based_recommendation}
+					'in_have_read_Book': in_have_read_Book, 'item_based_recommendation': item_based_recommendation,
+					'book_reviews': book_reviews}
 		return render(request,'mainapp/book.html', context)
 
 	context = {'isbn_13':line[1], 'isbn_10': line[2],
@@ -447,7 +462,8 @@ def book_page(request, isbn_13, isbn_10):
 				'ratingsCount': line[9], 'thumbnail': line[10],
 				'description': description_line, 'in_favourite_Book': False,
 				'in_reading_Book': False, 'in_to_read_Book': False,
-				'in_have_read_Book': False, 'item_based_recommendation': item_based_recommendation}
+				'in_have_read_Book': False, 'item_based_recommendation': item_based_recommendation,
+				'book_reviews': book_reviews}
 	return render(request,'mainapp/book.html', context)
 
 def get_item_based_recommendation(csv_file):
