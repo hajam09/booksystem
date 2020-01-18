@@ -14,6 +14,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
 # Create your views here.
 
+"""
+What did I do last time?
+@csrf_exempt is fixed for logout
+"""
+
 @csrf_exempt
 def index(request):
 	if request.method == 'POST':
@@ -146,7 +151,7 @@ def login(request):
 	
 	return render(request,'mainapp/login.html', {})
 
-@csrf_exempt
+
 def log_out(request):
     """Log out - note that the session will be deleted"""
     request.session.flush()
@@ -420,7 +425,7 @@ def book_page(request, isbn_13, isbn_10):
 		in_have_read_Book = True if b1 in in_have_read_Book else False
 
 		context = {'isbn_13':line[1], 'isbn_10': line[2],
-					'title': line[3], 'authors': line[4],
+					'title': line[3], 'authors': line[4].replace("|", ","),
 					'publisher': line[5].replace("|", ","), 'publishedDate': line[6] ,
 					'categories': categories, 'averageRating': line[8],
 					'ratingsCount': line[9], 'thumbnail': line[10],
@@ -430,8 +435,8 @@ def book_page(request, isbn_13, isbn_10):
 		return render(request,'mainapp/book.html', context)
 
 	context = {'isbn_13':line[1], 'isbn_10': line[2],
-				'title': line[3], 'authors': line[4],
-				'publisher': line[5], 'publishedDate': line[6] ,
+				'title': line[3], 'authors': line[4].replace("|", ","),
+				'publisher': line[5].replace("|", ","), 'publishedDate': line[6] ,
 				'categories': categories, 'averageRating': line[8],
 				'ratingsCount': line[9], 'thumbnail': line[10],
 				'description': description_line, 'in_favourite_Book': False,
