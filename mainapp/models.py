@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 # Create your models here.
+
 class CustomerAccountProfile(models.Model):
 	userid = models.ForeignKey(User, on_delete=models.CASCADE)
 	birthDate = models.DateField()
@@ -15,3 +16,9 @@ class Book(models.Model):
 	readingnow = models.ManyToManyField(CustomerAccountProfile, related_name='readingnow', default="none")
 	toread = models.ManyToManyField(CustomerAccountProfile, related_name='toread', default="none")
 	haveread = models.ManyToManyField(CustomerAccountProfile, related_name='haveread' ,default="none")
+
+class Review(models.Model):
+	bookID = models.ForeignKey(Book, on_delete=models.CASCADE)
+	customerID = models.ForeignKey(CustomerAccountProfile, on_delete=models.CASCADE)
+	description = models.TextField(max_length=1000)
+	created_at = models.DateTimeField()

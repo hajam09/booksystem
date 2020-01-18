@@ -335,9 +335,7 @@ def book_page(request, isbn_13, isbn_10):
 		return HttpResponse("not_authenticated")
 
 	if request.method == "POST" and not user_pk:
-		print("Trying to create a review and not logged in")
-	else:
-		print("Trying to create a review and logged in")
+		return HttpResponse("not_authenticated")
 
 	#Need to add leading zero's to ISBN 10 and 13.
 	remaining_zero = "0"*(10-len(isbn_10))
@@ -377,6 +375,9 @@ def book_page(request, isbn_13, isbn_10):
 		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
 
 		b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
+
+		if request.method == "POST":
+			print("Making review")
 
 		# Ajax requests when the buttons are clicked on the book.html
 		if request.method == "PUT":
