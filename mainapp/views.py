@@ -328,11 +328,16 @@ def get_row_from_csv(isbn_13, isbn_10):
 
 @csrf_exempt
 def book_page(request, isbn_13, isbn_10):
-	print(isbn_13, isbn_10)
+	#print(isbn_13, isbn_10)
 	user_pk = request.user.pk
 
 	if request.method == "PUT" and not user_pk:
 		return HttpResponse("not_authenticated")
+
+	if request.method == "POST" and not user_pk:
+		print("Trying to create a review and not logged in")
+	else:
+		print("Trying to create a review and logged in")
 
 	#Need to add leading zero's to ISBN 10 and 13.
 	remaining_zero = "0"*(10-len(isbn_10))
@@ -341,7 +346,7 @@ def book_page(request, isbn_13, isbn_10):
 	remaining_zero = "0"*(13-len(isbn_13))
 	isbn_13 = remaining_zero+isbn_13
 
-	print(isbn_13, isbn_10)
+	#print(isbn_13, isbn_10)
 
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
 	line = None
