@@ -9,7 +9,7 @@ from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Book, Review
-import string, random, csv, re
+import string, random, csv, re, os
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
@@ -18,6 +18,9 @@ from datetime import datetime as dt
 """
 What did I do last time?
 @csrf_exempt is fixed for logout
+
+19th jan
+when user clicks the button on the book.html page, the feature value in csv increases and decreases.
 """
 
 @csrf_exempt
@@ -104,7 +107,7 @@ def index(request):
 					print("New book")
 					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title)
 					with open('book_info.csv', 'a') as csv_file:
-						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+publishedDate+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+thumbnail
+						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+publishedDate+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+thumbnail+","+"0"+","+"0"+","+"0"+","+"0"
 						csv_file.write(towrite)
 
 					text_file = open("book_descriptions.txt", "a")
@@ -404,33 +407,41 @@ def book_page(request, isbn_13, isbn_10):
 				favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
 				if(b1 not in favourite_Book):
 					customer_details.favourites.add(b1)
+					increment_feature_value(isbn_13, isbn_10, "favourites_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.favourites.remove(b1)
+					reduce_feature_value(isbn_13, isbn_10, "favourites_count")
 					return HttpResponse("remove_object")
 			elif(functionality=="reading-now"):
 				reading_Book = Book.objects.filter(readingnow__id=customer_details.pk)
 				if(b1 not in reading_Book):
 					customer_details.readingnow.add(b1)
+					increment_feature_value(isbn_13, isbn_10, "reading_now_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.readingnow.remove(b1)
+					reduce_feature_value(isbn_13, isbn_10, "reading_now_count")
 					return HttpResponse("remove_object")
 			elif(functionality=="to-read"):
 				toread_Book = Book.objects.filter(toread__id=customer_details.pk)
 				if(b1 not in toread_Book):
 					customer_details.toread.add(b1)
+					increment_feature_value(isbn_13, isbn_10, "to_read_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.toread.remove(b1)
+					reduce_feature_value(isbn_13, isbn_10, "to_read_count")
 					return HttpResponse("remove_object")
 			elif(functionality=="have-read"):
 				have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
 				if(b1 not in have_read_Book):
 					customer_details.haveread.add(b1)
+					increment_feature_value(isbn_13, isbn_10, "have_read_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.haveread.remove(b1)
+					reduce_feature_value(isbn_13, isbn_10, "have_read_count")
 					return HttpResponse("remove_object")
 
 		#Need to check if the Book are already in favourites, reading now, to read and have read.
@@ -465,6 +476,46 @@ def book_page(request, isbn_13, isbn_10):
 				'in_have_read_Book': False, 'item_based_recommendation': item_based_recommendation,
 				'book_reviews': book_reviews}
 	return render(request,'mainapp/book.html', context)
+
+def increment_feature_value(isbn_13, isbn_10, feature):
+	index_position = {"favourites_count": 11, "reading_now_count": 12,"to_read_count": 13,"have_read_count": 14}
+	with open('book_info.csv', 'r') as reader, open('book_info_temp.csv', 'w') as writer:
+		for row in reader:
+			row = row.split(",")
+			if  row[1] == isbn_13 or row[2] == isbn_10:
+				row[index_position[feature]] = str(int(row[index_position[feature]])+1)
+			row = ",".join(row).rstrip()
+			writer.write(row+"\n")
+
+	#May have a probem with this techqnique if other function is using book_info because it erases the content
+	with open('book_info_temp.csv', 'r') as reader, open('book_info.csv', 'w') as writer:
+		for row in reader:
+			row = row.split(",")
+			row = ",".join(row).rstrip()
+			writer.write(row+"\n")
+	os.remove('book_info_temp.csv')
+	#os.rename('book_info_temp.csv', 'book_info.csv')
+	return
+
+def reduce_feature_value(isbn_13, isbn_10, feature):
+	index_position = {"favourites_count": 11, "reading_now_count": 12,"to_read_count": 13,"have_read_count": 14}
+	with open('book_info.csv', 'r') as reader, open('book_info_temp.csv', 'w') as writer:
+		for row in reader:
+			row = row.split(",")
+			if  row[1] == isbn_13 or row[2] == isbn_10:
+				row[index_position[feature]] = str(int(row[index_position[feature]])-1)
+			row = ",".join(row).rstrip()
+			writer.write(row+"\n")
+
+	#May have a probem with this techqnique if other function is using book_info because it erases the content
+	with open('book_info_temp.csv', 'r') as reader, open('book_info.csv', 'w') as writer:
+		for row in reader:
+			row = row.split(",")
+			row = ",".join(row).rstrip()
+			writer.write(row+"\n")
+	os.remove('book_info_temp.csv')
+	#os.rename('book_info_temp.csv', 'book_info.csv')
+	return
 
 def get_item_based_recommendation(csv_file):
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
