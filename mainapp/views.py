@@ -375,8 +375,11 @@ def book_page(request, isbn_13, isbn_10):
 	item_based_recommendation = get_item_based_recommendation(csv_file)
 
 	#Need to get all the reviews associated with the book.
-	b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
-	book_reviews = Review.objects.filter(bookID=b1.pk)
+	print(isbn_10, isbn_13)
+	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
+	b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
+	print(b1)
+	book_reviews = Review.objects.filter(bookID=b1[0].pk)
 
 	if user_pk:
 		#If user is logged we can get more personal data
