@@ -161,6 +161,11 @@
                     var review_message = review_data[2];
                     var creation_date = review_data[3];
 
+                    var no_review_element = document.getElementById("no-review");
+                    if(no_review_element) {
+                        console.log("EXIST");
+                    }
+
                     $("#reviews-list").append('<li class="message"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+' <span class="pull-right"><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-primary"></i><i class="fa fa-star fa-2x text-muted"></i></span></a>'+review_message+'</span><ul class="list-inline font-xs"><li><a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-up"></i> This was helpful (22)</a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: '+creation_date+'</small></li></ul></li>');
                 }
             }
@@ -323,7 +328,7 @@
 
         if ("{{book_reviews|length}}"==0) {
             //No reviews exists for this book.
-            $("#reviews-list").append("<p>No reviews has been made for this item!</p>");
+            $("#reviews-list").append("<p id='no-review'>No reviews has been made for this item!</p>");
         } else {
             "{% for reviews in book_reviews %}"
                 var user_full_name = "{{reviews.customerID.userid.first_name}} {{reviews.customerID.userid.last_name}}"

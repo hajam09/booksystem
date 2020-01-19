@@ -107,7 +107,7 @@ def index(request):
 					print("New book")
 					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title)
 					with open('book_info.csv', 'a') as csv_file:
-						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+publishedDate+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+thumbnail+","+"0"+","+"0"+","+"0"+","+"0"
+						towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+publishedDate+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+"0"+","+"0"+","+"0"+","+"0"+","+thumbnail
 						csv_file.write(towrite)
 
 					text_file = open("book_descriptions.txt", "a")
@@ -459,7 +459,7 @@ def book_page(request, isbn_13, isbn_10):
 					'title': line[3], 'authors': line[4].replace("|", ","),
 					'publisher': line[5].replace("|", ","), 'publishedDate': line[6] ,
 					'categories': categories, 'averageRating': line[8],
-					'ratingsCount': line[9], 'thumbnail': line[10],
+					'ratingsCount': line[9], 'thumbnail': line[14],
 					'description': description_line, 'in_favourite_Book': in_favourite_Book,
 					'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
 					'in_have_read_Book': in_have_read_Book, 'item_based_recommendation': item_based_recommendation,
@@ -470,7 +470,7 @@ def book_page(request, isbn_13, isbn_10):
 				'title': line[3], 'authors': line[4].replace("|", ","),
 				'publisher': line[5].replace("|", ","), 'publishedDate': line[6] ,
 				'categories': categories, 'averageRating': line[8],
-				'ratingsCount': line[9], 'thumbnail': line[10],
+				'ratingsCount': line[9], 'thumbnail': line[14],
 				'description': description_line, 'in_favourite_Book': False,
 				'in_reading_Book': False, 'in_to_read_Book': False,
 				'in_have_read_Book': False, 'item_based_recommendation': item_based_recommendation,
@@ -478,41 +478,35 @@ def book_page(request, isbn_13, isbn_10):
 	return render(request,'mainapp/book.html', context)
 
 def increment_feature_value(isbn_13, isbn_10, feature):
-	index_position = {"favourites_count": 11, "reading_now_count": 12,"to_read_count": 13,"have_read_count": 14}
+	index_position = {"favourites_count": 10, "reading_now_count": 11,"to_read_count": 12,"have_read_count": 13}
 	with open('book_info.csv', 'r') as reader, open('book_info_temp.csv', 'w') as writer:
 		for row in reader:
 			row = row.split(",")
-			if  row[1] == isbn_13 or row[2] == isbn_10:
+			if row[1] == isbn_13 or row[2] == isbn_10:
 				row[index_position[feature]] = str(int(row[index_position[feature]])+1)
-			row = ",".join(row).rstrip()
-			writer.write(row+"\n")
-
+			row = ",".join(row)
+			writer.write(row)
 	#May have a probem with this techqnique if other function is using book_info because it erases the content
 	with open('book_info_temp.csv', 'r') as reader, open('book_info.csv', 'w') as writer:
 		for row in reader:
-			row = row.split(",")
-			row = ",".join(row).rstrip()
-			writer.write(row+"\n")
+			writer.write(row)
 	os.remove('book_info_temp.csv')
 	#os.rename('book_info_temp.csv', 'book_info.csv')
 	return
 
 def reduce_feature_value(isbn_13, isbn_10, feature):
-	index_position = {"favourites_count": 11, "reading_now_count": 12,"to_read_count": 13,"have_read_count": 14}
+	index_position = {"favourites_count": 10, "reading_now_count": 11,"to_read_count": 12,"have_read_count": 13}
 	with open('book_info.csv', 'r') as reader, open('book_info_temp.csv', 'w') as writer:
 		for row in reader:
 			row = row.split(",")
-			if  row[1] == isbn_13 or row[2] == isbn_10:
+			if row[1] == isbn_13 or row[2] == isbn_10:
 				row[index_position[feature]] = str(int(row[index_position[feature]])-1)
-			row = ",".join(row).rstrip()
-			writer.write(row+"\n")
-
+			row = ",".join(row)
+			writer.write(row)
 	#May have a probem with this techqnique if other function is using book_info because it erases the content
 	with open('book_info_temp.csv', 'r') as reader, open('book_info.csv', 'w') as writer:
 		for row in reader:
-			row = row.split(",")
-			row = ",".join(row).rstrip()
-			writer.write(row+"\n")
+			writer.write(row)
 	os.remove('book_info_temp.csv')
 	#os.rename('book_info_temp.csv', 'book_info.csv')
 	return
