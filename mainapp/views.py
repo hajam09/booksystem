@@ -519,7 +519,7 @@ def get_item_based_recommendation(csv_file):
 		counter+=1
 		if(len(books_Objects)==11):
 			return books_Objects[1:]
-		book_item = {'isbn_13':line[1], 'isbn_10': line[2], 'title': line[3].replace("/cma/", ","), 'thumbnail': line[10]}
+		book_item = {'isbn_13':line[1], 'isbn_10': line[2], 'title': line[3].replace("/cma/", ","), 'thumbnail': line[14]}
 		books_Objects.append(book_item)
 		counter+=1
 	return []
