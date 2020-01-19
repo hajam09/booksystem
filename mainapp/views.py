@@ -102,8 +102,8 @@ def index(request):
 				ISBN_13 = remaining_zero+ISBN_13
 				
 				#Add book to system if not exist
-				#checkBookExist = Book.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
-				checkBookExist = Book.objects.filter(isbn_13 = ISBN_13) | Item.objects.filter(isbn_10 = ISBN_10)
+				checkBookExist = Book.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
+				#checkBookExist = Book.objects.filter(isbn_13 = ISBN_13) | Item.objects.filter(isbn_10 = ISBN_10)
 				if(len(checkBookExist)==0):
 					print("New book")
 					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title)
@@ -326,7 +326,7 @@ def user_shelf(request):
 def get_row_from_csv(isbn_13, isbn_10):
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
 	for row in csv_file:
-		if(row[1]==isbn_13 or row[2]==isbn_10):#Used to be and instead of or
+		if(row[1]==isbn_13 and row[2]==isbn_10):
 			return row
 	return None
 
@@ -364,7 +364,7 @@ def book_page(request, isbn_13, isbn_10):
 	description_line = None
 	for row in file:
 		c_line = row.split("|")
-		if((c_line[0]==isbn_13 or c_line[0]=="0"+isbn_13) or (c_line[1]==isbn_10 or c_line[1]=="0"+isbn_10)):#used to be and instead of or
+		if((c_line[0]==isbn_13 or c_line[0]=="0"+isbn_13) and (c_line[1]==isbn_10 or c_line[1]=="0"+isbn_10)):
 			description_line = c_line[2].strip()
 			break
 
