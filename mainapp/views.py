@@ -31,7 +31,6 @@ from line 423, since user rated it, we need to amend the rating score and rating
 also, we need to create user_rating with columns: user_id, bookId/ISBN13, rating_score
 
 need to predict genre, so user_genre.csv need to be mined so that we can suggest different genre to the users.
-need to put the ratings as star using javascript in the review section from front end and back end
 """
 
 @csrf_exempt
@@ -402,8 +401,8 @@ def book_page(request, isbn_13, isbn_10):
 			description_line = c_line[2].strip()
 			break
 
-	categories = replace_last_occurence(line[7], '|', ' & ', 1)
-	categories = re.sub("[|]", ", ", categories)
+	#categories = replace_last_occurence(line[7], '|', ' & ', 1)#has some errors
+	categories = re.sub("[|]", ", ", line[7])
 
 	#Set of books to display for suggestions.
 	item_based_recommendation = get_item_based_recommendation(csv_file)
@@ -430,7 +429,7 @@ def book_page(request, isbn_13, isbn_10):
 				created_date = dt.now()
 				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
 				full_name = customer_account.first_name + " " + customer_account.last_name
-				response_items = ["revew_created_successfully&nbsp;", full_name+"&nbsp;", user_review+"&nbsp;", created_date]
+				response_items = ["revew_created_successfully&nbsp;", full_name+"&nbsp;", user_review+"&nbsp;", user_rating+"&nbsp;", created_date]
 				return HttpResponse(response_items)
 
 		# Ajax requests when the one of the four buttons are clicked on the book.html
