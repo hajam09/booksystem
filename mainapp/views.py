@@ -139,6 +139,8 @@ def signup(request):
 
 			#Creating the profile for the user
 			user.customeraccountprofile_set.create(birthDate=birthDate, gender=gender, userfavouritegenre=listOfUserGenre)
+
+			#Writing the genres to CSV for Data Mining
 			return render(request,'mainapp/login.html', {})
 		return HttpResponse("An account already exists for this email address, please try again!")
 	return render(request,'mainapp/signup.html', {})
@@ -168,14 +170,9 @@ def passwordforgotten(request):
 	if request.method == 'POST':
 		try:
 			if(request.POST["email"]):
-				print("EmailSent")
-				
-				print(confirmationid)
 				return HttpResponse("Email has been sent to {}".format(request.POST["email"]))
 		except Exception as e:
 			if(request.POST["idvalue"]):
-				print("CODE entered")
-				print("A")
 				if(confirmationid==request.POST["idvalue"]):
 					return HttpResponse("codevalid")
 				return HttpResponse("codeinvalid")
@@ -190,7 +187,6 @@ def update_profile(request):
 	customer_account = User.objects.get(pk=user_pk)
 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
 	fullname =  str(customer_account.first_name +" "+ customer_account.last_name)
-	print("user_pk value is {} and customer_details is {}".format(user_pk, customer_details.pk))
 	context = {"fullname": fullname,
 				"email": customer_account.email,
 				"userfavouritegenre": customer_details.userfavouritegenre}
@@ -214,8 +210,29 @@ def update_profile(request):
 
 		#Updating the user profile
 		CustomerAccountProfile.objects.filter(pk=int(customer_details.pk)).update(userfavouritegenre=listofgenre)
+
+		#Writing the genres to CSV for Data Mining
+		listofgenre = eval(listofgenre)
+		listofgenre.sort()
+
+		with open('user_genre.csv', 'r') as reader, open('user_genre_temp.csv', 'w') as writer:
+			for row in reader:
+				row = row.split(",")
+				if row[0] == email:
+					row[1] = listofgenre[0].title().replace(",", "&")
+					row[2] = listofgenre[1].title().replace(",", "&")
+					row[3] = listofgenre[2].title().replace(",", "&")
+				row = ",".join(row)
+				writer.write(row)
+
+		#May have a probem with this techqnique if other function is using book_info because it erases the content
+		with open('user_genre_temp.csv', 'r') as reader, open('user_genre.csv', 'w') as writer:
+			for row in reader:
+				writer.write(row)
+
+		os.remove('user_genre_temp.csv')
+
 		return HttpResponse("Your details are updated!")
-	print("AA")
 	return render(request,'mainapp/profilepage.html', context)
 
 @csrf_exempt
@@ -242,7 +259,6 @@ def user_shelf(request):
 		objective = put.get("objective")
 		isbn_13 = put.get("isbn_13")
 		isbn_10 = put.get("isbn_10")
-		print(isbn_10, isbn_13)
 
 		#Need to add leading zero's to ISBN 10 and 13.
 		remaining_zero = "0"*(10-len(isbn_10))
@@ -333,7 +349,6 @@ def get_row_from_csv(isbn_13, isbn_10):
 
 @csrf_exempt
 def book_page(request, isbn_13, isbn_10):
-	#print(isbn_13, isbn_10)
 	user_pk = request.user.pk
 
 	if request.method == "PUT" and not user_pk:
@@ -348,8 +363,6 @@ def book_page(request, isbn_13, isbn_10):
 	remaining_zero = ""
 	remaining_zero = "0"*(13-len(isbn_13))
 	isbn_13 = remaining_zero+isbn_13
-
-	#print(isbn_13, isbn_10)
 
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
 	line = None
@@ -375,11 +388,9 @@ def book_page(request, isbn_13, isbn_10):
 	item_based_recommendation = get_item_based_recommendation(csv_file)
 
 	#Need to get all the reviews associated with the book.
-	print(isbn_10, isbn_13)
-	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
-	b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
-	print(b1)
-	book_reviews = Review.objects.filter(bookID=b1[0].pk)
+	b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
+	#b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
+	book_reviews = Review.objects.filter(bookID=b1.pk)
 
 	if user_pk:
 		#If user is logged we can get more personal data
@@ -411,41 +422,41 @@ def book_page(request, isbn_13, isbn_10):
 				favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
 				if(b1 not in favourite_Book):
 					customer_details.favourites.add(b1)
-					increment_feature_value(isbn_13, isbn_10, "favourites_count")
+					#increment_feature_value(isbn_13, isbn_10, "favourites_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.favourites.remove(b1)
-					reduce_feature_value(isbn_13, isbn_10, "favourites_count")
+					#reduce_feature_value(isbn_13, isbn_10, "favourites_count")
 					return HttpResponse("remove_object")
 			elif(functionality=="reading-now"):
 				reading_Book = Book.objects.filter(readingnow__id=customer_details.pk)
 				if(b1 not in reading_Book):
 					customer_details.readingnow.add(b1)
-					increment_feature_value(isbn_13, isbn_10, "reading_now_count")
+					#increment_feature_value(isbn_13, isbn_10, "reading_now_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.readingnow.remove(b1)
-					reduce_feature_value(isbn_13, isbn_10, "reading_now_count")
+					#reduce_feature_value(isbn_13, isbn_10, "reading_now_count")
 					return HttpResponse("remove_object")
 			elif(functionality=="to-read"):
 				toread_Book = Book.objects.filter(toread__id=customer_details.pk)
 				if(b1 not in toread_Book):
 					customer_details.toread.add(b1)
-					increment_feature_value(isbn_13, isbn_10, "to_read_count")
+					#increment_feature_value(isbn_13, isbn_10, "to_read_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.toread.remove(b1)
-					reduce_feature_value(isbn_13, isbn_10, "to_read_count")
+					#reduce_feature_value(isbn_13, isbn_10, "to_read_count")
 					return HttpResponse("remove_object")
 			elif(functionality=="have-read"):
 				have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
 				if(b1 not in have_read_Book):
 					customer_details.haveread.add(b1)
-					increment_feature_value(isbn_13, isbn_10, "have_read_count")
+					#increment_feature_value(isbn_13, isbn_10, "have_read_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.haveread.remove(b1)
-					reduce_feature_value(isbn_13, isbn_10, "have_read_count")
+					#reduce_feature_value(isbn_13, isbn_10, "have_read_count")
 					return HttpResponse("remove_object")
 
 		#Need to check if the Book are already in favourites, reading now, to read and have read.

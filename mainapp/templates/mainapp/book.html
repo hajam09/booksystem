@@ -2,6 +2,13 @@
 {% load static %}
 <!--https://www.bootdey.com/snippets/view/product-full-detail-->
 <link rel="stylesheet" type="text/css" href="{% static 'css/book.css' %}"/>
+<style type="text/css">
+    .list-group-scrollbar {
+    max-height:300px;
+    overflow-y:auto; 
+}
+
+</style>
 {% block content %}
 <div class="container">
     <div class="col-sm-12 col-md-12 col-lg-12">
@@ -76,7 +83,7 @@
                                 </form>
 
                                 <div class="chat-body no-padding profile-message">
-                                    <ul id="reviews-list">
+                                    <ul id="reviews-list" class="list-group-scrollbar">
                                         <!-- <li class="message">
                                             <img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online">
                                             <span class="message-text"> 

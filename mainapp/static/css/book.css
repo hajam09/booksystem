@@ -326,6 +326,11 @@ body{
     height:40px;
 }
 
+.list-group-scrollbar {
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
 .MultiCarousel { float: left; overflow: hidden; padding: 15px; width: 100%; position:relative; }
 .MultiCarousel .MultiCarousel-inner { transition: 1s ease all; float: left; }
 .MultiCarousel .MultiCarousel-inner .item { float: left;}
