@@ -21,6 +21,9 @@ What did I do last time?
 
 19th jan
 when user clicks the button on the book.html page, the feature value in csv increases and decreases.
+
+20thjan
+user-genre is now created and able to amend in user_genre.csv
 """
 
 @csrf_exempt
