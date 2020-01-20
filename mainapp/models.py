@@ -21,4 +21,5 @@ class Review(models.Model):
 	bookID = models.ForeignKey(Book, on_delete=models.CASCADE)
 	customerID = models.ForeignKey(CustomerAccountProfile, on_delete=models.CASCADE)
 	description = models.TextField(max_length=1000)
+	rating_value = models.IntegerField(default=0)
 	created_at = models.DateTimeField()

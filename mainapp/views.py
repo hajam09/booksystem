@@ -418,8 +418,9 @@ def book_page(request, isbn_13, isbn_10):
 				isbn_13 = request.POST['isbn_13']
 				isbn_10 = request.POST['isbn_10']
 				user_review = request.POST['user_review']#Need to sanitise the review
+				user_rating = request.POST['user_rating']#Need to sanitise the review
 				created_date = dt.now()
-				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, created_at=created_date)
+				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
 				full_name = customer_account.first_name + " " + customer_account.last_name
 				response_items = ["revew_created_successfully&nbsp;", full_name+"&nbsp;", user_review+"&nbsp;", created_date]
 				return HttpResponse(response_items)
