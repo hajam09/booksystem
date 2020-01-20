@@ -31,6 +31,7 @@ from line 423, since user rated it, we need to amend the rating score and rating
 also, we need to create user_rating with columns: user_id, bookId/ISBN13, rating_score
 
 need to predict genre, so user_genre.csv need to be mined so that we can suggest different genre to the users.
+need to put the ratings as star using javascript in the review section from front end and back end
 """
 
 @csrf_exempt
