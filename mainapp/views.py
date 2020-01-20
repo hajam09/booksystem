@@ -24,6 +24,13 @@ when user clicks the button on the book.html page, the feature value in csv incr
 
 20thjan
 user-genre is now created and able to amend in user_genre.csv
+
+TODOL
+
+from line 423, since user rated it, we need to amend the rating score and rating count in the csv file
+also, we need to create user_rating with columns: user_id, bookId/ISBN13, rating_score
+
+need to predict genre, so user_genre.csv need to be mined so that we can suggest different genre to the users.
 """
 
 @csrf_exempt
