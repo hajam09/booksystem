@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import jsonfield
 # Create your models here.
 
 class CustomerAccountProfile(models.Model):
@@ -12,6 +13,7 @@ class Book(models.Model):
 	isbn_13 = models.CharField(max_length=15)
 	isbn_10 = models.CharField(max_length=15)
 	title =  models.CharField(max_length=1000, default=None)
+	book_data = jsonfield.JSONField()
 	favourites = models.ManyToManyField(CustomerAccountProfile, related_name='favourites', default="none")
 	readingnow = models.ManyToManyField(CustomerAccountProfile, related_name='readingnow', default="none")
 	toread = models.ManyToManyField(CustomerAccountProfile, related_name='toread', default="none")

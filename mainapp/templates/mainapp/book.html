@@ -493,7 +493,7 @@
             var isbn_13 = "{{books.isbn_13}}";
             var isbn_10 = "{{books.isbn_10}}";
 
-            $(".MultiCarousel-inner").append('<div class="item"><div class="pad15"><a style="cursor: pointer;" onclick="bookPage('+isbn_13+','+isbn_10+')"><p class="lead"><img src="{{books.thumbnail}}" alt="No Image" style="width:100%; display: inline-block;"</p><p>{{books.title}}</p></a></div></div>');
+            $(".MultiCarousel-inner").append('<div class="item"><div class="pad15"><a style="cursor: pointer;" onclick="bookPage('+isbn_13+')"><p class="lead"><img src="{{books.thumbnail}}" alt="No Image" style="width:100%; display: inline-block;"</p><p>{{books.title}}</p></a></div></div>');
 
         "{% endfor %}"
 
@@ -606,13 +606,13 @@
         })
     });
 
-var bookPage = function(isbn_13, isbn_10) {
+var bookPage = function(isbn_13) {
         var current_URL = window.location.href;
         current_URL = current_URL.split("/");
         current_URL = current_URL.slice(0, 3);
         current_URL[1]="//";
         current_URL = current_URL.join("");
-        window.location = current_URL+"/book_page/"+isbn_13+"/"+isbn_10;
+        window.location = current_URL+"/book_page/"+isbn_13;
     }
 </script>
 {% endblock %}
