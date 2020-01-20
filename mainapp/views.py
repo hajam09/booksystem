@@ -140,7 +140,17 @@ def signup(request):
 			#Creating the profile for the user
 			user.customeraccountprofile_set.create(birthDate=birthDate, gender=gender, userfavouritegenre=listOfUserGenre)
 
-			#Writing the genres to CSV for Data Mining
+			#Updating the genres to CSV for Data Mining
+			listofgenre = eval(listOfUserGenre)
+			listofgenre.sort()
+
+			with open('user_genre.csv', 'a') as csv_file:
+				first_genre = listofgenre[0].title().replace(",", "&")
+				second_genre = listofgenre[1].title().replace(",", "&")
+				third_genre = listofgenre[2].title().replace(",", "&")
+				towrite = "\n"+email+","+first_genre+","+second_genre+","+third_genre
+				csv_file.write(towrite)
+
 			return render(request,'mainapp/login.html', {})
 		return HttpResponse("An account already exists for this email address, please try again!")
 	return render(request,'mainapp/signup.html', {})
@@ -211,7 +221,7 @@ def update_profile(request):
 		#Updating the user profile
 		CustomerAccountProfile.objects.filter(pk=int(customer_details.pk)).update(userfavouritegenre=listofgenre)
 
-		#Writing the genres to CSV for Data Mining
+		#Updating the genres to CSV for Data Mining
 		listofgenre = eval(listofgenre)
 		listofgenre.sort()
 
