@@ -592,7 +592,7 @@ def get_item_based_recommendation(csv_file):
 	books_Objects2 = []
 	books_Objects = []
 	while(len(books_Objects)!=10):
-		random_num = random.randint(0, len(all_books))
+		random_num = random.randint(0, len(all_books)-1)
 		a_book = all_books[random_num]
 		if a_book not in books_Objects2:
 			books_Objects2.append(a_book)
