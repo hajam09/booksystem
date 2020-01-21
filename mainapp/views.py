@@ -25,6 +25,10 @@ user-genre is now created and able to amend in user_genre.csv
 
 TODOL
 
+try to merge add_feature_value and subtract_feature_value function by passing arithemetic
+operations as argument and add/subtract the values in the function rather than having one function
+for adding values and one function for subtracting values.
+
 need to return 404 page not found if object not found in boooks or something
 
 from line 423, since user rated it, we need to amend the rating score and rating count in the csv file
@@ -472,41 +476,41 @@ def book_page(request, isbn_13):
 				favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
 				if(b1 not in favourite_Book):
 					customer_details.favourites.add(b1)
-					#increment_feature_value(isbn_13, isbn_10, "favourites_count")
+					add_feature_value(isbn_13, "favourites_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.favourites.remove(b1)
-					#reduce_feature_value(isbn_13, isbn_10, "favourites_count")
+					subtract_feature_value(isbn_13, "favourites_count")
 					return HttpResponse("remove_object")
 			elif(functionality=="reading-now"):
 				reading_Book = Book.objects.filter(readingnow__id=customer_details.pk)
 				if(b1 not in reading_Book):
 					customer_details.readingnow.add(b1)
-					#increment_feature_value(isbn_13, isbn_10, "reading_now_count")
+					add_feature_value(isbn_13, "reading_now_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.readingnow.remove(b1)
-					#reduce_feature_value(isbn_13, isbn_10, "reading_now_count")
+					subtract_feature_value(isbn_13, "reading_now_count")
 					return HttpResponse("remove_object")
 			elif(functionality=="to-read"):
 				toread_Book = Book.objects.filter(toread__id=customer_details.pk)
 				if(b1 not in toread_Book):
 					customer_details.toread.add(b1)
-					#increment_feature_value(isbn_13, isbn_10, "to_read_count")
+					add_feature_value(isbn_13, "to_read_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.toread.remove(b1)
-					#reduce_feature_value(isbn_13, isbn_10, "to_read_count")
+					subtract_feature_value(isbn_13, "to_read_count")
 					return HttpResponse("remove_object")
 			elif(functionality=="have-read"):
 				have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
 				if(b1 not in have_read_Book):
 					customer_details.haveread.add(b1)
-					#increment_feature_value(isbn_13, isbn_10, "have_read_count")
+					add_feature_value(isbn_13, "have_read_count")
 					return HttpResponse("new_object")
 				else:
 					customer_details.haveread.remove(b1)
-					#reduce_feature_value(isbn_13, isbn_10, "have_read_count")
+					subtract_feature_value(isbn_13, "have_read_count")
 					return HttpResponse("remove_object")
 
 		#Need to check if the Book are already in favourites, reading now, to read and have read.
@@ -552,52 +556,51 @@ def book_page(request, isbn_13):
 				'book_reviews': book_reviews}
 	return render(request,'mainapp/book.html', context)
 
-def increment_feature_value(isbn_13, isbn_10, feature):
-	index_position = {"favourites_count": 10, "reading_now_count": 11,"to_read_count": 12,"have_read_count": 13}
-	with open('book_info.csv', 'r') as reader, open('book_info_temp.csv', 'w') as writer:
+def add_feature_value(isbn_13, feature):
+	index_position = {"favourites_count": 2, "reading_now_count": 3,"to_read_count": 4,"have_read_count": 5}
+	with open('book_rating.csv', 'r') as reader, open('book_rating_temp.csv', 'w') as writer:
 		for row in reader:
 			row = row.split(",")
-			if row[1] == isbn_13 or row[2] == isbn_10:
+			if row[0] == isbn_13:
 				row[index_position[feature]] = str(int(row[index_position[feature]])+1)
 			row = ",".join(row)
 			writer.write(row)
+
 	#May have a probem with this techqnique if other function is using book_info because it erases the content
-	with open('book_info_temp.csv', 'r') as reader, open('book_info.csv', 'w') as writer:
+	## Try find a way to delete book_rating.csv and rename book_rating_temp.csv to book_rating.csv for better solution
+	## current solution reads book_rating.csv, then writes to book_rating_temp.csv with changes.
+	## then reads from book_rating_temp.csv, and then writing back to book_rating.csv
+
+	with open('book_rating_temp.csv', 'r') as reader, open('book_rating.csv', 'w') as writer:
 		for row in reader:
 			writer.write(row)
-	os.remove('book_info_temp.csv')
+	os.remove('book_rating_temp.csv')
 	#os.rename('book_info_temp.csv', 'book_info.csv')
 	return
 
-def reduce_feature_value(isbn_13, isbn_10, feature):
-	index_position = {"favourites_count": 10, "reading_now_count": 11,"to_read_count": 12,"have_read_count": 13}
-	with open('book_info.csv', 'r') as reader, open('book_info_temp.csv', 'w') as writer:
+def subtract_feature_value(isbn_13, feature):
+	index_position = {"favourites_count": 2, "reading_now_count": 3,"to_read_count": 4,"have_read_count": 5}
+	with open('book_rating.csv', 'r') as reader, open('book_rating_temp.csv', 'w') as writer:
 		for row in reader:
 			row = row.split(",")
-			if row[1] == isbn_13 or row[2] == isbn_10:
+			if row[0] == isbn_13:
 				row[index_position[feature]] = str(int(row[index_position[feature]])-1)
 			row = ",".join(row)
 			writer.write(row)
+
 	#May have a probem with this techqnique if other function is using book_info because it erases the content
-	with open('book_info_temp.csv', 'r') as reader, open('book_info.csv', 'w') as writer:
+	## Try find a way to delete book_rating.csv and rename book_rating_temp.csv to book_rating.csv for better solution
+	## current solution reads book_rating.csv, then writes to book_rating_temp.csv with changes.
+	## then reads from book_rating_temp.csv, and then writing back to book_rating.csv
+
+	with open('book_rating_temp.csv', 'r') as reader, open('book_rating.csv', 'w') as writer:
 		for row in reader:
 			writer.write(row)
-	os.remove('book_info_temp.csv')
+	os.remove('book_rating_temp.csv')
 	#os.rename('book_info_temp.csv', 'book_info.csv')
 	return
 
 def get_item_based_recommendation(csv_file):
-	# csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
-	# books_Objects = []
-	# counter = 0
-	# for line in csv_file:
-	# 	counter+=1
-	# 	if(len(books_Objects)==11):
-	# 		return books_Objects[1:]
-	# 	book_item = {'isbn_13':line[1], 'isbn_10': line[2], 'title': line[3].replace("/cma/", ","), 'thumbnail': line[14]}
-	# 	books_Objects.append(book_item)
-	# 	print(book_item)
-	# 	counter+=1
 	all_books = Book.objects.all()
 	books_Objects2 = []
 	books_Objects = []
