@@ -103,7 +103,7 @@ def index(request):
 				# ISBN_13 = remaining_zero+ISBN_13
 				# Add book to system if not exist
 				checkBookExist = Book.objects.filter(isbn_13=ISBN_13)
-				if(len(checkBookExist)==0 or True):
+				if(len(checkBookExist)==0):
 					print("New book")
 					book_data = {"id": uid, "etag": etag, "title": title,
 					"authors": authors, "publisher": publisher, "publishedDate": publishedDate,
@@ -111,7 +111,7 @@ def index(request):
 					"categories": categories, "averageRating": averageRating, "ratingsCount": ratingsCount,
 					"thumbnail": thumbnail}
 
-					#Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
 
 					book_genre = "|".join(categories)
 

@@ -1,25 +1,20 @@
 isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
-9780007488308,Baggins & Frodo (Fictitious Character),0,0,0,0,4,2402
-9780547951942,Fiction,0,0,0,0,4.5,66
-9780618510832,Art,0,0,0,0,3,3
-9780008260187,Fantasy Fiction & English,0,0,0,0,0.0,0
-9780547951980,Fiction,0,0,0,0,4.5,20
-9780261102354,Adventure Stories,0,0,0,0,0.0,0
-9780786484737,Performing Arts,0,0,0,0,0.0,0
-9780275985219,History,0,0,0,0,0.0,0
-9780820463964,Performing Arts,0,0,0,0,0.0,0
-9780575073128,None,0,0,0,0,3,22
-9780007488308,Baggins & Frodo (Fictitious Character),0,0,0,0,4,2402
-9780547951942,Fiction,0,0,0,0,4.5,66
-9780618510832,Art,0,0,0,0,3,3
-9780008260187,Fantasy Fiction & English,0,0,0,0,0.0,0
-9780547951980,Fiction,0,0,0,0,4.5,20
-9780261102354,Adventure Stories,0,0,0,0,0.0,0
-9780786484737,Performing Arts,0,0,0,0,0.0,0
-9780275985219,History,0,0,0,0,0.0,0
-9780820463964,Performing Arts,0,0,0,0,0.0,0
-9780575073128,None,0,0,0,0,3,22
-9781447218296,Fiction,0,0,0,0,4,7
+9780241960110,Drama,4,4,4,4,4.2,17
+9780132780933,Science,0,0,0,0,4,1
+9780802191175,History,0,0,0,0,4,2
+9780231082198,History,0,0,0,0,5,1
+9781906387969,Business & Economics,0,0,0,0,0.0,0
+9781469606552,Literary Criticism,0,0,0,0,0.0,0
+9781574415742,Biography & Autobiography,0,0,0,0,5,1
+9781572301283,Psychology,0,0,0,0,5,1
+9780824816575,History,0,0,0,0,0.0,0
+9780739134146,Social Science,0,0,0,0,0.0,0
+9781474225588,Drama,0,0,0,0,0.0,0
+9781920693596,None,0,0,0,0,0.0,0
+9780582506244,American Drama,0,0,0,0,0.0,0
+9781101133477,Biography & Autobiography,0,0,0,0,4.5,3
+9780521768740,Drama,0,0,0,0,0.0,0
+9781447218296,Fiction,1,2,2,2,3.8,9
 9780141923475,Fiction,0,0,0,0,4,3005
 9780822208389,Drama,0,0,0,0,3.5,14
 9780395866191,Juvenile Fiction,0,0,0,0,2,1
@@ -29,35 +24,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780778717546,Juvenile Nonfiction,0,0,0,0,0.0,0
 9780192861931,Science,0,0,0,0,3.5,2
 9780356043388,Mice,0,0,0,0,0.0,0
-9780007488308,Baggins & Frodo (Fictitious Character),0,0,0,0,4,2402
-9780547951942,Fiction,0,0,0,0,4.5,66
-9780618510832,Art,0,0,0,0,3,3
-9780008260187,Fantasy Fiction & English,0,0,0,0,0.0,0
-9780547951980,Fiction,0,0,0,0,4.5,20
-9780261102354,Adventure Stories,0,0,0,0,0.0,0
-9780786484737,Performing Arts,0,0,0,0,0.0,0
-9780275985219,History,0,0,0,0,0.0,0
-9780820463964,Performing Arts,0,0,0,0,0.0,0
-9780575073128,None,0,0,0,0,3,22
-9781893905986,Literary Criticism,0,0,0,0,0.0,0
-9780955282935,Fiction,0,0,0,0,0.0,0
-9781681982755,Photography,0,0,0,0,0.0,0
-9780735712836,Computers,0,0,0,0,1,1
-9780957921870,Computers,0,0,0,0,0.0,0
-9780822329398,History,0,0,0,0,0.0,0
-9781476674445,Literary Criticism,0,0,0,0,0.0,0
-9781401299576,None,0,0,0,0,0.0,0
-9781681982755,Photography,0,0,0,0,0.0,0
-9780132704823,Computers,0,0,0,0,0.0,0
-9780241430347,Comics & Graphic Novels,0,0,0,0,0.0,0
-9780810981461,Art,0,0,0,0,0.0,0
-9780062314697,History,0,0,0,0,4,19
-9780785170761,Comics & Graphic Novels,0,0,0,0,4,50
-9780786451159,Literary Criticism,0,0,0,0,4.5,4
-9781302513801,Comics & Graphic Novels,0,0,0,0,0.0,0
-9782940222346,Hadron Colliders,0,0,0,0,0.0,0
-9781302484477,Comics & Graphic Novels,0,0,0,0,0.0,0
-9781444003147,Juvenile Fiction,0,0,0,0,4.5,6
+9781444003147,Juvenile Fiction,0,2,1,1,4.5,6
 9781444008555,Juvenile Fiction,0,0,0,0,0.0,0
 9781444002775,Juvenile Fiction,0,0,0,0,5,1
 9781444014297,Juvenile Fiction,0,0,0,0,0.0,0
@@ -67,22 +34,12 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781510102347,Juvenile Fiction,0,0,0,0,5,1
 9781842557310,Juvenile Fiction,0,0,0,0,3,2
 9781510106239,Juvenile Fiction,0,0,0,0,0.0,0
-9781846194160,Medical,0,0,0,0,0.0,0
-9781857756111,Medical,0,0,0,0,0.0,0
-9781860162565,Medicine,0,0,0,0,0.0,0
-9781857759778,Biography & Autobiography,0,0,0,0,0.0,0
-9781591810322,History,0,0,0,0,4.5,5
-9781857758573,Physicians,0,0,0,0,0.0,0
-9781846194597,Medical,0,0,0,0,0.0,0
-9781846191169,Physicians,0,0,0,0,0.0,0
-9781860162886,Physicians,0,0,0,0,0.0,0
-9781860160547,Communication,0,0,0,0,0.0,0
-9781316504031,Juvenile Nonfiction,0,0,0,0,2.5,4
-9781316504048,Juvenile Nonfiction,0,0,0,0,0.0,0
-9780199688975,None,0,0,0,0,0.0,0
-9781447103356,Computers,0,0,0,0,0.0,0
-9780763707996,Computer Science.,0,0,0,0,5,1
-9781107547544,Juvenile Nonfiction,0,0,0,0,3,3
-9781447166399,Computers,0,0,0,0,0.0,0
-9780826454607,Computer Science,0,0,0,0,3,5
-9788190675772,None,0,0,0,0,4,5
+9781857758627,Medical,0,0,0,0,5,2
+9781118393826,Medical,1,2,1,2,0.0,0
+9781444120653,Medical,0,0,0,0,0.0,0
+9781134946792,Philosophy,0,0,0,0,0.0,0
+9780340974247,Medical,0,0,0,0,0.0,0
+9781444120660,Medical,0,0,0,0,0.0,0
+9780199557141,Health & Fitness,0,0,0,0,0.0,0
+9780521253352,Medical,0,0,0,0,0.0,0
+9780827381773,Medical,0,0,0,0,0.0,0
