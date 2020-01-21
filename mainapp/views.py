@@ -116,6 +116,11 @@ def index(request):
 					"thumbnail": thumbnail}
 					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
 
+					# Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
+					with open('book_rating.csv', 'a') as csv_file:
+						towrite = "\n"+ISBN_13+","+book_genre+","+0+","+0+","+0+","+0+","+averageRating
+						csv_file.write(towrite)
+
 				# #Add book to system if not exist
 				# checkBookExist = Book.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
 				# #checkBookExist = Book.objects.filter(isbn_13 = ISBN_13) | Item.objects.filter(isbn_10 = ISBN_10)
