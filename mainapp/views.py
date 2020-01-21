@@ -188,11 +188,10 @@ def signup(request):
 
 			return render(request,'mainapp/login.html', {})
 		return HttpResponse("An account already exists for this email address, please try again!")
-		#Retrive all the categories from the database
+	#Retrive all the categories from the database
 	all_categories = Category.objects.all()
 	categories = [i.name for i in all_categories]
 	categories.sort()
-	print(categories)
 	return render(request,'mainapp/signup.html', {"categories": categories})
 
 def login(request):
@@ -237,9 +236,14 @@ def update_profile(request):
 	customer_account = User.objects.get(pk=user_pk)
 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
 	fullname =  str(customer_account.first_name +" "+ customer_account.last_name)
+	#Retrive all the categories from the database
+	all_categories = Category.objects.all()
+	categories = [i.name for i in all_categories]
+	categories.sort()
 	context = {"fullname": fullname,
 				"email": customer_account.email,
-				"userfavouritegenre": customer_details.userfavouritegenre}
+				"userfavouritegenre": customer_details.userfavouritegenre,
+				"categories": categories}
 
 	if request.method == "PUT":
 		put = QueryDict(request.body)
