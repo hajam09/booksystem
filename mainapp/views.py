@@ -460,14 +460,23 @@ def book_page(request, isbn_13):
 				user_review = request.POST['user_review']#Need to sanitise the review
 				user_rating = request.POST['user_rating']#Need to sanitise the review
 				created_date = dt.now()
-				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
+				#Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
 				full_name = customer_account.first_name + " " + customer_account.last_name
 				response_items = ["revew_created_successfully&nbsp;", full_name+"&nbsp;", user_review+"&nbsp;", user_rating+"&nbsp;", created_date]
 				
+				new_rating_count = book_detail["ratingsCount"]+1
+
+				#Calculating new average rating
+				total_rating_points = book_detail["ratingsCount"]*book_detail["averageRating"]
+				total_rating_points = total_rating_points+int(user_rating)
+				new_average_rating = round(total_rating_points/new_rating_count, 1)
+				book_detail["ratingsCount"] = new_rating_count
+				book_detail["averageRating"] = new_average_rating
+
 				#Writing review score to csv.
-				with open('user_rating.csv', 'a') as csv_file:
-					towrite = "\n"+customer_account.email+","+isbn_13+","+user_rating
-					csv_file.write(towrite)
+				# with open('user_rating.csv', 'a') as csv_file:
+				# 	towrite = "\n"+customer_account.email+","+isbn_13+","+user_rating
+				# 	csv_file.write(towrite)
 				return HttpResponse(response_items)
 
 		# Ajax requests when the one of the four buttons are clicked on the book.html
