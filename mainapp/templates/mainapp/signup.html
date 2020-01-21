@@ -166,7 +166,13 @@
 		var el = document.getElementById(parent);
         console.log(el)
 		el.remove();
-		var genreslist = ['Action and adventure', 'Anthology', 'Autobiography', 'Biography', 'Book review', 'Classic', 'Comic book', 'Crime', 'Dictionary', 'Drama', 'Encyclopedia', 'Essay', 'Fable', 'Fairy Tale', 'Fan Fiction', 'Fantasy', 'Historical Fiction', 'Horror', 'Humor', 'Legend', 'Memoir', 'Mystery', 'Mythology', 'Realistic Fiction', 'Romance', 'Science Fiction', 'Self-Help Book', 'Speech', 'Suspense', 'Textbook', 'Thriller'];
+        //May have error in the future because of this if thats the case then remove the code from here to ..
+        var genreslist = [];
+        "{% for categories in categories %}"
+            genreslist.push("{{categories}}")
+        "{% endfor %}"
+        //... here and uncommet the code below
+		//var genreslist = ['Action and adventure', 'Anthology', 'Autobiography', 'Biography', 'Book review', 'Classic', 'Comic book', 'Crime', 'Dictionary', 'Drama', 'Encyclopedia', 'Essay', 'Fable', 'Fairy Tale', 'Fan Fiction', 'Fantasy', 'Historical Fiction', 'Horror', 'Humor', 'Legend', 'Memoir', 'Mystery', 'Mythology', 'Realistic Fiction', 'Romance', 'Science Fiction', 'Self-Help Book', 'Speech', 'Suspense', 'Textbook', 'Thriller'];
 		updategenres(genreslist)
 	}
 
@@ -187,7 +193,13 @@
 
 	 window.onload = function()
 	 {
-	 	var genreslist = ['Action and adventure', 'Anthology', 'Autobiography', 'Biography', 'Book review', 'Classic', 'Comic book', 'Crime', 'Dictionary', 'Drama', 'Encyclopedia', 'Essay', 'Fable', 'Fairy Tale', 'Fan Fiction', 'Fantasy', 'Historical Fiction', 'Horror', 'Humor', 'Legend', 'Memoir', 'Mystery', 'Mythology', 'Realistic Fiction', 'Romance', 'Science Fiction', 'Self-Help Book', 'Speech', 'Suspense', 'Textbook', 'Thriller'];
+        //May have error in the future because of this if thats the case then remove the code from here to ..
+        var genreslist = [];
+        "{% for categories in categories %}"
+            genreslist.push("{{categories}}")
+        "{% endfor %}"
+        //... here and uncommet the code below
+	 	//var genreslist = ['Action and adventure', 'Anthology', 'Autobiography', 'Biography', 'Book review', 'Classic', 'Comic book', 'Crime', 'Dictionary', 'Drama', 'Encyclopedia', 'Essay', 'Fable', 'Fairy Tale', 'Fan Fiction', 'Fantasy', 'Historical Fiction', 'Horror', 'Humor', 'Legend', 'Memoir', 'Mystery', 'Mythology', 'Realistic Fiction', 'Romance', 'Science Fiction', 'Self-Help Book', 'Speech', 'Suspense', 'Textbook', 'Thriller'];
 
 	 	updategenres(genreslist);
 

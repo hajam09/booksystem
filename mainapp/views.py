@@ -191,8 +191,9 @@ def signup(request):
 		#Retrive all the categories from the database
 	all_categories = Category.objects.all()
 	categories = [i.name for i in all_categories]
+	categories.sort()
 	print(categories)
-	return render(request,'mainapp/signup.html', {})
+	return render(request,'mainapp/signup.html', {"categories": categories})
 
 def login(request):
 	if request.method == 'POST':
