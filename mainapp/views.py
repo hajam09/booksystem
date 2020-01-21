@@ -8,7 +8,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .models import CustomerAccountProfile, Book, Review
+from .models import CustomerAccountProfile, Book, Review, Category
 import string, random, csv, re, os
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
@@ -73,7 +73,7 @@ def index(request):
 
 				try:
 					categorie = book['volumeInfo']['categories']
-					categories = [i.title().replace(",", " |") for i in categorie]
+					categories = [i.title().replace(",", " &") for i in categorie]
 
 					#categories = "".join(categories)
 					#categories = re.sub("[,&]", "|", categories)
@@ -101,10 +101,9 @@ def index(request):
 				# remaining_zero = ""
 				# remaining_zero = "0"*(13-len(ISBN_13))
 				# ISBN_13 = remaining_zero+ISBN_13
-
 				# Add book to system if not exist
 				checkBookExist = Book.objects.filter(isbn_13=ISBN_13)
-				if(len(checkBookExist)==0):
+				if(len(checkBookExist)==0 or True):
 					print("New book")
 					book_data = {"id": uid, "etag": etag, "title": title,
 					"authors": authors, "publisher": publisher, "publishedDate": publishedDate,
@@ -112,9 +111,25 @@ def index(request):
 					"categories": categories, "averageRating": averageRating, "ratingsCount": ratingsCount,
 					"thumbnail": thumbnail}
 
-					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+					#Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
 
 					book_genre = "|".join(categories)
+
+					# Adding the genre/category to DB.
+					category_db = "".join(categories)
+					category_db = category_db.split("&")
+					for item in category_db:
+						if(item!="None"):
+							split_item = list(item)
+							if(split_item[0]==" "):
+								split_item = split_item[1:]
+							if(split_item[len(split_item)-1]==" "):
+								split_item = split_item[:len(split_item)-1]
+							item = "".join(split_item)
+
+							checkGenreExist = Category.objects.filter(name=item)
+							if(len(checkGenreExist)==0):
+								Category.objects.create(name=item)
 
 					# Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
 					with open('book_rating.csv', 'a') as csv_file:
@@ -173,6 +188,10 @@ def signup(request):
 
 			return render(request,'mainapp/login.html', {})
 		return HttpResponse("An account already exists for this email address, please try again!")
+		#Retrive all the categories from the database
+	all_categories = Category.objects.all()
+	categories = [i.name for i in all_categories]
+	print(categories)
 	return render(request,'mainapp/signup.html', {})
 
 def login(request):
