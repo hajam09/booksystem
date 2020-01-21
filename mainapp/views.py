@@ -17,25 +17,13 @@ from datetime import datetime as dt
 
 """
 
-19th jan
-when user clicks the button on the book.html page, the feature value in csv increases and decreases.
-
-20thjan
-user-genre is now created and able to amend in user_genre.csv
-
 TODOL
-
-need to change the ratingvalue and rating count in the models
-need to add rating count attribute in book_rating.csv and make changes when rated
 
 try to merge add_feature_value and subtract_feature_value function by passing arithemetic
 operations as argument and add/subtract the values in the function rather than having one function
 for adding values and one function for subtracting values.
 
 need to return 404 page not found if object not found in boooks or something
-
-from line 423, since user rated it, we need to amend the rating score and rating count in the csv file
-also, we need to create user_rating with columns: user_id, bookId/ISBN13, rating_score
 
 need to predict genre, so user_genre.csv need to be mined so that we can suggest different genre to the users.
 """
