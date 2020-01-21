@@ -90,7 +90,7 @@ def index(request):
 					#categories = "".join(categories)
 					#categories = re.sub("[,&]", "|", categories)
 				except:
-					categories = []
+					categories = ["None"]
 				
 				try:
 					averageRating = book['volumeInfo']['averageRating']
@@ -114,8 +114,6 @@ def index(request):
 				# remaining_zero = "0"*(13-len(ISBN_13))
 				# ISBN_13 = remaining_zero+ISBN_13
 
-				print("ratingsCount", ratingsCount)
-
 				# Add book to system if not exist
 				checkBookExist = Book.objects.filter(isbn_13=ISBN_13)
 				if(len(checkBookExist)==0):
@@ -132,7 +130,7 @@ def index(request):
 
 					# Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
 					with open('book_rating.csv', 'a') as csv_file:
-						towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(averageRating)+","+ratingsCount
+						towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(averageRating)+","+str(ratingsCount)
 						csv_file.write(towrite)
 
 				# #Add book to system if not exist
@@ -460,7 +458,7 @@ def book_page(request, isbn_13):
 				user_review = request.POST['user_review']#Need to sanitise the review
 				user_rating = request.POST['user_rating']#Need to sanitise the review
 				created_date = dt.now()
-				#Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
+				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
 				full_name = customer_account.first_name + " " + customer_account.last_name
 				response_items = ["revew_created_successfully&nbsp;", full_name+"&nbsp;", user_review+"&nbsp;", user_rating+"&nbsp;", created_date]
 				
@@ -485,9 +483,11 @@ def book_page(request, isbn_13):
 					for row in reader:
 						row = row.split(",")
 						if row[0] == isbn_13:
-							row[6] = new_average_rating# average_rating
-							row[7] = new_rating_count# rating_count
-						row = ",".join(row)
+							row[6] = str(new_average_rating)# average_rating
+							row[7] = str(new_rating_count)# rating_count
+							row = ",".join(row)+"\n"
+						else:
+							row = ",".join(row)
 						writer.write(row)
 
 				#May have a probem with this techqnique if other function is using book_info because it erases the content
