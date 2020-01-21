@@ -25,6 +25,9 @@ user-genre is now created and able to amend in user_genre.csv
 
 TODOL
 
+need to change the ratingvalue and rating count in the models
+need to add rating count attribute in book_rating.csv and make changes when rated
+
 try to merge add_feature_value and subtract_feature_value function by passing arithemetic
 operations as argument and add/subtract the values in the function rather than having one function
 for adding values and one function for subtracting values.
@@ -55,7 +58,7 @@ def index(request):
 					authors = "None"
 				try:
 					publisher = book['volumeInfo']['publisher']
-					publisher = ",".join(publisher)
+					#publisher = ",".join(publisher)
 					#publisher = publisher.replace(",", "|")
 				except:
 					publisher = "None"
@@ -110,6 +113,8 @@ def index(request):
 				# remaining_zero = ""
 				# remaining_zero = "0"*(13-len(ISBN_13))
 				# ISBN_13 = remaining_zero+ISBN_13
+
+				print("ratingsCount", ratingsCount)
 
 				# Add book to system if not exist
 				checkBookExist = Book.objects.filter(isbn_13=ISBN_13)
