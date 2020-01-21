@@ -455,6 +455,17 @@ def book_page(request, isbn_13):
 	#b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
 	book_reviews = Review.objects.filter(bookID=b1.pk)
 
+	# Verifying whether the comment is valid or not
+	review_validity = []
+	for i in book_reviews:
+		the_customer = i.customerID
+		customer_has_read_books = Book.objects.filter(haveread__id=the_customer.pk)
+		if b1 in customer_has_read_books:
+			comment_valid = True
+		else:
+			comment_valid = False
+		review_validity.append(comment_valid)
+
 	if user_pk:
 		#If user is logged we can get more personal data
 		customer_account = User.objects.get(pk=user_pk)
@@ -574,6 +585,9 @@ def book_page(request, isbn_13):
 		in_to_read_Book = True if b1 in in_to_read_Book else False
 		in_have_read_Book = True if b1 in in_have_read_Book else False
 
+		# for i in book_reviews:
+		# 	print(i)
+
 		context = {'isbn_13': book_detail["ISBN_13"], 'isbn_10': book_detail["ISBN_10"],
 					'title': book_detail["title"], 'authors': book_detail["authors"],
 					'publisher': book_detail["publisher"], 'publishedDate': book_detail["publishedDate"],
@@ -582,7 +596,7 @@ def book_page(request, isbn_13):
 					'description': book_detail["description"], 'in_favourite_Book': in_favourite_Book,
 					'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
 					'in_have_read_Book': in_have_read_Book, 'item_based_recommendation': item_based_recommendation,
-					'book_reviews': book_reviews}
+					'book_reviews': book_reviews, 'review_validity': review_validity}
 
 		# context = {'isbn_13':line[1], 'isbn_10': line[2],
 		# 			'title': line[3], 'authors': line[4].replace("|", ","),
@@ -603,7 +617,7 @@ def book_page(request, isbn_13):
 				'description': book_detail["description"], 'in_favourite_Book': False,
 				'in_reading_Book': False, 'in_to_read_Book': False,
 				'in_have_read_Book': False, 'item_based_recommendation': item_based_recommendation,
-				'book_reviews': book_reviews}
+				'book_reviews': book_reviews, 'review_validity': review_validity}
 	return render(request,'mainapp/book.html', context)
 
 def add_feature_value(isbn_13, feature):

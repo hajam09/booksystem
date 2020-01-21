@@ -471,6 +471,10 @@
             //No reviews exists for this book.
             $("#reviews-list").append("<p id='no-review'>No reviews has been made for this item!</p>");
         } else {
+            var review_validity = "{{review_validity}}";
+            review_validity = review_validity.replace("[", "").replace("]", "");//or use .substring(1, review_validity.length-1)
+            review_validity = review_validity.split(",");
+            counter = 0;
             "{% for reviews in book_reviews %}"
                 var user_full_name = "{{reviews.customerID.userid.first_name}} {{reviews.customerID.userid.last_name}}";
                 var review_value = "{{reviews.rating_value}}";
@@ -481,7 +485,14 @@
                 for (var j = i; j<=5; j++) {
                     stars_icons = stars_icons+'<i class="fa fa-star fa-2x text-muted"></i>';
                 }
-                $("#reviews-list").append('<li class="message"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+' <span class="pull-right">'+stars_icons+'</span></a>{{reviews.description}}</span><ul class="list-inline font-xs"><li><a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-up"></i> This was helpful (22)</a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: {{reviews.created_at}} </small></li></ul></li>');
+                var verification_statement = "";
+                if (review_validity[counter].trim()=="True") {
+                    verification_statement = ' <span class="badge">Verified Review</span>';
+                } else if (review_validity[counter].trim()=="False") {
+                    verification_statement = "";
+                }
+                counter = counter+1;
+                $("#reviews-list").append('<li class="message"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+verification_statement+' <span class="pull-right">'+stars_icons+'</span></a>{{reviews.description}}</span><ul class="list-inline font-xs"><li><a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-up"></i> This was helpful (22)</a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: {{reviews.created_at}} </small></li></ul></li>');
             "{% endfor %}"
         }
 

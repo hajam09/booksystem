@@ -14,6 +14,7 @@
 <div class="container">
 
 	<form class="col-xl-12" id="searchForm">
+        {% csrf_token %}
 		<div class="input-group col-md-12">
 			<input style="  font-size: 15px !important;" type="text" name="booksearch" class="form-control input-lg" placeholder="Search for book"/>
 			<span class="input-group-btn">
