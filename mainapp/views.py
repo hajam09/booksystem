@@ -25,6 +25,8 @@ user-genre is now created and able to amend in user_genre.csv
 
 TODOL
 
+need to return 404 page not found if object not found in boooks or something
+
 from line 423, since user rated it, we need to amend the rating score and rating count in the csv file
 also, we need to create user_rating with columns: user_id, bookId/ISBN13, rating_score
 
@@ -76,7 +78,7 @@ def index(request):
 
 				try:
 					categorie = book['volumeInfo']['categories']
-					categories = [i.title() for i in categorie]
+					categories = [i.title().replace(",", " |") for i in categorie]
 
 					#categories = "".join(categories)
 					#categories = re.sub("[,&]", "|", categories)
@@ -114,11 +116,14 @@ def index(request):
 					"description": description, "ISBN_10": ISBN_10, "ISBN_13": ISBN_13,
 					"categories": categories, "averageRating": averageRating, "ratingsCount": ratingsCount,
 					"thumbnail": thumbnail}
+
 					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+
+					book_genre = "|".join(categories)
 
 					# Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
 					with open('book_rating.csv', 'a') as csv_file:
-						towrite = "\n"+ISBN_13+","+book_genre+","+0+","+0+","+0+","+0+","+averageRating
+						towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(averageRating)
 						csv_file.write(towrite)
 
 				# #Add book to system if not exist

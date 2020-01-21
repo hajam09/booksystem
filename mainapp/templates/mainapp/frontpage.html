@@ -80,7 +80,6 @@
                 result.push();
             }
         });
-        console.log("KHIFO");
     }
 
     function makeSearch() {
@@ -125,7 +124,7 @@
                         isbn_13 = response.items[i].volumeInfo.industryIdentifiers[1].identifier;
                     }
                     var description = response.items[i].volumeInfo.description;
-                    console.log(isbn_13, isbn_10, categories);
+                    console.log(isbn_13,authors);
                     
                     var industryIdentifiers = response.items[i].volumeInfo.industryIdentifiers;
                     if(industryIdentifiers.length==2) {
