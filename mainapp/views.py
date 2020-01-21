@@ -132,7 +132,7 @@ def index(request):
 
 					# Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
 					with open('book_rating.csv', 'a') as csv_file:
-						towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(averageRating)
+						towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(averageRating)+","+ratingsCount
 						csv_file.write(towrite)
 
 				# #Add book to system if not exist
@@ -473,10 +473,34 @@ def book_page(request, isbn_13):
 				book_detail["ratingsCount"] = new_rating_count
 				book_detail["averageRating"] = new_average_rating
 
+				#Updating the database with the new rating count and new average rating value.
+				Book.objects.filter(isbn_13=isbn_13).update(book_data=book_detail)
 				#Writing review score to csv.
-				# with open('user_rating.csv', 'a') as csv_file:
-				# 	towrite = "\n"+customer_account.email+","+isbn_13+","+user_rating
-				# 	csv_file.write(towrite)
+				with open('user_rating.csv', 'a') as csv_file:
+					towrite = "\n"+customer_account.email+","+isbn_13+","+user_rating
+					csv_file.write(towrite)
+
+				#Need to make adjustments to ratingscount and average rating in book_rating.csv
+				with open('book_rating.csv', 'r') as reader, open('book_rating_temp.csv', 'w') as writer:
+					for row in reader:
+						row = row.split(",")
+						if row[0] == isbn_13:
+							row[6] = new_average_rating# average_rating
+							row[7] = new_rating_count# rating_count
+						row = ",".join(row)
+						writer.write(row)
+
+				#May have a probem with this techqnique if other function is using book_info because it erases the content
+				## Try find a way to delete book_rating.csv and rename book_rating_temp.csv to book_rating.csv for better solution
+				## current solution reads book_rating.csv, then writes to book_rating_temp.csv with changes.
+				## then reads from book_rating_temp.csv, and then writing back to book_rating.csv
+
+				with open('book_rating_temp.csv', 'r') as reader, open('book_rating.csv', 'w') as writer:
+					for row in reader:
+						writer.write(row)
+
+				os.remove('book_rating_temp.csv')
+				#os.rename('book_info_temp.csv', 'book_info.csv')
 				return HttpResponse(response_items)
 
 		# Ajax requests when the one of the four buttons are clicked on the book.html

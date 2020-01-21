@@ -1,18 +1,1 @@
-isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating
-9781844220342,Children'S Stories,0,0,0,0,0.0
-9781787414679,Africa,0,0,0,0,0.0
-9780736420792,Juvenile Fiction,0,0,0,0,4.5
-9780786863426,Juvenile Fiction,0,0,0,0,0.0
-9780307100092,Juvenile Fiction,0,0,0,0,5
-9781506712734,Juvenile Fiction,0,0,0,0,0.0
-9780785315667,Games,0,0,0,0,0.0
-9781633227620,Juvenile Nonfiction,0,0,0,0,0.0
-9781562826338,Africa,0,0,0,0,0.0
-9781407156309,Juvenile Fiction,0,0,0,0,5
-9780007380626,Juvenile Fiction,0,0,0,0,4
-9780192803580,History,0,0,0,0,4
-9780313324741,History,0,0,0,0,0.0
-9780590366472,Juvenile Fiction,0,0,0,0,4.5
-9781460232545,Juvenile Fiction,0,0,0,0,0.0
-9781405932462,Biography & Autobiography,0,0,0,0,0.0
-9789978809433,,0,0,0,0,0.0
+isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
