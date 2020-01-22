@@ -48,13 +48,13 @@ body {
 }
 
 .invalid {
-    background:url(../images/invalid.png) no-repeat 0 50%;
+    background:url(../images/assets/invalid.png) no-repeat 0 50%;
     padding-left:22px;
     line-height:24px;
     color:#ec3f41;
 }
 .valid {
-    background:url(../images/valid.png) no-repeat 0 50%;
+    background:url(../images/assets/valid.png) no-repeat 0 50%;
     padding-left:22px;
     line-height:24px;
     color:#3a7d34;
@@ -62,4 +62,8 @@ body {
 
 #pswd_info {
     display:none;
+}
+
+ul {
+	list-style-type: none;
 }
