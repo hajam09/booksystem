@@ -31,8 +31,19 @@
 			</table>
 		</div>
 		<div id="recentlyviewed" class="tab-pane fade">
-			<h3>Recentyle viewewd</h3>
-			<p>Recently viewed books here</p>
+			<h3>Recently Viewed Books</h3>
+			<table class="table" id="visited-table">
+				<thead>
+					<tr>
+						<th scope="col">Book Title / Page</th>
+						<th scope="col">Categories</th>
+						<th scope="col">Average Rating</th>
+						<th scope="col">Column</th>
+					</tr>
+				</thead>
+				<tbody id="visited-result">
+				</tbody>
+			</table>
 		</div>
 		<div id="favourites" class="tab-pane fade">
 			<h3>Favourite Books</h3>
@@ -170,6 +181,20 @@
 			var description = "{{reviews.description}}";
 
 			$("#rated-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + user_rating + "/5</td><td>" + description + "</td></tr>");
+		"{% endfor %}"
+
+		"{% for books in visited_Book %}"
+			var uid = "{{books.isbn_13}}/{{books.isbn_10}}"
+			var isbn_13 = "{{books.isbn_13}}";
+			var isbn_10 = "{{books.isbn_10}}";
+
+			var book_name = "<a style='cursor: pointer;' onclick='bookPage("+isbn_13+","+isbn_10+")'>" + "{{books.title}}" + "</a>";
+			var categories = "{{books.categories}}";
+			var average_rating = "{{books.average_rating}}";
+			var action = "";
+
+			$("#visited-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+
 		"{% endfor %}"
 	}
 

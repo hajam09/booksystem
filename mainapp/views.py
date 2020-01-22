@@ -30,6 +30,12 @@ need to predict genre, so user_genre.csv need to be mined so that we can suggest
 
 @csrf_exempt
 def index(request):
+	#Creating session for authenticated users
+	if request.user.is_authenticated:
+		if 'history' not in request.session:
+			request.session['history'] = []
+			print("created new session")
+
 	if request.method == 'POST':
 		book_result = eval(request.POST['book'].replace("true", "True").replace("false", "False"))
 		#Creating a model for each book if not exist and add to csv
@@ -322,6 +328,15 @@ def user_shelf(request):
 	have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
 
 	user_reviewed_Book = Review.objects.filter(customerID=customer_details.pk)
+	user_visited_Book = []
+
+	##Using session to retrive all the books the user has visited recently
+	if 'history' not in request.session:
+		request.session['history'] = []
+	else:
+		history = request.session['history']
+		for items in history:
+			user_visited_Book.append(Book.objects.get(isbn_13=items))
 
 	# Ajax requests when the buttons are clicked to remove the books from the list.
 	#Need to change this to delete REQUEST
@@ -370,6 +385,7 @@ def user_shelf(request):
 	haveread_book = []
 
 	reviewed_Book = []
+	visited_Book = []
 
 	for i in favourite_Book:
 		#line = get_row_from_csv(i.isbn_13, i.isbn_10)
@@ -424,7 +440,12 @@ def user_shelf(request):
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "user_rating": m.rating_value, "description": m.description}
 		reviewed_Book.append(book_attributes)
 
-	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book}
+	for n in user_visited_Book:
+		book_detail = n.book_data
+		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
+		visited_Book.append(book_attributes)
+
+	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book, 'visited_Book': visited_Book}
 	return render(request,'mainapp/usershelf.html', context)
 
 def get_row_from_csv(isbn_13, isbn_10):
@@ -437,6 +458,20 @@ def get_row_from_csv(isbn_13, isbn_10):
 
 @csrf_exempt
 def book_page(request, isbn_13):
+	#########################
+	# Storing this book in the session for logged in users
+	# may need to fix it becuase if user logs in first time and gets to the book page directly
+	# then it only creates the session and does not store the isbn13 in the session unless if the user
+	#refreshes the page again manually
+	if request.user.is_authenticated:
+		if 'history' not in request.session:
+			request.session['history'] = []
+		else:
+			history = request.session['history']
+			if isbn_13 not in history:
+				history.append(isbn_13)
+			request.session['history'] = history
+	#########################
 	user_pk = request.user.pk
 
 	if request.method == "PUT" and not user_pk:
