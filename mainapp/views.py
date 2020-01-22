@@ -244,7 +244,7 @@ def update_profile(request):
 	try:
 		customer_account = User.objects.get(pk=user_pk)
 		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-	except:
+	except CustomerAccountProfile.DoesNotExist:
 		return redirect('mainapp:not_found')
 	fullname =  str(customer_account.first_name +" "+ customer_account.last_name)
 	#Retrive all the categories from the database
@@ -312,7 +312,7 @@ def user_shelf(request):
 	try:
 		customer_account = User.objects.get(pk=user_pk)
 		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-	except:
+	except CustomerAccountProfile.DoesNotExist:
 		return redirect('mainapp:login')
 
 	#Need to check if the Book are already in favourites, reading now, to read and have read.
@@ -471,7 +471,7 @@ def book_page(request, isbn_13):
 	# Redirecting to 404 page if book is not found
 	try:
 		b1 = Book.objects.get(isbn_13=isbn_13)
-	except:
+	except Book.DoesNotExist:
 		return redirect('mainapp:not_found')
 	book_detail = b1.book_data
 	#b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
