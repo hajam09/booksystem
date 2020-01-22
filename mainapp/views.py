@@ -321,6 +321,8 @@ def user_shelf(request):
 	to_read_Book = Book.objects.filter(toread__id=customer_details.pk)
 	have_read_Book = Book.objects.filter(haveread__id=customer_details.pk)
 
+	user_reviewed_Book = Review.objects.filter(customerID=customer_details.pk)
+
 	# Ajax requests when the buttons are clicked to remove the books from the list.
 	#Need to change this to delete REQUEST
 	if request.method == "PUT":
@@ -366,6 +368,8 @@ def user_shelf(request):
 	reading_now_book = []
 	toread_book = []
 	haveread_book = []
+
+	reviewed_Book = []
 
 	for i in favourite_Book:
 		#line = get_row_from_csv(i.isbn_13, i.isbn_10)
@@ -415,7 +419,12 @@ def user_shelf(request):
 		# have_read_Book[i] = book_attributes
 		haveread_book.append(book_attributes)
 
-	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book}
+	for m in user_reviewed_Book:
+		book_detail = m.bookID.book_data
+		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "user_rating": m.rating_value, "description": m.description}
+		reviewed_Book.append(book_attributes)
+
+	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book}
 	return render(request,'mainapp/usershelf.html', context)
 
 def get_row_from_csv(isbn_13, isbn_10):

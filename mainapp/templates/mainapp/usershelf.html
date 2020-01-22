@@ -16,8 +16,19 @@
 	<!-- Tab panes -->
 	<div class="tab-content">
 		<div id="rated" class="tab-pane fade in active">
-			<h3>Rated</h3>
-			<p>Rated or reviewed books should come here</p>
+			<h3>Rated and Reviewed Books</h3>
+			<table class="table" id="rated-table">
+				<thead>
+					<tr>
+						<th scope="col">Book Title / Page</th>
+						<th scope="col">Categories</th>
+						<th scope="col">Your Rating</th>
+						<th scope="col">Your Comment</th>
+					</tr>
+				</thead>
+				<tbody id="rated-result">
+				</tbody>
+			</table>
 		</div>
 		<div id="recentlyviewed" class="tab-pane fade">
 			<h3>Recentyle viewewd</h3>
@@ -146,6 +157,19 @@
 			var action = "<button type='button' class='btn btn-danger' onclick='removefromhaveread("+isbn_13+","+isbn_10+")'>Remove From To Have Read</button>";
 
 			$("#have-read-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+		"{% endfor %}"
+
+		"{% for reviews in reviewed_Book %}"
+			var uid = "{{reviews.isbn_13}}/{{reviews.isbn_10}}"
+			var isbn_13 = "{{reviews.isbn_13}}";
+			var isbn_10 = "{{reviews.isbn_10}}";
+
+			var book_name = "<a style='cursor: pointer;' onclick='bookPage("+isbn_13+","+isbn_10+")'>" + "{{reviews.title}}" + "</a>";
+			var categories = "{{reviews.categories}}";
+			var user_rating = "{{reviews.user_rating}}";
+			var description = "{{reviews.description}}";
+
+			$("#rated-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + user_rating + "/5</td><td>" + description + "</td></tr>");
 		"{% endfor %}"
 	}
 

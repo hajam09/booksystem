@@ -1,5 +1,5 @@
 isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
-9780241960110,Drama,5,5,5,5,4.2,17
+9780241960110,Drama,6,5,6,6,4.2,17
 9780132780933,Science,0,0,0,0,4,1
 9780802191175,History,0,0,0,0,4,2
 9780231082198,History,0,0,0,0,5,1
@@ -14,7 +14,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780582506244,American Drama,0,0,0,0,0.0,0
 9781101133477,Biography & Autobiography,0,0,0,0,4.5,3
 9780521768740,Drama,0,0,0,0,0.0,0
-9781447218296,Fiction,1,1,1,1,3.8,9
+9781447218296,Fiction,1,1,1,1,3.8,10
 9780141923475,Fiction,0,0,0,0,4,3005
 9780822208389,Drama,0,0,0,0,3.5,14
 9780395866191,Juvenile Fiction,0,0,0,0,2,1
@@ -61,3 +61,13 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781444929652,Juvenile Fiction,0,0,0,0,0.0,0
 9781444941005,Juvenile Fiction,0,0,0,0,0.0,0
 9781510101227,Children'S Stories,0,0,0,0,0.0,0
+9780141185101,Fiction,1,1,1,1,4.0,3279
+9780738665474,Study Aids,0,0,0,0,4,1
+9780313330568,Literary Criticism,0,0,0,0,0.0,0
+9780881220285,Cowboys,0,0,0,0,4,2949
+9781410336330,Literary Criticism,0,0,0,0,0.0,0
+9781101615218,Fiction,0,0,0,0,0.0,0
+9780544183056,Literary Criticism,0,0,0,0,0.0,0
+9781771679312,Education,0,0,0,0,0.0,0
+9781447980469,None,0,0,0,0,0.0,0
+9781609339043,Fiction,0,0,0,0,0.0,0
