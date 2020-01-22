@@ -457,7 +457,11 @@ def book_page(request, isbn_13):
 
 	#Need to get all the reviews associated with the book.
 	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
-	b1 = Book.objects.get(isbn_13=isbn_13)
+	# Redirecting to 404 page if book is not found
+	try:
+		b1 = Book.objects.get(isbn_13=isbn_13)
+	except:
+		return render(request,'mainapp/404.html', {})
 	book_detail = b1.book_data
 	#b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
 	book_reviews = Review.objects.filter(bookID=b1.pk)
