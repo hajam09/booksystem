@@ -22,6 +22,15 @@
             <div class="col-sm-9">
                 <input type="password" id="password" name="password" placeholder="Password" minlength="8" class="form-control" required/>
             </div>
+            <div id="pswd_info">
+                <h4>Password must meet the following requirements:</h4>
+                <ul>
+                    <li id="letter" class="invalid">At least <strong>one letter</strong></li>
+                    <li id="capital" class="invalid">At least <strong>one capital letter</strong></li>
+                    <li id="number" class="invalid">At least <strong>one number</strong></li>
+                    <li id="length" class="invalid">Be at least <strong>8 characters</strong></li>
+                </ul>
+            </div>
         </div>
         <div class="form-group">
             <label for="birthDate" class="col-sm-3 control-label">Date of Birth</label>
@@ -130,13 +139,21 @@
                     csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
                 },
                 success: function(info){
-                    if(info!="An account already exists for this email address, please try again!"){
+                    if(info=="Password is not secure enough!"){
+                        alert(info);
+                    } else if (info=="An account already exists for this email address, please try again!"){
+                        alert(info);
+                    } else {
                         var url = "{% url 'mainapp:login' %}";
                         document.location.href = url;
                     }
-                    else{
-                        alert(info);
-                    }
+                    // if(info!="An account already exists for this email address, please try again!"){
+                    //     var url = "{% url 'mainapp:login' %}";
+                    //     document.location.href = url;
+                    // }
+                    // else{
+                    //     alert(info);
+                    // }
                 }
             })
         }
@@ -193,6 +210,43 @@
 
 	 window.onload = function()
 	 {
+        //Code for password security validator
+        $('input[type=password]').keyup(function() {
+            // keyup code here
+            var pswd = $(this).val();
+            //validate the length
+            if ( pswd.length < 8 ) {
+                $('#length').removeClass('valid').addClass('invalid');
+            } else {
+                $('#length').removeClass('invalid').addClass('valid');
+            }
+
+            //validate letter
+            if ( pswd.match(/[A-z]/) ) {
+                $('#letter').removeClass('invalid').addClass('valid');
+            } else {
+                $('#letter').removeClass('valid').addClass('invalid');
+            }
+
+            //validate capital letter
+            if ( pswd.match(/[A-Z]/) ) {
+                $('#capital').removeClass('invalid').addClass('valid');
+            } else {
+                $('#capital').removeClass('valid').addClass('invalid');
+            }
+
+            //validate number
+            if ( pswd.match(/\d/) ) {
+                $('#number').removeClass('invalid').addClass('valid');
+            } else {
+                $('#number').removeClass('valid').addClass('invalid');
+            }
+        }).focus(function() {
+            $('#pswd_info').show();
+        }).blur(function() {
+            $('#pswd_info').hide();
+        });
+
         //May have error in the future because of this if thats the case then remove the code from here to ..
         var genreslist = [];
         "{% for categories in categories %}"

@@ -162,6 +162,9 @@ def signup(request):
 		gender = request.POST['gender']
 		listOfUserGenre = str(request.POST['listofgenre'].split(","))
 
+		# Checking if the password is secure.
+		if(len(password)<8 or any(letter.isalpha() for letter in password)==False or any(capital.isupper() for capital in password)==False or any(number.isdigit() for number in password)==False):
+			return HttpResponse("Password is not secure enough!")
 		#Check if the account with same email id exist before creating a new one
 		checkAccountExist = User.objects.filter(email=email)
 		if(len(checkAccountExist)==0):
@@ -171,9 +174,11 @@ def signup(request):
 
 			#Creating an account for the user
 			user = User.objects.create_user(username=email, email=email, password=password, first_name=fname, last_name=sname)
+			print("New user object")
 
 			#Creating the profile for the user
 			user.customeraccountprofile_set.create(birthDate=birthDate, gender=gender, userfavouritegenre=listOfUserGenre)
+			print("new customer profile object")
 
 			#Updating the genres to CSV for Data Mining
 			listofgenre = eval(listOfUserGenre)
