@@ -1,5 +1,5 @@
 isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
-9780241960110,Drama,4,4,4,4,4.2,17
+9780241960110,Drama,5,5,5,5,4.2,17
 9780132780933,Science,0,0,0,0,4,1
 9780802191175,History,0,0,0,0,4,2
 9780231082198,History,0,0,0,0,5,1
@@ -14,7 +14,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780582506244,American Drama,0,0,0,0,0.0,0
 9781101133477,Biography & Autobiography,0,0,0,0,4.5,3
 9780521768740,Drama,0,0,0,0,0.0,0
-9781447218296,Fiction,0,0,0,0,3.8,9
+9781447218296,Fiction,1,1,1,1,3.8,9
 9780141923475,Fiction,0,0,0,0,4,3005
 9780822208389,Drama,0,0,0,0,3.5,14
 9780395866191,Juvenile Fiction,0,0,0,0,2,1
@@ -24,7 +24,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780778717546,Juvenile Nonfiction,0,0,0,0,0.0,0
 9780192861931,Science,0,0,0,0,3.5,2
 9780356043388,Mice,0,0,0,0,0.0,0
-9781444003147,Juvenile Fiction,0,2,1,1,4.5,6
+9781444003147,Juvenile Fiction,1,3,2,2,4.5,6
 9781444008555,Juvenile Fiction,0,0,0,0,0.0,0
 9781444002775,Juvenile Fiction,0,0,0,0,5,1
 9781444014297,Juvenile Fiction,0,0,0,0,0.0,0
@@ -43,3 +43,21 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780199557141,Health & Fitness,0,0,0,0,0.0,0
 9780521253352,Medical,0,0,0,0,0.0,0
 9780827381773,Medical,0,0,0,0,0.0,0
+9781444011173,Juvenile Fiction,0,0,0,0,0.0,0
+9781444014310,Juvenile Fiction,0,0,0,0,4,1
+9781473659049,Design,0,0,0,0,0.0,0
+9781416571308,Fiction,0,0,0,0,3.5,73
+9781444952070,Juvenile Fiction,0,0,0,0,0.0,0
+9781473615083,Fiction,0,0,0,0,4.5,2
+9781529329834,Music,0,0,0,0,0.0,0
+9781473688308,Pets,0,0,0,0,0.0,0
+9780753158135,Fiction,0,0,0,0,4,11
+9781472154699,Biography & Autobiography,0,0,0,0,0.0,0
+9781848545236,Biography & Autobiography,0,0,0,0,4,20
+9781444944587,None,0,0,0,0,0.0,0
+9781510102170,Juvenile Fiction,0,0,0,0,0.0,0
+9781444939484,Juvenile Fiction,0,0,0,0,0.0,0
+9781444950953,Juvenile Fiction,0,0,0,0,0.0,0
+9781444929652,Juvenile Fiction,0,0,0,0,0.0,0
+9781444941005,Juvenile Fiction,0,0,0,0,0.0,0
+9781510101227,Children'S Stories,0,0,0,0,0.0,0
