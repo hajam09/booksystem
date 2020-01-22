@@ -164,6 +164,8 @@ def signup(request):
 
 		# Checking if the password is secure.
 		if(len(password)<8 or any(letter.isalpha() for letter in password)==False or any(capital.isupper() for capital in password)==False or any(number.isdigit() for number in password)==False):
+			#any(letter.isalpha() for letter in password)==False is not necessary because if checking for capitals it should check
+			#for letters as well.
 			return HttpResponse("Password is not secure enough!")
 		#Check if the account with same email id exist before creating a new one
 		checkAccountExist = User.objects.filter(email=email)
