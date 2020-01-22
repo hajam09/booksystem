@@ -301,8 +301,12 @@ def user_shelf(request):
 
 	user_pk = request.user.pk
 
-	customer_account = User.objects.get(pk=user_pk)
-	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+	#Need to return to login page if user not logged in when accessing shelf.
+	try:
+		customer_account = User.objects.get(pk=user_pk)
+		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+	except:
+	 	return render(request,'mainapp/login.html', {})
 
 	#Need to check if the Book are already in favourites, reading now, to read and have read.
 	favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
