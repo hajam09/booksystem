@@ -240,8 +240,12 @@ def update_profile(request):
 	if(not user_pk):
 		return redirect('mainapp:login')
 
-	customer_account = User.objects.get(pk=user_pk)
-	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+	#Return 404 page if no profile found
+	try:
+		customer_account = User.objects.get(pk=user_pk)
+		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+	except:
+		return redirect('mainapp:not_found')
 	fullname =  str(customer_account.first_name +" "+ customer_account.last_name)
 	#Retrive all the categories from the database
 	all_categories = Category.objects.all()
@@ -296,6 +300,9 @@ def update_profile(request):
 		return HttpResponse("Your details are updated!")
 	return render(request,'mainapp/profilepage.html', context)
 
+def not_found(request):
+	return render(request,'mainapp/404.html', {})
+
 @csrf_exempt
 def user_shelf(request):
 
@@ -306,7 +313,7 @@ def user_shelf(request):
 		customer_account = User.objects.get(pk=user_pk)
 		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
 	except:
-	 	return render(request,'mainapp/login.html', {})
+		return redirect('mainapp:login')
 
 	#Need to check if the Book are already in favourites, reading now, to read and have read.
 	favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
@@ -465,7 +472,7 @@ def book_page(request, isbn_13):
 	try:
 		b1 = Book.objects.get(isbn_13=isbn_13)
 	except:
-		return render(request,'mainapp/404.html', {})
+		return redirect('mainapp:not_found')
 	book_detail = b1.book_data
 	#b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
 	book_reviews = Review.objects.filter(bookID=b1.pk)

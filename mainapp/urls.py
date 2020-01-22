@@ -11,4 +11,5 @@ urlpatterns = [
 	path('update_profile/', views.update_profile, name='update_profile'),
 	path('user_shelf/', views.user_shelf, name='user_shelf'),
 	path('book_page/<slug:isbn_13>/', views.book_page, name='book_page'),
+	path('not_found/', views.not_found, name='not_found'),
 ]
