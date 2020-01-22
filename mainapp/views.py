@@ -17,6 +17,11 @@ from datetime import datetime as dt
 
 """
 
+session is flushed when logged out 
+fix it so it sdoes not flush
+store 10 isbn13 . sotre it in the front remove last isb10 from the session key
+
+
 TODOL
 
 try to merge add_feature_value and subtract_feature_value function by passing arithemetic
@@ -34,7 +39,9 @@ def index(request):
 	if request.user.is_authenticated:
 		if 'history' not in request.session:
 			request.session['history'] = []
+			request.session.set_expiry(604800)#Expire after 7 days
 			print("created new session")
+		print("expire date",request.session.get_expiry_age())
 
 	if request.method == 'POST':
 		book_result = eval(request.POST['book'].replace("true", "True").replace("false", "False"))
@@ -313,12 +320,13 @@ def not_found(request):
 def user_shelf(request):
 
 	user_pk = request.user.pk
+	print("check point 1")
 
 	#Need to return to login page if user not logged in when accessing shelf.
 	try:
 		customer_account = User.objects.get(pk=user_pk)
 		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-	except CustomerAccountProfile.DoesNotExist:
+	except:
 		return redirect('mainapp:login')
 
 	#Need to check if the Book are already in favourites, reading now, to read and have read.
