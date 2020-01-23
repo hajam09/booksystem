@@ -825,6 +825,7 @@ def replace_last_occurence(s, old, new, occurrence):
 
 @csrf_exempt
 def clear_session(request):
+	#Function called when One Book button or Home button is clicked in base.html
 	if 'search_result' in request.session:
 		request.session['search_result'] = []
 	return HttpResponse("session-cleared")
