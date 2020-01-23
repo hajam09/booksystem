@@ -53,6 +53,7 @@ def index(request):
 				title = book['volumeInfo']['title']
 				try:
 					authors = book['volumeInfo']['authors']
+					authors.sort()
 					authors = ",".join(authors)
 					#authors = authors[0].replace(",", "|")
 				except:
@@ -127,7 +128,7 @@ def index(request):
 					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
 
 					book_genre = "|".join(categories)
-					book_genre = book_genre.replace(",", "|")
+					book_genre = book_genre.replace("&", "|")
 
 					# Adding the genre/category to DB.
 					category_db = "".join(categories)
@@ -152,6 +153,13 @@ def index(request):
 						towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(averageRating)+","+str(ratingsCount)
 						csv_file.write(towrite)
 
+					# Writing isbn_13,title,authors,publisher,publishedDate to book_info.csv
+					with open('book_info.csv', 'a') as csv_file:
+						# Fields are isbn_13,title,authors,publisher,publishedDate
+						authors = authors.replace(",", "|")
+						publisher = publisher.replace(",", "")
+						towrite = "\n"+ISBN_13+","+title.replace(",", "")+","+authors+","+publisher+","+publishedDate
+						csv_file.write(towrite)
 				# #Add book to system if not exist
 				# checkBookExist = Book.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
 				# #checkBookExist = Book.objects.filter(isbn_13 = ISBN_13) | Item.objects.filter(isbn_10 = ISBN_10)
@@ -584,11 +592,12 @@ def book_page(request, isbn_13):
 				#Writing review score to csv.
 				with open('user_rating.csv', 'a') as csv_file:
 					# Fields are uid,user_id,isbn_13,rating_score
-					towrite = "\n"+uuid.uuid1()+","+customer_account.email+","+isbn_13+","+user_rating
+					towrite = "\n"+str(uuid.uuid1())+","+customer_account.email+","+isbn_13+","+user_rating
 					csv_file.write(towrite)
 
 				#Need to make adjustments to ratingscount and average rating in book_rating.csv
 				with open('book_rating.csv', 'r') as reader, open('book_rating_temp.csv', 'w') as writer:
+					#Fields: isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
 					for row in reader:
 						row = row.split(",")
 						if row[0] == isbn_13:
