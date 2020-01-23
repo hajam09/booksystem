@@ -127,10 +127,12 @@ def index(request):
 					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
 
 					book_genre = "|".join(categories)
+					book_genre = book_genre.replace(",", "|")
 
 					# Adding the genre/category to DB.
 					category_db = "".join(categories)
 					category_db = category_db.split("&")
+
 					for item in category_db:
 						if(item!="None"):
 							split_item = list(item)
@@ -139,13 +141,14 @@ def index(request):
 							if(split_item[len(split_item)-1]==" "):
 								split_item = split_item[:len(split_item)-1]
 							item = "".join(split_item)
-
+							item = ''.join(e for e in item if e.isalnum() or e==" ")
 							checkGenreExist = Category.objects.filter(name=item)
 							if(len(checkGenreExist)==0):
 								Category.objects.create(name=item)
 
 					# Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
 					with open('book_rating.csv', 'a') as csv_file:
+						# Fields are isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
 						towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(averageRating)+","+str(ratingsCount)
 						csv_file.write(towrite)
 
