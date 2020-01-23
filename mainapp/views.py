@@ -258,6 +258,9 @@ def update_profile(request):
 		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
 	except CustomerAccountProfile.DoesNotExist:
 		return redirect('mainapp:not_found')
+	except User.DoesNotExist:
+		return redirect('mainapp:login')
+
 	fullname =  str(customer_account.first_name +" "+ customer_account.last_name)
 	#Retrive all the categories from the database
 	all_categories = Category.objects.all()
@@ -286,14 +289,18 @@ def update_profile(request):
 			u.save()
 
 		#Updating the user profile
-		CustomerAccountProfile.objects.filter(pk=int(customer_details.pk)).update(userfavouritegenre=listofgenre)
-
-		#Updating the genres to CSV for Data Mining
 		listofgenre = eval(listofgenre)
 		listofgenre.sort()
+		update_genre = str(listofgenre)
+		CustomerAccountProfile.objects.filter(pk=int(customer_details.pk)).update(userfavouritegenre=update_genre)
+
+		#Updating the genres to CSV for Data Mining
+		#listofgenre = eval(listofgenre)
+		#listofgenre.sort()
 
 		genre_to_csv = "|".join(listofgenre)
 		genre_to_csv = genre_to_csv.replace(",", "")
+		print(genre_to_csv)
 
 		with open('user_genre.csv', 'r') as reader, open('user_genre_temp.csv', 'w') as writer:
 			for row in reader:
