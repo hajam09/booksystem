@@ -198,13 +198,11 @@ def signup(request):
 			#Updating the genres to CSV for Data Mining
 			listofgenre = eval(listOfUserGenre)
 			listofgenre.sort()
-			print("listofgenre", listofgenre)
-			return render(request,'mainapp/login.html', {})
+			genre_to_csv = "|".join(listofgenre)
+			genre_to_csv = genre_to_csv.replace(",", "")
 			with open('user_genre.csv', 'a') as csv_file:
-				first_genre = listofgenre[0].title().replace(",", "&")
-				second_genre = listofgenre[1].title().replace(",", "&")
-				third_genre = listofgenre[2].title().replace(",", "&")
-				towrite = "\n"+email+","+first_genre+","+second_genre+","+third_genre
+				# Fields are user_id,genres
+				towrite = "\n"+email+","+genre_to_csv
 				csv_file.write(towrite)
 
 			return render(request,'mainapp/login.html', {})
@@ -294,13 +292,15 @@ def update_profile(request):
 		listofgenre = eval(listofgenre)
 		listofgenre.sort()
 
+		genre_to_csv = "|".join(listofgenre)
+		genre_to_csv = genre_to_csv.replace(",", "")
+
 		with open('user_genre.csv', 'r') as reader, open('user_genre_temp.csv', 'w') as writer:
 			for row in reader:
 				row = row.split(",")
 				if row[0] == email:
-					row[1] = listofgenre[0].title().replace(",", "&")
-					row[2] = listofgenre[1].title().replace(",", "&")
-					row[3] = listofgenre[2].title().replace(",", "&")
+					# Fields are user_id,genres
+					row[1] = genre_to_csv
 				row = ",".join(row)
 				writer.write(row)
 
