@@ -1,7 +1,1 @@
-user_id,isbn_13,rating_score
-hajam09@yahoo.com,9780241960110,5
-qw@yahoo.com,9780241960110,5
-qw@yahoo.com,9781447218296,3
-hajam09@yahoo.com,9781447218296,3
-hajam09@yahoo.com,9780141185101,3
-hajam09@yahoo.com,9781447218296,4
+uid,user_id,isbn_13,rating_score

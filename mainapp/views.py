@@ -9,7 +9,7 @@ from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Book, Review, Category
-import string, random, csv, re, os
+import string, random, csv, re, os, uuid
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
@@ -188,17 +188,18 @@ def signup(request):
 			sname = "".join(fullname[len(fullname)-1])
 
 			#Creating an account for the user
-			user = User.objects.create_user(username=email, email=email, password=password, first_name=fname, last_name=sname)
+			#user = User.objects.create_user(username=email, email=email, password=password, first_name=fname, last_name=sname)
 			print("New user object")
 
 			#Creating the profile for the user
-			user.customeraccountprofile_set.create(birthDate=birthDate, gender=gender, userfavouritegenre=listOfUserGenre)
+			#user.customeraccountprofile_set.create(birthDate=birthDate, gender=gender, userfavouritegenre=listOfUserGenre)
 			print("new customer profile object")
 
 			#Updating the genres to CSV for Data Mining
 			listofgenre = eval(listOfUserGenre)
 			listofgenre.sort()
-
+			print("listofgenre", listofgenre)
+			return render(request,'mainapp/login.html', {})
 			with open('user_genre.csv', 'a') as csv_file:
 				first_genre = listofgenre[0].title().replace(",", "&")
 				second_genre = listofgenre[1].title().replace(",", "&")
@@ -572,7 +573,8 @@ def book_page(request, isbn_13):
 				Book.objects.filter(isbn_13=isbn_13).update(book_data=book_detail)
 				#Writing review score to csv.
 				with open('user_rating.csv', 'a') as csv_file:
-					towrite = "\n"+customer_account.email+","+isbn_13+","+user_rating
+					# Fields are uid,user_id,isbn_13,rating_score
+					towrite = "\n"+uuid.uuid1()+","+customer_account.email+","+isbn_13+","+user_rating
 					csv_file.write(towrite)
 
 				#Need to make adjustments to ratingscount and average rating in book_rating.csv
