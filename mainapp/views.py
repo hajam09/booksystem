@@ -43,9 +43,34 @@ def index(request):
 			request.session['history'] = []
 			request.session.set_expiry(604800)#Expire after 7 days
 			print("created new session")
-		print("expire date",request.session.get_expiry_age())
+
+	if 'search_result' not in request.session:
+		request.session['search_result'] = []
+		print("search_result created")
+	else:
+		#session size is 4mb
+		if(len(request.session['search_result'])>0):
+			new_result = []
+			search_history = request.session['search_result']
+			for books in search_history:
+				try:
+					the_book = Book.objects.get(isbn_13=books)
+					book_detail = the_book.book_data
+					book_attributes = {"uid": book_detail["id"], "thumbnail": book_detail["thumbnail"], "isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "authors": book_detail["authors"], "ratingsCount": book_detail["ratingsCount"], "averageRating": book_detail["averageRating"]}
+					#print("book_attributes", book_attributes)
+					new_result.append(book_attributes)
+					#book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
+					request.session['search_result'] = new_result
+				except:
+					break
+			print("search_result exists")
+		else:
+			print("Empty search_result session")
 
 	if request.method == 'POST':
+		#Clear the search_result session for new post
+		if 'search_result' in request.session:
+			request.session['search_result'] = []
 		book_result = eval(request.POST['book'].replace("true", "True").replace("false", "False"))
 		#Creating a model for each book if not exist and add to csv
 		for book in book_result:
@@ -86,6 +111,12 @@ def index(request):
 					ISBN_10 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
 				elif(book['volumeInfo']['industryIdentifiers'][1]['type'] == "ISBN_13"):
 					ISBN_13 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
+
+				#Add isbn13 to search_result session
+				if 'search_result' in request.session:
+					search_result_history = request.session["search_result"]
+					search_result_history.append(ISBN_13)
+				request.session["search_result"] = search_result_history
 
 				try:
 					categorie = book['volumeInfo']['categories']
@@ -176,7 +207,8 @@ def index(request):
 				# 	item_to_write = ISBN_13 + "|" + ISBN_10 + "|" + description + "\n"
 				# 	text_file.write(item_to_write)
 				# 	text_file.close()
-	return render(request,'mainapp/frontpage.html',{})
+	recent_search = request.session['search_result']
+	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search})
 
 @csrf_exempt
 def signup(request):
@@ -201,11 +233,11 @@ def signup(request):
 			sname = "".join(fullname[len(fullname)-1])
 
 			#Creating an account for the user
-			#user = User.objects.create_user(username=email, email=email, password=password, first_name=fname, last_name=sname)
+			user = User.objects.create_user(username=email, email=email, password=password, first_name=fname, last_name=sname)
 			print("New user object")
 
 			#Creating the profile for the user
-			#user.customeraccountprofile_set.create(birthDate=birthDate, gender=gender, userfavouritegenre=listOfUserGenre)
+			user.customeraccountprofile_set.create(birthDate=birthDate, gender=gender, userfavouritegenre=listOfUserGenre)
 			print("new customer profile object")
 
 			#Updating the genres to CSV for Data Mining
@@ -503,6 +535,16 @@ def book_page(request, isbn_13):
 				history.append(isbn_13)
 			request.session['history'] = history
 	#########################
+
+	# if 'search_result' not in request.session:
+	# 	request.session['search_result'] = []
+	# else:
+	# 	search_result = request.session['search_result']
+	# 	if isbn_13 not in search_result:
+	# 		search_result.append(isbn_13)
+	# 	request.session['search_result'] = search_result
+	##########################
+
 	user_pk = request.user.pk
 
 	if request.method == "PUT" and not user_pk:
