@@ -822,3 +822,9 @@ def get_item_based_recommendation(csv_file):
 def replace_last_occurence(s, old, new, occurrence):
 	li = s.rsplit(old, occurrence)
 	return new.join(li)
+
+@csrf_exempt
+def clear_session(request):
+	if 'search_result' in request.session:
+		request.session['search_result'] = []
+	return HttpResponse("session-cleared")

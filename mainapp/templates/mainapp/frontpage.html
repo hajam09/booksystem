@@ -70,6 +70,30 @@
 </div>
 <!-- End of Image Carousel & Search -->
 <script type="text/javascript">
+    // if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
+        //only display when user goes form book page to front page of some backpage to frontpage.html
+    //     "{% if recent_search %}"
+    //         var elem = document.querySelector('#myCarousel');
+    //         if(elem) {
+    //             elem.parentNode.removeChild(elem);
+    //         }
+    //         "{% for results in recent_search %}"
+    //             var uid = "{{results.id}}";
+    //             var thumbnail = "{{results.thumbnail}}";
+    //             var isbn_13 = "{{results.isbn_13}}";
+    //             var isbn_10 = "{{results.isbn_10}}";
+    //             var volumeinfo = "{{results.title}}";
+    //             var authors = "{{results.authors}}";
+    //             var ratingsCount = "{{results.ratingsCount}}";
+    //             var averageRating = "{{results.averageRating}}";
+
+    //             var checkElement = document.getElementById(uid);
+    //             if (!checkElement) {
+    //                 $("#searchresult").append('<div class="row" id=' + uid + '><br><div class="col-sm-2"><img alt="" src=' + thumbnail + ' style="height: 150px; width: 150px" /></div><div class="col-sm-8"><h4><a style="cursor: pointer;" onclick="goToBookPage('+isbn_13+','+isbn_10+')">' + volumeinfo + '</a></h4><p> Authors:' + authors + '</p><p>' + ratingsCount + ' ratings, '+averageRating+' average rating</p></div></div>');
+    //             }
+    //         "{% endfor %}"
+    //     "{% endif %}"
+    // }
 
     "{% if recent_search %}"
         var elem = document.querySelector('#myCarousel');
