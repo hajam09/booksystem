@@ -31,6 +31,8 @@ for adding values and one function for subtracting values.
 need to return 404 page not found if object not found in boooks or something
 
 need to predict genre, so user_genre.csv need to be mined so that we can suggest different genre to the users.
+
+page does not load for isbn 9780007269709
 """
 
 @csrf_exempt
@@ -362,7 +364,9 @@ def user_shelf(request):
 		request.session['history'] = []
 	else:
 		history = request.session['history']
+		print(history, "##################")
 		for items in history:
+			print(items)
 			user_visited_Book.append(Book.objects.get(isbn_13=items))
 
 	# Ajax requests when the buttons are clicked to remove the books from the list.

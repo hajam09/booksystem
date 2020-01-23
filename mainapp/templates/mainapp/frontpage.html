@@ -99,56 +99,61 @@
             if(elem) {
                 elem.parentNode.removeChild(elem);
             }
-            for (var i = 0; i<response.items.length; i++) {
-                try {
-                    //Required Attributes
-                    var uid = response.items[i].id;
-                    var etag = response.items[i].etag;
-                    var volumeinfo = response.items[i].volumeInfo.title;
-                    var authors = response.items[i].volumeInfo.authors;
-                    var averageRating = response.items[i].volumeInfo.averageRating;
-                    var ratingsCount = response.items[i].volumeInfo.ratingsCount;
-                    var thumbnail = response.items[i].volumeInfo.imageLinks.thumbnail;
-                    var categories = response.items[i].volumeInfo.categories;
-                    var isbn_13 = null;
-                    var isbn_10 = null;
+            try {
+                for (var i = 0; i<response.items.length; i++) {
+                    try {
+                        //Required Attributes
+                        var uid = response.items[i].id;
+                        var etag = response.items[i].etag;
+                        var volumeinfo = response.items[i].volumeInfo.title;
+                        var authors = response.items[i].volumeInfo.authors;
+                        var averageRating = response.items[i].volumeInfo.averageRating;
+                        var ratingsCount = response.items[i].volumeInfo.ratingsCount;
+                        var thumbnail = response.items[i].volumeInfo.imageLinks.thumbnail;
+                        var categories = response.items[i].volumeInfo.categories;
+                        var isbn_13 = null;
+                        var isbn_10 = null;
 
-                    if (response.items[i].volumeInfo.industryIdentifiers[0].type == "ISBN_10") {
-                        isbn_10 = response.items[i].volumeInfo.industryIdentifiers[0].identifier;
-                    } else if (response.items[i].volumeInfo.industryIdentifiers[0].type == "ISBN_13") {
-                        isbn_13 = response.items[i].volumeInfo.industryIdentifiers[0].identifier;
+                        if (response.items[i].volumeInfo.industryIdentifiers[0].type == "ISBN_10") {
+                            isbn_10 = response.items[i].volumeInfo.industryIdentifiers[0].identifier;
+                        } else if (response.items[i].volumeInfo.industryIdentifiers[0].type == "ISBN_13") {
+                            isbn_13 = response.items[i].volumeInfo.industryIdentifiers[0].identifier;
+                        }
+
+                        if (response.items[i].volumeInfo.industryIdentifiers[1].type == "ISBN_10") {
+                            isbn_10 = response.items[i].volumeInfo.industryIdentifiers[1].identifier;
+                        } else if(response.items[i].volumeInfo.industryIdentifiers[1].type == "ISBN_13") {
+                            isbn_13 = response.items[i].volumeInfo.industryIdentifiers[1].identifier;
+                        }
+                        var description = response.items[i].volumeInfo.description;
+                        console.log(isbn_13,authors);
+                        
+                        var industryIdentifiers = response.items[i].volumeInfo.industryIdentifiers;
+                        if(industryIdentifiers.length==2) {
+                            if(!ratingsCount) {
+                                ratingsCount = 0;
+                            }
+                            if(!averageRating) {
+                                averageRating = 0.0
+                            }
+
+                            averageRating = averageRating.toFixed(1)
+
+                            var checkElement = document.getElementById(uid);
+
+                            if (!checkElement) {
+                                $("#searchresult").append('<div class="row" id=' + uid + '><br><div class="col-sm-2"><img alt="" src=' + thumbnail + ' style="height: 150px; width: 150px" /></div><div class="col-sm-8"><h4><a style="cursor: pointer;" onclick="goToBookPage('+isbn_13+','+isbn_10+')">' + volumeinfo + '</a></h4><p> Authors:' + authors + '</p><p>' + ratingsCount + ' ratings, '+averageRating+' average rating</p></div></div>');
+                            }
+                            all_books.push(response.items[i]);
+                        }
                     }
-
-                    if (response.items[i].volumeInfo.industryIdentifiers[1].type == "ISBN_10") {
-                        isbn_10 = response.items[i].volumeInfo.industryIdentifiers[1].identifier;
-                    } else if(response.items[i].volumeInfo.industryIdentifiers[1].type == "ISBN_13") {
-                        isbn_13 = response.items[i].volumeInfo.industryIdentifiers[1].identifier;
-                    }
-                    var description = response.items[i].volumeInfo.description;
-                    console.log(isbn_13,authors);
-                    
-                    var industryIdentifiers = response.items[i].volumeInfo.industryIdentifiers;
-                    if(industryIdentifiers.length==2) {
-                        if(!ratingsCount) {
-                            ratingsCount = 0;
-                        }
-                        if(!averageRating) {
-                            averageRating = 0.0
-                        }
-
-                        averageRating = averageRating.toFixed(1)
-
-                        var checkElement = document.getElementById(uid);
-
-                        if (!checkElement) {
-                            $("#searchresult").append('<div class="row" id=' + uid + '><br><div class="col-sm-2"><img alt="" src=' + thumbnail + ' style="height: 150px; width: 150px" /></div><div class="col-sm-8"><h4><a style="cursor: pointer;" onclick="goToBookPage('+isbn_13+','+isbn_10+')">' + volumeinfo + '</a></h4><p> Authors:' + authors + '</p><p>' + ratingsCount + ' ratings, '+averageRating+' average rating</p></div></div>');
-                        }
-                        all_books.push(response.items[i]);
+                    catch(err){
+                        console.log("No result found");
+                        //console.log(err);
                     }
                 }
-                catch(err){
-                    //console.log(err);
-                }
+            } catch {
+                $("#searchresult").append('<p style="left: 0; line-height: 200px; margin-top: -100px; position: absolute; text-align: center; top: 50%; width: 100%; font-weight: 900;">Sorry, we could\'t find any results matching "'+booksearch+'"</p>');
             }
 
             //Send to server to create a model for the book and add to csv
