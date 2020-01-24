@@ -24,13 +24,13 @@
 	<body>
 		
 	    <!--Start of Navigation bar-->
-	    <nav class="navbar navbar-inverse"><!--navbar-default for white navbar-->
+	    <nav class="navbar navbar-inverse" style="background-color: #002952"><!--navbar-default for white navbar-->
 	    	<div class="container-fluid">
 	    		<div class="navbar-header">
 	    			<a class="navbar-brand" href="{% url 'mainapp:index' %}" onclick="clearSession();">One Book</a>
 	    		</div>
-	    		<ul class="nav navbar-nav navbar-right">
-	    			<li class="active"><a href="{% url 'mainapp:index' %}" onclick="clearSession();">Home</a></li>
+	    		<ul class="nav navbar-nav navbar-right" style="background-color: #002952">
+	    			<li class="active"><a href="{% url 'mainapp:index' %}" onclick="clearSession();" style="background-color: #002952">Home</a></li>
 	    			{% if user.is_authenticated %}
 	    			<li class="dropdown">
 	    				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Account<span class="caret"></span></a>
@@ -42,7 +42,7 @@
 	    			</li>
 	    			{% else %}
 	    			<li class="dropdown">
-	    				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Login/Sign Up<span class="caret"></span></a>
+	    				<a class="dropdown-toggle" data-toggle="dropdown" href="#" style="background-color: #002952">Login/Sign Up<span class="caret"></span></a>
 	    				<ul class="dropdown-menu">
 	    					<li><a href="{% url 'mainapp:login' %}"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
           					<li><a href="{% url 'mainapp:signup' %}"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
@@ -58,7 +58,7 @@
 			<!-- <div class="container"> -->
 				<div class="row">
 					<div class="col-md-12 ">
-						<div class="text-center text-white" style="position: static; left: 0; bottom: 0; width: 100%; background-color: black; color: white; text-align: center;">
+						<div class="text-center text-white" style="position: static; left: 0; bottom: 0; width: 100%; background-color: #002952; color: white; text-align: center;">
 							&copy; 2019-2020 One Book. All Rights Reserved.
 						</div>
 					</div>
