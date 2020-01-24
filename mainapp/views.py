@@ -120,7 +120,7 @@ def index(request):
 
 				try:
 					categorie = book['volumeInfo']['categories']
-					categories = [i.title().replace(",", " &") for i in categorie]
+					categories = [i.title().replace(",", " &").replace("  ", "") for i in categorie]
 
 					#categories = "".join(categories)
 					#categories = re.sub("[,&]", "|", categories)
@@ -160,8 +160,8 @@ def index(request):
 
 					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
 
-					book_genre = "|".join(categories)
-					book_genre = book_genre.replace("&", "|")
+					book_genre = " ".join(categories)
+					book_genre = book_genre.replace("&", "").replace("  ", " ")
 
 					# Adding the genre/category to DB.
 					category_db = "".join(categories)
@@ -189,9 +189,13 @@ def index(request):
 					# Writing isbn_13,title,authors,publisher,publishedDate to book_info.csv
 					with open('book_info.csv', 'a') as csv_file:
 						# Fields are isbn_13,title,authors,publisher,publishedDate
-						authors = authors.replace(",", "|")
+						authors = authors.replace(",", " ")
 						publisher = publisher.replace(",", "")
-						towrite = "\n"+ISBN_13+","+title.replace(",", "")+","+authors+","+publisher+","+publishedDate
+						publisher = re.sub(" +", " ", publisher)
+						title = title.replace(",", "").replace("-", "").replace("–", "")
+						title = re.sub(" +", " ", title)
+						print(title)
+						towrite = "\n"+ISBN_13+","+title+","+authors.replace(",", "").replace("-", " ").replace("  ", " ")+","+publisher.title()+","+publishedDate.replace("-","/")
 						csv_file.write(towrite)
 				# #Add book to system if not exist
 				# checkBookExist = Book.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
@@ -243,8 +247,8 @@ def signup(request):
 			#Updating the genres to CSV for Data Mining
 			listofgenre = eval(listOfUserGenre)
 			listofgenre.sort()
-			genre_to_csv = "|".join(listofgenre)
-			genre_to_csv = genre_to_csv.replace(",", "")
+			genre_to_csv = " ".join(listofgenre)
+			genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ")
 			with open('user_genre.csv', 'a') as csv_file:
 				# Fields are user_id,genres
 				towrite = "\n"+email+","+genre_to_csv
@@ -343,8 +347,8 @@ def update_profile(request):
 		#listofgenre = eval(listofgenre)
 		#listofgenre.sort()
 
-		genre_to_csv = "|".join(listofgenre)
-		genre_to_csv = genre_to_csv.replace(",", "")
+		genre_to_csv = " ".join(listofgenre)
+		genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ")
 		print(genre_to_csv)
 
 		with open('user_genre.csv', 'r') as reader, open('user_genre_temp.csv', 'w') as writer:
