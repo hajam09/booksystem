@@ -3,3 +3,4 @@ django-import-export
 pandas
 django-mysql
 django-jsonfield
+Unidecode

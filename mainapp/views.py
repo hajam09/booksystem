@@ -9,7 +9,7 @@ from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Book, Review, Category
-import string, random, csv, re, os, uuid
+import string, random, csv, re, os, uuid, unidecode
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
@@ -190,11 +190,13 @@ def index(request):
 					with open('book_info.csv', 'a') as csv_file:
 						# Fields are isbn_13,title,authors,publisher,publishedDate
 						authors = authors.replace(",", " ")
+						authors = unidecode.unidecode(authors)
 						publisher = publisher.replace(",", "")
 						publisher = re.sub(" +", " ", publisher)
+
 						title = title.replace(",", "").replace("-", "").replace("–", "")
 						title = re.sub(" +", " ", title)
-						print(title)
+						#Use regular expression to allow letters numbers and brackets
 						towrite = "\n"+ISBN_13+","+title+","+authors.replace(",", "").replace("-", " ").replace("  ", " ")+","+publisher.title()+","+publishedDate.replace("-","/")
 						csv_file.write(towrite)
 				# #Add book to system if not exist
