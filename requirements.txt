@@ -4,3 +4,4 @@ pandas
 django-mysql
 django-jsonfield
 Unidecode
+-U scikit-learn

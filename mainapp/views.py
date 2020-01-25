@@ -13,6 +13,9 @@ import string, random, csv, re, os, uuid, unidecode
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
 # Create your views here.
 
 """
@@ -151,7 +154,7 @@ def index(request):
 				# Add book to system if not exist
 				checkBookExist = Book.objects.filter(isbn_13=ISBN_13)
 				if(len(checkBookExist)==0):
-					print("New book")
+					#print("New book")
 					book_data = {"id": uid, "etag": etag, "title": title,
 					"authors": authors, "publisher": publisher, "publishedDate": publishedDate,
 					"description": description, "ISBN_10": ISBN_10, "ISBN_13": ISBN_13,
@@ -180,25 +183,45 @@ def index(request):
 							if(len(checkGenreExist)==0):
 								Category.objects.create(name=item)
 
-					# Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
-					with open('book_rating.csv', 'a') as csv_file:
+					with open('book_rating.csv', 'a') as br_writer, open('book_info.csv', 'a') as bi_writer:
 						# Fields are isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
-						towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(averageRating)+","+str(ratingsCount)
-						csv_file.write(towrite)
-
-					# Writing isbn_13,title,authors,publisher,publishedDate to book_info.csv
-					with open('book_info.csv', 'a') as csv_file:
+						br_write = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(2*averageRating)+","+str(ratingsCount)
+						
 						# Fields are isbn_13,title,authors,publisher,publishedDate
 						authors = authors.replace(",", " ")
 						authors = unidecode.unidecode(authors)
+
 						publisher = publisher.replace(",", "")
 						publisher = re.sub(" +", " ", publisher)
 
 						title = title.replace(",", "").replace("-", "").replace("–", "")
 						title = re.sub(" +", " ", title)
 						#Use regular expression to allow letters numbers and brackets
-						towrite = "\n"+ISBN_13+","+title+","+authors.replace(",", "").replace("-", " ").replace("  ", " ")+","+publisher.title()+","+publishedDate.replace("-","/")
-						csv_file.write(towrite)
+						bi_write = "\n"+ISBN_13+","+title+","+authors.replace(",", "").replace("-", " ").replace("  ", " ")+","+publisher.title()+","+publishedDate.replace("-","/")
+						
+						br_writer.write(br_write)
+						bi_writer.write(bi_write)
+					# # Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
+					# with open('book_rating.csv', 'a') as csv_file:
+					# 	# Fields are isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
+					# 	towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(2*averageRating)+","+str(ratingsCount)
+					# 	csv_file.write(towrite)
+
+					# # Writing isbn_13,title,authors,publisher,publishedDate to book_info.csv
+					# with open('book_info.csv', 'a') as csv_file:
+					# 	# Fields are isbn_13,title,authors,publisher,publishedDate
+					# 	authors = authors.replace(",", " ")
+					# 	authors = unidecode.unidecode(authors)
+					# 	publisher = publisher.replace(",", "")
+					# 	publisher = re.sub(" +", " ", publisher)
+
+					# 	title = title.replace(",", "").replace("-", "").replace("–", "")
+					# 	title = re.sub(" +", " ", title)
+					# 	#Use regular expression to allow letters numbers and brackets
+					# 	towrite = "\n"+ISBN_13+","+title+","+authors.replace(",", "").replace("-", " ").replace("  ", " ")+","+publisher.title()+","+publishedDate.replace("-","/")
+					# 	csv_file.write(towrite)
+
+
 				# #Add book to system if not exist
 				# checkBookExist = Book.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
 				# #checkBookExist = Book.objects.filter(isbn_13 = ISBN_13) | Item.objects.filter(isbn_10 = ISBN_10)
@@ -587,7 +610,8 @@ def book_page(request, isbn_13):
 	#categories = re.sub("[|]", ", ", line[7])
 
 	#Set of books to display for suggestions.
-	item_based_recommendation = get_item_based_recommendation(csv_file)
+	#item_based_recommendation = get_item_based_recommendation(csv_file)
+	average_rating_recommendation = weighted_average_and_favourite_score(request)
 
 	#Need to get all the reviews associated with the book.
 	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
@@ -653,7 +677,7 @@ def book_page(request, isbn_13):
 					for row in reader:
 						row = row.split(",")
 						if row[0] == isbn_13:
-							row[6] = str(new_average_rating)# average_rating
+							row[6] = str(2*new_average_rating)# average_rating
 							row[7] = str(new_rating_count)# rating_count
 							row = ",".join(row)+"\n"
 						else:
@@ -742,7 +766,7 @@ def book_page(request, isbn_13):
 					'ratingsCount': book_detail["ratingsCount"], 'thumbnail': book_detail["thumbnail"],
 					'description': book_detail["description"], 'in_favourite_Book': in_favourite_Book,
 					'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
-					'in_have_read_Book': in_have_read_Book, 'item_based_recommendation': item_based_recommendation,
+					'in_have_read_Book': in_have_read_Book, 'average_rating_recommendation': average_rating_recommendation,
 					'book_reviews': book_reviews, 'review_validity': review_validity}
 
 		# context = {'isbn_13':line[1], 'isbn_10': line[2],
@@ -763,7 +787,7 @@ def book_page(request, isbn_13):
 				'ratingsCount': book_detail["ratingsCount"], 'thumbnail': book_detail["thumbnail"],
 				'description': book_detail["description"], 'in_favourite_Book': False,
 				'in_reading_Book': False, 'in_to_read_Book': False,
-				'in_have_read_Book': False, 'item_based_recommendation': item_based_recommendation,
+				'in_have_read_Book': False, 'average_rating_recommendation': average_rating_recommendation,
 				'book_reviews': book_reviews, 'review_validity': review_validity}
 	return render(request,'mainapp/book.html', context)
 
@@ -835,3 +859,46 @@ def clear_session(request):
 	if 'search_result' in request.session:
 		request.session['search_result'] = []
 	return HttpResponse("session-cleared")
+
+def weighted_average_and_favourite_score(request):
+	book_info = pd.read_csv("book_info.csv")
+	book_rating = pd.read_csv("book_rating.csv")
+
+	book_rating_merge = book_rating.merge(book_info, on='isbn_13')
+	book_rating_cleaned = book_rating_merge.drop(columns=['reading_now_count', 'to_read_count', 'have_read_count'])
+
+	#Implementing weighted average for each book's average rating // Non - personalized
+	v = book_rating_cleaned['rating_count']
+	R = book_rating_cleaned['average_rating']
+	C = book_rating_cleaned['average_rating'].mean()
+	m = book_rating_cleaned['rating_count'].quantile(0.70)
+
+	book_rating_cleaned['weighted_average'] = ((R*v) + (C*m))/(v+m)
+
+	book_sorted_ranking = book_rating_cleaned.sort_values('weighted_average', ascending=False)
+	book_sorted_ranking[['isbn_13', 'title', 'book_genre', 'authors', 'publisher', 'average_rating', 'rating_count', 'weighted_average', 'favourites_count']]
+
+	#Only implement this feature once the user has favourited their books and so on.
+	by_favourites_count = book_sorted_ranking.sort_values('favourites_count', ascending=False)
+	##
+
+	#This is for recommending books to the users based on scaled weighting (50%) and favourites_count (50%).
+	scaling = MinMaxScaler()
+	book_scaled = scaling.fit_transform(book_rating_cleaned[['weighted_average', 'favourites_count']])
+	book_normalized = pd.DataFrame(book_scaled, columns=['weighted_average', 'favourites_count'])
+
+	book_rating_cleaned[['normalized_weight_average','normalized_popularity']]= book_normalized
+
+	book_rating_cleaned['score'] = book_rating_cleaned['normalized_weight_average'] * 0.5 + book_rating_cleaned['normalized_popularity'] * 0.5
+	movies_scored_df = book_rating_cleaned.sort_values(['score'], ascending=False)
+	final_result = movies_scored_df[['isbn_13', 'title', 'normalized_weight_average', 'normalized_popularity', 'score']].head(15)
+
+	list_of_isbn = list(final_result['isbn_13'])
+	list_of_books = []
+
+	for isbns in list_of_isbn:
+		the_book = Book.objects.get(isbn_13=str(isbns))
+		the_data = the_book.book_data
+		book_item = {"isbn_13": the_book.isbn_13, "isbn_10": the_book.isbn_10, "title": the_book.title, "thumbnail": the_data["thumbnail"]}
+		list_of_books.append(book_item)
+	return list_of_books
