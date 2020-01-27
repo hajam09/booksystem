@@ -83,7 +83,7 @@
             <div class="col-sm-9 col-sm-offset-3">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox" id="terms">I accept <a href="#">terms</a>
+                        <input type="checkbox" id="terms">I accept <a href="#" data-toggle="modal" data-target="#exampleModal">terms</a>
                     </label>
                 </div>
             </div>
@@ -96,6 +96,22 @@
         </div>
     </form>
     <!-- /form -->
+</div>
+<!-- Modal for terms & conditions -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="exampleModalLabel">Terms and Conditions</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Some terms and conditions!!!
+            </div>
+        </div>
+    </div>
 </div>
 <!-- ./container -->
 <script type="text/javascript">
