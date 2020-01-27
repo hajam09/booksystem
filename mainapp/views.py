@@ -981,6 +981,8 @@ def content_based_similar_items(request, title):
 
 	# Testing our content-based recommendation system with the seminal film Of Mice and Men
 	#Loop thorugh user favourite book title/title of the user favourite book
+	title = title.replace(",", "").replace("-", "").replace("–", "")
+	title = re.sub(" +", " ", title)
 	original_table = give_rec(title)
 
 	movies_cleaned_df = movies_cleaned_df[movies_cleaned_df.title.isin(list(original_table))]
