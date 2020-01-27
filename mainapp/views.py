@@ -15,7 +15,10 @@ from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import sigmoid_kernel
 # Create your views here.
 
 """
@@ -183,7 +186,7 @@ def index(request):
 							if(len(checkGenreExist)==0):
 								Category.objects.create(name=item)
 
-					with open('book_rating.csv', 'a') as br_writer, open('book_info.csv', 'a') as bi_writer:
+					with open('book_rating.csv', 'a') as br_writer, open('book_info.csv', 'a') as bi_writer, open('book_description.csv', 'a') as bd_writer:
 						# Fields are isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
 						br_write = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(2*averageRating)+","+str(ratingsCount)
 						
@@ -198,9 +201,15 @@ def index(request):
 						title = re.sub(" +", " ", title)
 						#Use regular expression to allow letters numbers and brackets
 						bi_write = "\n"+ISBN_13+","+title+","+authors.replace(",", "").replace("-", " ").replace("  ", " ")+","+publisher.title()+","+publishedDate.replace("-","/")
-						
+
+						description = ''.join(e for e in description if e.isalnum() or e==" ")
+						description = re.sub(" +", " ", description)
+						description = unidecode.unidecode(description)
+						bd_write = "\n"+ISBN_13+","+description
+
 						br_writer.write(br_write)
 						bi_writer.write(bi_write)
+						bd_writer.write(bd_write)
 					# # Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
 					# with open('book_rating.csv', 'a') as csv_file:
 					# 	# Fields are isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
@@ -425,9 +434,7 @@ def user_shelf(request):
 		request.session['history'] = []
 	else:
 		history = request.session['history']
-		print(history, "##################")
 		for items in history:
-			print(items)
 			user_visited_Book.append(Book.objects.get(isbn_13=items))
 
 	# Ajax requests when the buttons are clicked to remove the books from the list.
@@ -612,6 +619,7 @@ def book_page(request, isbn_13):
 	#Set of books to display for suggestions.
 	#item_based_recommendation = get_item_based_recommendation(csv_file)
 	average_rating_recommendation = weighted_average_and_favourite_score(request)
+	pearson_correlation_collaborative_filtering(request)
 
 	#Need to get all the reviews associated with the book.
 	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
@@ -756,8 +764,13 @@ def book_page(request, isbn_13):
 		in_to_read_Book = True if b1 in in_to_read_Book else False
 		in_have_read_Book = True if b1 in in_have_read_Book else False
 
-		# for i in book_reviews:
-		# 	print(i)
+		similar_books = []
+		if in_favourite_Book:
+			#This book is one of the favourite books of this user.
+			#So we can suggest similar book from this favourite book.
+			book_title = b1.title
+			similar_books = content_based_similar_items(request, book_title)
+
 
 		context = {'isbn_13': book_detail["ISBN_13"], 'isbn_10': book_detail["ISBN_10"],
 					'title': book_detail["title"], 'authors': book_detail["authors"],
@@ -767,7 +780,7 @@ def book_page(request, isbn_13):
 					'description': book_detail["description"], 'in_favourite_Book': in_favourite_Book,
 					'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
 					'in_have_read_Book': in_have_read_Book, 'average_rating_recommendation': average_rating_recommendation,
-					'book_reviews': book_reviews, 'review_validity': review_validity}
+					'book_reviews': book_reviews, 'review_validity': review_validity, 'similar_books': similar_books}
 
 		# context = {'isbn_13':line[1], 'isbn_10': line[2],
 		# 			'title': line[3], 'authors': line[4].replace("|", ","),
@@ -902,3 +915,132 @@ def weighted_average_and_favourite_score(request):
 		book_item = {"isbn_13": the_book.isbn_13, "isbn_10": the_book.isbn_10, "title": the_book.title, "thumbnail": the_data["thumbnail"]}
 		list_of_books.append(book_item)
 	return list_of_books
+
+def content_based_similar_items(request, title):
+	books = pd.read_csv("book_info.csv")
+	rating = pd.read_csv("book_rating.csv")
+	description = pd.read_csv("book_description.csv")
+
+	movies_df_merge = books.merge(rating, on='isbn_13')
+	movies_cleaned_df = movies_df_merge.drop(columns=['reading_now_count', 'to_read_count', 'have_read_count'])
+	movies_cleaned_df = movies_df_merge.merge(description, on='isbn_13')
+
+	# Content Based Recommendation System
+	# Make a recommendations based on the books’s description given in the description column.
+	# So if our user gives us a book title, our goal is to recommend books that share similar description summaries.
+	movies_df_merge.drop(columns=['reading_now_count', 'to_read_count', 'have_read_count'])
+	tfv = TfidfVectorizer(min_df=3,  max_features=None, 
+            strip_accents='unicode', analyzer='word',token_pattern=r'\w{1,}',
+            ngram_range=(1, 3),
+            stop_words = 'english')
+
+	# Filling NaNs with empty string
+	movies_cleaned_df['description'] = movies_cleaned_df['description'].fillna('')
+
+	# Fitting the TF-IDF on the 'overview' text
+	tfv_matrix = tfv.fit_transform(movies_cleaned_df['description'])
+	# Compute the sigmoid kernel
+	sig = sigmoid_kernel(tfv_matrix, tfv_matrix)
+
+	# Reverse mapping of indices and book titles
+	indices = pd.Series(movies_cleaned_df.index, index=movies_cleaned_df['title']).drop_duplicates()
+
+	def give_rec(title, sig=sig):
+	    # Get the index corresponding to title
+	    
+	    try:
+	        idx = indices[title].iloc[0]
+	    except:
+	        idx = indices[title]
+
+	    # Get the pairwsie similarity scores 
+	    sig_scores = list(enumerate(sig[idx]))
+
+	    # Sort the movies 
+	    sig_scores = sorted(sig_scores, key=lambda x: x[1], reverse=True)
+
+	    # Scores of the 10 most similar movies
+	    sig_scores = sig_scores[1:11]
+
+	    # Movie indices
+	    movie_indices = [i[0] for i in sig_scores]
+
+	    # Top 10 most similar movies
+	    return movies_cleaned_df['title'].iloc[movie_indices]
+
+	# Testing our content-based recommendation system with the seminal film Of Mice and Men
+	#Loop thorugh user favourite book title/title of the user favourite book
+	original_table = give_rec(title)
+
+	movies_cleaned_df = movies_cleaned_df[movies_cleaned_df.title.isin(list(original_table))]
+	movies_cleaned_df.drop(columns=['publisher','publishedDate','favourites_count','reading_now_count','to_read_count','have_read_count','have_read_count'])
+
+	isbns_columns = movies_cleaned_df["isbn_13"]
+	all_similar_books = list(isbns_columns)
+
+	list_of_books = []
+
+	for isbn_13 in all_similar_books:
+		the_book = Book.objects.get(isbn_13=str(isbn_13))
+		the_data = the_book.book_data
+		book_item = {"isbn_13": the_book.isbn_13, "isbn_10": the_book.isbn_10, "title": the_book.title, "thumbnail": the_data["thumbnail"]}
+		list_of_books.append(book_item)
+	return list_of_books
+	#return [Book.objects.get(isbn_13=isbn_13) for isbn_13 in all_similar_books]
+
+
+
+def pearson_correlation_collaborative_filtering(request):
+	#needs testing
+	books = pd.read_csv("book_info.csv")
+	books.columns = ['isbn_13','title','authors','publisher','publishedDate']
+
+	ratings = pd.read_csv("user_rating.csv")
+	ratings.columns = ['uid','user_id','isbn_13','rating_score']
+
+	# Recommendation Based on Rating Counts
+	rating_count = pd.DataFrame(ratings.groupby('isbn_13')['rating_score'].count())
+	rating_count.sort_values('rating_score', ascending=False).head()
+
+	#Recommendations based on correlations
+
+	#We use Pearsons’R correlation coefficient to measure the linear correlation between two variables,
+	#in our case, the ratings for two books.
+
+	#First, we need to find out the average rating, and the number of ratings each book received.
+
+	average_rating = pd.DataFrame(ratings.groupby('isbn_13')['rating_score'].mean())
+	average_rating['ratingCount'] = pd.DataFrame(ratings.groupby('isbn_13')['rating_score'].count())
+	average_rating.sort_values('ratingCount', ascending=False).head()
+
+	# The book that received most rating had low mean rating_score, thus recommending this book is not wise.
+	#value 5 and 3 used to be 200 and 100
+	counts1 = ratings['user_id'].value_counts()
+	ratings = ratings[ratings['user_id'].isin(counts1[counts1 >= 5].index)]
+	counts = ratings['rating_score'].value_counts()
+	ratings = ratings[ratings['rating_score'].isin(counts[counts >= 3].index)]
+
+	# ratings_pivot = ratings.pivot(index='userID', columns='ISBN').bookRating
+	ratings_pivot = ratings.pivot_table(index='user_id', columns='isbn_13').rating_score
+	user_id = ratings_pivot.index
+	isbn_13 = ratings_pivot.columns
+	ratings_pivot.head()
+	isbn_from_pivot = [9781435221482]
+	for isbns in isbn_from_pivot:
+		try:
+			bones_ratings = ratings_pivot[isbns]
+			similar_to_bones = ratings_pivot.corrwith(bones_ratings)
+			corr_bones = pd.DataFrame(similar_to_bones, columns=['pearsonR'])
+			corr_bones.dropna(inplace=True)
+			corr_summary = corr_bones.join(average_rating['ratingCount'])
+			# 10 should be greated than some value such as 300
+			corr_summary = corr_summary[corr_summary['ratingCount']>=10].sort_values('pearsonR', ascending=False).head(10)
+			result_isbn = corr_summary[corr_summary['pearsonR']>=0.5].sort_values('pearsonR', ascending=False).head(10)
+			list_of_index = list(result_isbn.head().index)
+
+			#We obtained the books’ ISBNs, but we need to find out the titles of the books to see whether they make sense.
+			books_corr_to_bones = pd.DataFrame(list_of_index, index=np.arange(len(list_of_index)), columns=['isbn_13'])
+			corr_books = pd.merge(books_corr_to_bones, books, on='isbn_13')
+			final_isbns = list(corr_books['isbn_13'])
+		except:
+			pass

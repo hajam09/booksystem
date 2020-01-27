@@ -132,7 +132,9 @@
             </div>
             <!-- <p>Horizon similar items place location</p> -->
             <!-- https://bootsnipp.com/snippets/zDQkr -->
+            <hr>
             <div class="row">
+                <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Similar Book's...</p>
                 <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
                     <div class="MultiCarousel-inner">
                     </div>
@@ -140,6 +142,7 @@
                     <button class="btn btn-primary rightLst">></button>
                 </div>
             </div>
+            <hr>
         </div>
         <!-- end product -->
     </div>
@@ -509,6 +512,16 @@
         "{% endfor %}"
 
         carousel_books();
+
+        "{% if similar_books %}"
+            "{% for books in similar_books %}"
+                var isbn_13 = "{{books.isbn_13}}";
+                var isbn_10 = "{{books.isbn_10}}";
+                console.log(isbn_13);
+            "{% endfor %}"
+        "{% endif %}"
+
+
 
 	}
 
