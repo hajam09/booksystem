@@ -685,7 +685,7 @@ def book_page(request, isbn_13):
 				#Writing review score to csv.
 				with open('user_rating.csv', 'a') as csv_file:
 					# Fields are uid,user_id,isbn_13,rating_score
-					towrite = "\n"+str(uuid.uuid1())+","+customer_account.email+","+isbn_13+","+user_rating
+					towrite = "\n"+str(uuid.uuid1())+","+customer_account.email+","+isbn_13+","+str(2*int(user_rating))
 					csv_file.write(towrite)
 
 				#Need to make adjustments to ratingscount and average rating in book_rating.csv
