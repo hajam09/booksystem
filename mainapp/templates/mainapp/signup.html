@@ -21,8 +21,12 @@
             <label for="password" class="col-sm-3 control-label">Password</label>
             <div class="col-sm-9">
                 <input type="password" id="password" name="password" placeholder="Password" minlength="8" class="form-control" required/>
+                <br><li id="letter" class="invalid" style="list-style-type: none;">&nbsp;&nbsp;At least <strong>one letter</strong></li>
+                <li id="capital" class="invalid" style="list-style-type: none;">&nbsp;&nbsp;At least <strong>one capital letter</strong></li>
+                <li id="number" class="invalid" style="list-style-type: none;">&nbsp;&nbsp;At least <strong>one number</strong></li>
+                <li id="length" class="invalid" style="list-style-type: none;">&nbsp;&nbsp;Be at least <strong>8 characters</strong></li>
             </div>
-            <div id="pswd_info">
+            <!-- <div id="pswd_info">
                 <h4>Password Requirements:</h4>
                 <ul>
                     <li id="letter" class="invalid">At least <strong>one letter</strong></li>
@@ -30,7 +34,7 @@
                     <li id="number" class="invalid">At least <strong>one number</strong></li>
                     <li id="length" class="invalid">Be at least <strong>8 characters</strong></li>
                 </ul>
-            </div>
+            </div> -->
         </div>
         <div class="form-group">
             <label for="birthDate" class="col-sm-3 control-label">Date of Birth</label>

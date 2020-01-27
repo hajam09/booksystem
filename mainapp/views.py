@@ -267,8 +267,8 @@ def signup(request):
 		checkAccountExist = User.objects.filter(email=email)
 		if(len(checkAccountExist)==0):
 			fullname = fullname.split(" ")
-			fname = " ".join(fullname[:len(fullname)-1])
-			sname = "".join(fullname[len(fullname)-1])
+			fname = " ".join(fullname[:len(fullname)-1]).title()
+			sname = "".join(fullname[len(fullname)-1]).title()
 
 			#Creating an account for the user
 			user = User.objects.create_user(username=email, email=email, password=password, first_name=fname, last_name=sname)
