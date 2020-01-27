@@ -367,7 +367,13 @@ def update_profile(request):
 		u = User.objects.get(pk=int(user_pk))
 
 		if(put.get('password')):
-			#User changed the password
+			password = put.get('password')
+			# User wants to change the password
+			# Checking if the password is secure.
+			if(len(password)<8 or any(letter.isalpha() for letter in password)==False or any(capital.isupper() for capital in password)==False or any(number.isdigit() for number in password)==False):
+				#any(letter.isalpha() for letter in password)==False is not necessary because if checking for capitals it should check
+				#for letters as well.
+				return HttpResponse("Password is not secure enough!")
 			u.set_password(put.get('password'))
 			u.save()
 
