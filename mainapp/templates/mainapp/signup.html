@@ -83,7 +83,7 @@
             <div class="col-sm-9 col-sm-offset-3">
                 <div class="checkbox">
                     <label>
-                        <input type="checkbox">I accept <a href="#">terms</a>
+                        <input type="checkbox" id="terms">I accept <a href="#">terms</a>
                     </label>
                 </div>
             </div>
@@ -106,6 +106,8 @@
         var birthDate = document.getElementById("birthDate").value;
         var radios = document.getElementsByName('gender');
         var gender = "Unknown";
+        var check_box = document.getElementById("terms").checked
+        console.log(check_box);
         for(var i = 0, length = radios.length; i < length; i++)
             {
                 if(radios[i].checked)
@@ -123,7 +125,7 @@
         var usergenre = document.getElementById("usergenre");
         var listofgenre = [];
         for (var ii = 0; ii < usergenre.childNodes.length; ii++){listofgenre.push(usergenre.childNodes[ii].id);}
-        if(fullname != null && fullname != "", email != null && email != "", password != null && password != "", birthDate != null && birthDate != "", gender != null && gender != "", listofgenre.length>=3)
+        if(fullname != null && fullname != "", email != null && email != "", password != null && password != "", birthDate != null && birthDate != "", gender != null && gender != "", listofgenre.length>=3, check_box==true)
         {
             listofgenre = String(listofgenre);
 
