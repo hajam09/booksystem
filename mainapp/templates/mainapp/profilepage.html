@@ -21,6 +21,10 @@
             <label for="password" class="col-sm-3 control-label">Password</label>
             <div class="col-sm-9">
                 <input type="password" id="password" name="password" placeholder="Leave blank if you don't want to change the password!" minlength="8" class="form-control"/>
+                <br><li id="letter" class="invalid" style="list-style-type: none;">&nbsp;&nbsp;At least <strong>one letter</strong></li>
+                <li id="capital" class="invalid" style="list-style-type: none;">&nbsp;&nbsp;At least <strong>one capital letter</strong></li>
+                <li id="number" class="invalid" style="list-style-type: none;">&nbsp;&nbsp;At least <strong>one number</strong></li>
+                <li id="length" class="invalid" style="list-style-type: none;">&nbsp;&nbsp;Be at least <strong>8 characters</strong></li>
             </div>
         </div>
         <div class="form-group">
@@ -87,6 +91,46 @@
     }
 
     function updatepage(){
+
+        //Start: code for password security validator
+        //https://www.webdesignerdepot.com/2012/01/password-strength-verification-with-jquery/
+        $('input[type=password]').keyup(function() {
+            // keyup code here
+            var pswd = $(this).val();
+            //validate the length
+            if ( pswd.length < 8 ) {
+                $('#length').removeClass('valid').addClass('invalid');
+            } else {
+                $('#length').removeClass('invalid').addClass('valid');
+            }
+
+            //validate letter
+            if ( pswd.match(/[A-z]/) ) {
+                $('#letter').removeClass('invalid').addClass('valid');
+            } else {
+                $('#letter').removeClass('valid').addClass('invalid');
+            }
+
+            //validate capital letter
+            if ( pswd.match(/[A-Z]/) ) {
+                $('#capital').removeClass('invalid').addClass('valid');
+            } else {
+                $('#capital').removeClass('valid').addClass('invalid');
+            }
+
+            //validate number
+            if ( pswd.match(/\d/) ) {
+                $('#number').removeClass('invalid').addClass('valid');
+            } else {
+                $('#number').removeClass('valid').addClass('invalid');
+            }
+        }).focus(function() {
+            $('#pswd_info').show();
+        }).blur(function() {
+            $('#pswd_info').hide();
+        });
+        //End: code for password security validator
+
         getprofileitems();
         //May have error in the future because of this if thats the case then remove the code from here to ..
         var genreslist = [];
