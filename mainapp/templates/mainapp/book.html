@@ -507,7 +507,7 @@
             var isbn_13 = "{{books.isbn_13}}";
             var isbn_10 = "{{books.isbn_10}}";
 
-            $(".MultiCarousel-inner").append('<div class="item"><div class="pad15"><a style="cursor: pointer;" onclick="bookPage('+isbn_13+')"><p class="lead"><img src="{{books.thumbnail}}" alt="No Image" style="width:100%; display: inline-block;"</p><p>{{books.title}}</p></a></div></div>');
+            $(".MultiCarousel-inner").append('<div class="item"><div class="pad15"><a style="cursor: pointer;" onclick="bookPage('+isbn_13+')"><p class="lead"><img src="{{books.thumbnail}}" alt="No Image" style="width:100%; display: inline-block; height: 200px;"</p><p>{{books.title}}</p></a></div></div>');
 
         "{% endfor %}"
 
