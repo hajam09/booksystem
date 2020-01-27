@@ -632,6 +632,9 @@ def book_page(request, isbn_13):
 	#b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
 	book_reviews = Review.objects.filter(bookID=b1.pk)
 
+	book_title = b1.title
+	similar_books = content_based_similar_items(request, book_title)
+
 	# Verifying whether the comment is valid or not
 	review_validity = []
 	for i in book_reviews:
@@ -764,12 +767,14 @@ def book_page(request, isbn_13):
 		in_to_read_Book = True if b1 in in_to_read_Book else False
 		in_have_read_Book = True if b1 in in_have_read_Book else False
 
-		similar_books = []
-		if in_favourite_Book:
-			#This book is one of the favourite books of this user.
-			#So we can suggest similar book from this favourite book.
-			book_title = b1.title
-			similar_books = content_based_similar_items(request, book_title)
+		# similar_books = []
+		# if in_favourite_Book:
+		# 	#This book is one of the favourite books of this user.
+		# 	#So we can suggest similar book from this favourite book.
+		# 	book_title = b1.title
+		# 	similar_books = content_based_similar_items(request, book_title)
+		# 	#Need to display this in the book.html
+		# 	print(similar_books)
 
 
 		context = {'isbn_13': book_detail["ISBN_13"], 'isbn_10': book_detail["ISBN_10"],
@@ -801,7 +806,7 @@ def book_page(request, isbn_13):
 				'description': book_detail["description"], 'in_favourite_Book': False,
 				'in_reading_Book': False, 'in_to_read_Book': False,
 				'in_have_read_Book': False, 'average_rating_recommendation': average_rating_recommendation,
-				'book_reviews': book_reviews, 'review_validity': review_validity}
+				'book_reviews': book_reviews, 'review_validity': review_validity, 'similar_books': similar_books}
 	return render(request,'mainapp/book.html', context)
 
 def add_feature_value(isbn_13, feature):
