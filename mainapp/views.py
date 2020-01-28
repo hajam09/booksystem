@@ -317,6 +317,8 @@ def log_out(request):
     return redirect('mainapp:index')
 
 def passwordforgotten(request):
+	if request.user.is_authenticated:
+		return redirect('mainapp:index')
 	#Not DONE
 	if request.method == 'POST':
 		try:
@@ -417,7 +419,6 @@ def not_found(request):
 def user_shelf(request):
 
 	user_pk = request.user.pk
-	print("check point 1")
 
 	#Need to return to login page if user not logged in when accessing shelf.
 	try:
