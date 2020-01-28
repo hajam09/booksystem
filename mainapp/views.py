@@ -10,7 +10,6 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Book, Review, Category
 import string, random, csv, re, os, uuid, unidecode
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
 import pandas as pd
