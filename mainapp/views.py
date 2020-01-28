@@ -641,6 +641,9 @@ def book_page(request, isbn_13):
 	book_title = b1.title
 	similar_books = content_based_similar_items(request, book_title)
 
+	# Remocing this instance of the book from similar_books list
+	similar_books = [i for i in similar_books if not (i['isbn_13'] == isbn_13)]
+
 	# Verifying whether the comment is valid or not
 	review_validity = []
 	for i in book_reviews:
