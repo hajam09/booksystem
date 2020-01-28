@@ -889,6 +889,7 @@ def clear_session(request):
 	return HttpResponse("session-cleared")
 
 def weighted_average_and_favourite_score(request):
+	#Can use this for displaying this items in book.html with tag: Book's with good ratings.
 	book_info = pd.read_csv("book_info.csv")
 	book_rating = pd.read_csv("book_rating.csv")
 
