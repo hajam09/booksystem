@@ -7,13 +7,13 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780674631113,Science,0,0,0,0,10,1
 9780141389103,Juvenile Fiction,0,0,0,0,0.0,0
 9781350035959,Literary Criticism,0,0,0,0,0.0,0
-9781442456860,Juvenile Fiction,0,0,0,0,8,7
+9781442456860,Juvenile Fiction,1,1,1,1,7.8,8
 9780141185101,Fiction,0,0,0,0,8,3278
 9780738665474,Study Aids,0,0,0,0,8,1
 9780313330568,Literary Criticism,0,0,0,0,0.0,0
 9781410336330,Literary Criticism,0,0,0,0,0.0,0
 9781609339043,Fiction,0,0,0,0,0.0,0
-9781101615218,Fiction,0,0,0,0,0.0,0
+9781101615218,Fiction,1,1,1,1,6.0,2
 9781438139975,None,0,0,0,0,0.0,0
 9781493860869,None,0,0,0,0,5.2,23
 9780142000656,Fiction,0,0,0,0,9.0,212
@@ -22,7 +22,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780582506244,American Drama,0,0,0,0,0.0,0
 9780521768740,Drama,0,0,0,0,0.0,0
 9781920693596,None,0,0,0,0,0.0,0
-9780008228323,Young Adult Fiction,0,0,0,0,0.0,0
+9780008228323,Young Adult Fiction,0,0,0,0,10.0,1
 9781444920451,Juvenile Fiction,0,0,0,0,0.0,0
 9780415262903,Social Policy,0,0,0,0,0.0,0
 9781488026034,Young Adult Fiction,0,0,0,0,0.0,0
@@ -140,3 +140,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780007169702,Middle Earth (Imaginary Place),0,0,0,0,10,2
 9781594535680,Poetry,0,0,0,0,0.0,0
 9780778717546,Juvenile Nonfiction,0,0,0,0,0.0,0
+9781623494360,Biography Autobiography,0,0,0,0,0.0,0
+9780435375942,French Language,0,0,0,0,0.0,0
+9781412067102,Self-Help,0,0,0,0,0.0,0
+9780143123712,Fiction,0,0,0,0,0.0,0

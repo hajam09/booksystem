@@ -314,7 +314,7 @@ def passwordforgotten(request):
 @csrf_exempt
 def update_profile(request):
 	user_pk = request.user.pk
-	if request.user.is_authenticated:#used to be if(not user_pk):
+	if not request.user.is_authenticated:#used to be if(not user_pk):
 		return redirect('mainapp:login')
 
 	#Return 404 page if no profile found
