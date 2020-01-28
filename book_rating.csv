@@ -1,5 +1,5 @@
 isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
-9781447218296,Fiction,1,0,0,1,7.4,9
+9781447218296,Fiction,1,0,0,1,7.4,14
 9780822208389,Drama,0,0,0,0,7.0,14
 9780399549199,Juvenile Fiction,0,0,0,0,8,26
 9780764118128,Pets,0,0,0,0,0.0,0
@@ -128,3 +128,15 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780439882828,Juvenile Fiction,0,0,0,0,10,2
 9780062484246,Social Science,0,0,0,0,7.0,2
 9781452166797,Performing Arts,0,0,0,0,0.0,0
+9780395866191,Juvenile Fiction,0,0,0,0,4,1
+9781624960703,Juvenile Nonfiction,0,0,0,0,0.0,0
+9780007269709,Adventure Stories,0,0,0,0,8,2407
+9780547952093,Fiction,0,0,0,0,8,9
+9780007269723,Baggins Frodo (Fictitious Character),0,0,0,0,9.0,102
+9780395285237,Biography Autobiography,0,0,0,0,0.0,0
+9780008131401,Literary Criticism,0,0,0,0,0.0,0
+9780618260225,Performing Arts,0,0,0,0,10,1
+9780486242132,House Home,0,0,0,0,0.0,0
+9780007169702,Middle Earth (Imaginary Place),0,0,0,0,10,2
+9781594535680,Poetry,0,0,0,0,0.0,0
+9780778717546,Juvenile Nonfiction,0,0,0,0,0.0,0

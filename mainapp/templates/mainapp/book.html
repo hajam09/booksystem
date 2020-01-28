@@ -296,6 +296,8 @@
                     var review_message = review_data[2];
                     var review_value = parseInt(review_data[3]);
                     var creation_date = review_data[4];
+                    var new_review_id = review_data[5];
+                    console.log(new_review_id);
 
                     var stars_icons = "";
                     for (var i = 1; i<=review_value; i++) {
@@ -310,7 +312,7 @@
                         no_review_element.remove();
                     }
 
-                    $("#reviews-list").append('<li class="message"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+' <span class="pull-right">'+stars_icons+'</span></a>'+review_message+'</span><ul class="list-inline font-xs"><li><a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-up"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-down"></i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: '+creation_date+'</small></li></ul></li><br>');
+                    $("#reviews-list").append('<li class="message" id="'+new_review_id+'"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+' <span class="pull-right">'+stars_icons+'</span></a>'+review_message+'</span><ul class="list-inline font-xs"><li><a style="cursor: pointer;" onclick="addlike('+new_review_id+')" class="text-info"><i class="fa fa-thumbs-up">(0)</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike('+new_review_id+')" class="text-info"><i class="fa fa-thumbs-down">(0)</i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: '+creation_date+'</small></li></ul></li><br>');
                 }
             }
         })
@@ -495,7 +497,7 @@
                     verification_statement = "";
                 }
                 counter = counter+1;
-                $("#reviews-list").append('<li class="message"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+verification_statement+' <span class="pull-right">'+stars_icons+'</span></a>{{reviews.description}}</span><ul class="list-inline font-xs"><li><a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-up"></i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="javascript:void(0);" class="text-info"><i class="fa fa-thumbs-down"></i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: {{reviews.created_at}} </small></li></ul></li><br>');
+                $("#reviews-list").append('<li class="message" id="{{reviews.pk}}"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+verification_statement+' <span class="pull-right">'+stars_icons+'</span></a>{{reviews.description}}</span><ul class="list-inline font-xs"><li><a style="cursor: pointer;" onclick="addlike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-up">({{reviews.likes.count}})</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-down">({{reviews.dislikes.count}})</i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: {{reviews.created_at}} </small></li></ul></li><br>');
             "{% endfor %}"
         }
 
@@ -513,16 +515,13 @@
 
         carousel_books();
 
-        "{% if similar_books %}"
-            "{% for books in similar_books %}"
-                var isbn_13 = "{{books.isbn_13}}";
-                var isbn_10 = "{{books.isbn_10}}";
-                console.log(isbn_13);
-            "{% endfor %}"
-        "{% endif %}"
-
-
-
+        // "{% if similar_books %}"
+        //     "{% for books in similar_books %}"
+        //         var isbn_13 = "{{books.isbn_13}}";
+        //         var isbn_10 = "{{books.isbn_10}}";
+        //         //console.log(isbn_13);
+        //     "{% endfor %}"
+        // "{% endif %}"
 	}
 
     var isbn_13 = "{{isbn_13}}";
@@ -630,13 +629,63 @@
         })
     });
 
-var bookPage = function(isbn_13) {
-        var current_URL = window.location.href;
-        current_URL = current_URL.split("/");
-        current_URL = current_URL.slice(0, 3);
-        current_URL[1]="//";
-        current_URL = current_URL.join("");
-        window.location = current_URL+"/book_page/"+isbn_13;
+    function addlike(review_id){
+        console.log("user liked the review");
+        $.ajax({
+            type: "PUT",
+            data: {
+                functionality: 'like-review',
+                isbn_13: "{{isbn_13}}",
+                isbn_10: "{{isbn_10}}",
+                review_id: review_id,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(message) {
+                console.log(message);
+                if(message=="comment_like_added") {
+                }
+                if(message=="comment_like_reduced") {
+                }
+                if(message=="not_authenticated") {
+                    var url = "{% url 'mainapp:login' %}";
+                    document.location.href = url;
+                }
+            }
+        })
     }
+
+    function adddislike(review_id){
+        console.log("user disliked the review");
+        $.ajax({
+            type: "PUT",
+            data: {
+                functionality: 'dislike-review',
+                isbn_13: "{{isbn_13}}",
+                isbn_10: "{{isbn_10}}",
+                review_id: review_id,
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+            },
+            success: function(message) {
+                console.log(message);
+                if(message=="comment_dislike_added") {
+                }
+                if(message=="comment_dislike_reduced") {
+                }
+                if(message=="not_authenticated") {
+                    var url = "{% url 'mainapp:login' %}";
+                    document.location.href = url;
+                }
+            }
+        })
+    }
+
+    var bookPage = function(isbn_13) {
+            var current_URL = window.location.href;
+            current_URL = current_URL.split("/");
+            current_URL = current_URL.slice(0, 3);
+            current_URL[1]="//";
+            current_URL = current_URL.join("");
+            window.location = current_URL+"/book_page/"+isbn_13;
+        }
 </script>
 {% endblock %}

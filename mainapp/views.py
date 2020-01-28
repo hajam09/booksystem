@@ -21,26 +21,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import sigmoid_kernel
 # Create your views here.
 
-"""
-
-session is flushed when logged out 
-fix it so it sdoes not flush
-store 10 isbn13 . sotre it in the front remove last isb10 from the session key
-
-
-TODOL
-
-try to merge add_feature_value and subtract_feature_value function by passing arithemetic
-operations as argument and add/subtract the values in the function rather than having one function
-for adding values and one function for subtracting values.
-
-need to return 404 page not found if object not found in boooks or something
-
-need to predict genre, so user_genre.csv need to be mined so that we can suggest different genre to the users.
-
-page does not load for isbn 9780007269709
-"""
-
 @csrf_exempt
 def index(request):
 	#Creating session for authenticated users
@@ -671,9 +651,9 @@ def book_page(request, isbn_13):
 				user_review = request.POST['user_review']#Need to sanitise the review
 				user_rating = request.POST['user_rating']#Need to sanitise the review
 				created_date = dt.now()
-				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
+				new_review = Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
 				full_name = customer_account.first_name + " " + customer_account.last_name
-				response_items = ["revew_created_successfully&nbsp;", full_name+"&nbsp;", user_review+"&nbsp;", user_rating+"&nbsp;", created_date]
+				response_items = ["revew_created_successfully&nbsp;", full_name+"&nbsp;", user_review+"&nbsp;", user_rating+"&nbsp;", str(created_date)+"&nbsp;", str(new_review.id)]
 				
 				new_rating_count = book_detail["ratingsCount"]+1
 
@@ -718,12 +698,15 @@ def book_page(request, isbn_13):
 				#os.rename('book_info_temp.csv', 'book_info.csv')
 				return HttpResponse(response_items)
 
+		#Ajax requests when user clicks like or dislikes the comment
+
 		# Ajax requests when the one of the four buttons are clicked on the book.html
 		if request.method == "PUT":
 			put = QueryDict(request.body)
 			functionality = put.get("functionality")
 			isbn_13 = put.get("isbn_13")
 			isbn_10 = put.get("isbn_10")
+			print(functionality)
 
 			if(functionality=="add-to-favourites"):
 				favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
@@ -765,6 +748,28 @@ def book_page(request, isbn_13):
 					customer_details.haveread.remove(b1)
 					subtract_feature_value(isbn_13, "have_read_count")
 					return HttpResponse("remove_object")
+			elif(functionality=="like-review"):
+				review_id = put.get("review_id")
+				this_review = Review.objects.get(id=int(review_id))
+				list_of_liked = Review.objects.filter(likes__id=customer_details.pk)
+
+				if(this_review not in list_of_liked):
+					customer_details.likes.add(this_review)
+					return HttpResponse("comment_like_added")
+				else:
+					customer_details.likes.remove(this_review)
+					return HttpResponse("comment_like_reduced")
+			elif(functionality=="dislike-review"):
+				review_id = put.get("review_id")
+				this_review = Review.objects.get(id=int(review_id))
+				list_of_disliked = Review.objects.filter(dislikes__id=customer_details.pk)
+
+				if(this_review not in list_of_disliked):
+					customer_details.dislikes.add(this_review)
+					return HttpResponse("comment_dislike_added")
+				else:
+					customer_details.dislikes.remove(this_review)
+					return HttpResponse("comment_dislike_reduced")
 
 		#Need to check if the Book are already in favourites, reading now, to read and have read.
 		in_favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)

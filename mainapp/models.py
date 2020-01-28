@@ -25,6 +25,8 @@ class Review(models.Model):
 	description = models.TextField(max_length=1000)
 	rating_value = models.IntegerField(default=0)
 	created_at = models.DateTimeField()
+	likes = models.ManyToManyField(CustomerAccountProfile, related_name='likes', default="none")
+	dislikes = models.ManyToManyField(CustomerAccountProfile, related_name='dislikes', default="none")
 
 class Category(models.Model):
 	name = models.CharField(max_length=1000)
