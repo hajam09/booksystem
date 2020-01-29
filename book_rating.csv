@@ -1,13 +1,13 @@
 isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
-9781447218296,Fiction,1,0,0,1,7.4,14
+9781447218296,Fiction,1,1,1,1,7.4,14
 9780822208389,Drama,0,0,0,0,7.0,14
-9780399549199,Juvenile Fiction,0,0,0,0,8,26
-9780764118128,Pets,0,0,0,0,0.0,0
-9788184974560,Juvenile Fiction,0,0,0,0,0.0,0
-9780674631113,Science,0,0,0,0,10,1
+9780399549199,Juvenile Fiction,1,1,1,1,8,26
+9780764118128,Pets,1,1,1,1,0.0,0
+9788184974560,Juvenile Fiction,1,1,1,1,0.0,0
+9780674631113,Science,1,1,1,1,8.0,2
 9780141389103,Juvenile Fiction,0,0,0,0,0.0,0
 9781350035959,Literary Criticism,0,0,0,0,0.0,0
-9781442456860,Juvenile Fiction,1,1,1,1,7.8,8
+9781442456860,Juvenile Fiction,2,2,2,2,7.8,8
 9780141185101,Fiction,0,0,0,0,8,3278
 9780738665474,Study Aids,0,0,0,0,8,1
 9780313330568,Literary Criticism,0,0,0,0,0.0,0
@@ -16,13 +16,13 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781101615218,Fiction,1,1,1,1,6.0,2
 9781438139975,None,0,0,0,0,0.0,0
 9781493860869,None,0,0,0,0,5.2,23
-9780142000656,Fiction,0,0,0,0,9.0,212
+9780142000656,Fiction,0,1,1,0,9.0,213
 9780241960110,Drama,0,0,0,0,8,15
 9781474225588,Drama,0,0,0,0,0.0,0
 9780582506244,American Drama,0,0,0,0,0.0,0
 9780521768740,Drama,0,0,0,0,0.0,0
 9781920693596,None,0,0,0,0,0.0,0
-9780008228323,Young Adult Fiction,0,0,0,0,10.0,1
+9780008228323,Young Adult Fiction,1,1,1,1,10.0,1
 9781444920451,Juvenile Fiction,0,0,0,0,0.0,0
 9780415262903,Social Policy,0,0,0,0,0.0,0
 9781488026034,Young Adult Fiction,0,0,0,0,0.0,0
@@ -30,7 +30,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781799031697,Reference,0,0,0,0,0.0,0
 9788862080699,Antiques Collectibles,0,0,0,0,0.0,0
 9780801471810,History,0,0,0,0,0.0,0
-9780330462136,Juvenile Fiction,0,0,0,0,6,5
+9780330462136,Juvenile Fiction,1,1,1,1,6,5
 9781781106945,Drama,0,0,0,0,7.0,200
 9781781105757,Fiction,0,0,0,0,8,76
 9781911641926,Crafts Hobbies,0,0,0,0,0.0,0
@@ -39,20 +39,20 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781781100226,Juvenile Fiction,0,0,0,0,9.0,2293
 9781476635521,None,0,0,0,0,0.0,0
 9781781109502,Juvenile Nonfiction,0,0,0,0,8,5
-9780715141069,Church Work With Youth,0,0,0,0,0.0,0
+9780715141069,Church Work With Youth,0,0,0,0,6.0,2
 9780826215499,Literary Criticism,0,0,0,0,9.0,13
 9781444003147,Juvenile Fiction,1,0,0,0,8.2,9
 9781444008555,Juvenile Fiction,0,0,0,0,0.0,0
 9780955679308,None,0,0,0,0,0.0,0
 9781402256752,Juvenile Fiction,0,0,0,0,0.0,0
 9781317776338,History,0,0,0,0,6,1
-9780878057580,Art,0,0,0,0,6,1
+9780878057580,Art,1,1,0,1,5.0,2
 9780878054060,Antiques Collectibles,0,0,0,0,0.0,0
-9780801874505,History,0,0,0,0,7.0,8
+9780801874505,History,0,1,1,1,7.2,9
 9781444358292,Literary Criticism,0,0,0,0,10,1
 9781920845483,Australia,0,0,0,0,0.0,0
 9780439043830,Education,0,0,0,0,10,1
-9781893905429,Art,0,0,0,0,6,1
+9781893905429,Art,1,1,1,0,5.0,2
 9781885477224,Language Arts Disciplines,0,0,0,0,10,1
 9780878054992,Antiques Collectibles,0,0,0,0,5.0,3
 9780857284495,Performing Arts,0,0,0,0,0.0,0
@@ -65,10 +65,10 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780813550398,Performing Arts,0,0,0,0,8,1
 9780203882184,Performing Arts,0,0,0,0,0.0,0
 9780810850132,Performing Arts,0,0,0,0,0.0,0
-9781786032720,Juvenile Nonfiction,0,0,0,0,0.0,0
+9781786032720,Juvenile Nonfiction,1,1,1,1,8.0,1
 9781906838560,Amusements,0,0,0,0,0.0,0
-9780415892902,Psychology,0,0,0,0,0.0,0
-9781845931230,Travel,0,0,0,0,10,3
+9780415892902,Psychology,1,1,1,1,0.0,0
+9781845931230,Travel,1,1,1,1,9.0,4
 9780822332879,Business Economics,0,0,0,0,7.0,11
 9781423623823,None,0,0,0,0,10,2
 9780226098678,Language Arts Disciplines,0,0,0,0,9.0,2
@@ -80,7 +80,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781466872240,Fiction,0,0,0,0,4,1
 9780765398161,Fiction,0,0,0,0,6,4
 9780987055309,None,0,0,0,0,0.0,0
-9781476798646,Fiction,0,0,0,0,10,1
+9781476798646,Fiction,1,1,1,1,5.0,6
 9781416543831,Fiction,0,0,0,0,7.0,38
 9780415212601,Literary Criticism,0,0,0,0,0.0,0
 9780415164177,Language Arts Disciplines,0,0,0,0,10,1
@@ -97,7 +97,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780807740996,Education,0,0,0,0,0.0,0
 9781610164313,Commerce,0,0,0,0,10,4
 9780521542937,Language Arts Disciplines,0,0,0,0,10,2
-9780802818164,Art,0,0,0,0,0.0,0
+9780802818164,Art,1,1,1,1,8.0,1
 9780575086876,Fiction,0,0,0,0,8,190
 9780671039738,Fiction,0,0,0,0,7.0,2488
 9781682616079,Literary Criticism,0,0,0,0,0.0,0
@@ -147,3 +147,6 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780643099319,Science,0,0,0,0,0.0,0
 9780691016368,Medical,0,0,0,0,0.0,0
 9780080491981,Medical,0,0,0,0,0.0,0
+9781338312911,Juvenile Fiction,0,0,0,0,10,3
+9781859846667,Literary Criticism,0,0,0,0,9.0,5
+9781317122111,Literary Criticism,0,0,0,0,10,1
