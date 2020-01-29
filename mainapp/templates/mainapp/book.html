@@ -497,7 +497,7 @@
                     verification_statement = "";
                 }
                 counter = counter+1;
-                $("#reviews-list").append('<li class="message" id="{{reviews.pk}}"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+verification_statement+' <span class="pull-right">'+stars_icons+'</span></a>{{reviews.description}}</span><ul class="list-inline font-xs"><li><a style="cursor: pointer;" onclick="addlike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-up">({{reviews.likes.count}})</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-down">({{reviews.dislikes.count}})</i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: {{reviews.created_at}} </small></li></ul></li><br>');
+                $("#reviews-list").append('<li class="message" id="{{reviews.pk}}"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+verification_statement+' <span class="pull-right">'+stars_icons+'</span></a>{{reviews.description}}</span><ul class="list-inline font-xs"><li id="like_dislike_{{reviews.pk}}"><a style="cursor: pointer;" onclick="addlike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-up">({{reviews.likes.count}})</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-down">({{reviews.dislikes.count}})</i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: {{reviews.created_at}} </small></li></ul></li><br>');
             "{% endfor %}"
         }
 
@@ -642,9 +642,19 @@
             },
             success: function(message) {
                 console.log(message);
+                var li_id = "like_dislike_"+review_id;
+                var counter_location = document.getElementById(li_id);
+                var current_liked_value = counter_location.children[0].children[0].innerHTML.replace("(","").replace(")","");
+                var current_disliked_value = counter_location.children[1].children[0].innerHTML.replace("(","").replace(")","");
                 if(message=="comment_like_added") {
+                    new_liked_value = parseInt(current_liked_value)+1;
+                    var replacement = '<li id="'+li_id+'"><a style="cursor: pointer;" onclick="addlike('+review_id+')" class="text-info"><i class="fa fa-thumbs-up">('+new_liked_value+')</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike('+review_id+')" class="text-info"><i class="fa fa-thumbs-down">('+current_disliked_value+')</i></a></li>'
+                    $('#'+li_id+'').replaceWith(replacement);
                 }
                 if(message=="comment_like_reduced") {
+                    new_liked_value = parseInt(current_liked_value)-1;
+                    var replacement = '<li id="'+li_id+'"><a style="cursor: pointer;" onclick="addlike('+review_id+')" class="text-info"><i class="fa fa-thumbs-up">('+new_liked_value+')</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike('+review_id+')" class="text-info"><i class="fa fa-thumbs-down">('+current_disliked_value+')</i></a></li>'
+                    $('#'+li_id+'').replaceWith(replacement);
                 }
                 if(message=="not_authenticated") {
                     var url = "{% url 'mainapp:login' %}";
@@ -667,9 +677,20 @@
             },
             success: function(message) {
                 console.log(message);
+                console.log(message);
+                var li_id = "like_dislike_"+review_id;
+                var counter_location = document.getElementById(li_id);
+                var current_liked_value = counter_location.children[0].children[0].innerHTML.replace("(","").replace(")","");
+                var current_disliked_value = counter_location.children[1].children[0].innerHTML.replace("(","").replace(")","");
                 if(message=="comment_dislike_added") {
+                    new_disliked_value = parseInt(current_disliked_value)+1;
+                    var replacement = '<li id="'+li_id+'"><a style="cursor: pointer;" onclick="addlike('+review_id+')" class="text-info"><i class="fa fa-thumbs-up">('+current_liked_value+')</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike('+review_id+')" class="text-info"><i class="fa fa-thumbs-down">('+new_disliked_value+')</i></a></li>'
+                    $('#'+li_id+'').replaceWith(replacement);
                 }
                 if(message=="comment_dislike_reduced") {
+                    new_disliked_value = parseInt(current_disliked_value)-1;
+                    var replacement = '<li id="'+li_id+'"><a style="cursor: pointer;" onclick="addlike('+review_id+')" class="text-info"><i class="fa fa-thumbs-up">('+current_liked_value+')</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike('+review_id+')" class="text-info"><i class="fa fa-thumbs-down">('+new_disliked_value+')</i></a></li>'
+                    $('#'+li_id+'').replaceWith(replacement);
                 }
                 if(message=="not_authenticated") {
                     var url = "{% url 'mainapp:login' %}";
