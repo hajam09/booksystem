@@ -12,6 +12,8 @@
 		<li><a data-toggle="tab" href="#haveread">Have Read</a></li>
 		<li><a data-toggle="tab" href="#booksforme">Books for Me</a></li>
 	</ul>
+	<br>
+	<input id="tablequery" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" placeholder="Search for something in the table.">
 
 	<!-- Tab panes -->
 	<div class="tab-content" style="height: 500px; overflow: auto;">
@@ -112,6 +114,44 @@
 	</div>
 </div>
 <script type="text/javascript">
+	$(document).ready(function() {
+		$("#tablequery").on("keyup", function() {
+			var value = $(this).val().toLowerCase();
+			$("#rated-result tr").filter(function() {
+				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		});
+		$("#tablequery").on("keyup", function() {
+			var value = $(this).val().toLowerCase();
+			$("#visited-result tr").filter(function() {
+				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		});
+		$("#tablequery").on("keyup", function() {
+			var value = $(this).val().toLowerCase();
+			$("#favourite-result tr").filter(function() {
+				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		});
+		$("#tablequery").on("keyup", function() {
+			var value = $(this).val().toLowerCase();
+			$("#reading-now-result tr").filter(function() {
+				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		});
+		$("#tablequery").on("keyup", function() {
+			var value = $(this).val().toLowerCase();
+			$("#toread-result tr").filter(function() {
+				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		});
+		$("#tablequery").on("keyup", function() {
+			var value = $(this).val().toLowerCase();
+			$("#have-read-result tr").filter(function() {
+				$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+			});
+		});
+	});
 	window.onload = function() {
 		var favourite_Book = "{{favourite_Book}}";
 		var reading_Book = "{{reading_Book}}";
