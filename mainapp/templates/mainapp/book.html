@@ -83,6 +83,8 @@
                                         <a href="javascript:void(0);" class="btn btn-link profile-link-btn" rel="tooltip" data-placement="bottom" title="" data-original-title="Add File"><i class="fa fa-file"></i></a> -->
                                     </div>
                                 </form>
+                                <input id="tablequery" type="text" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" placeholder="Search for something in the table.">
+                                <br>
 
                                 <div class="chat-body no-padding profile-message">
                                     <ul id="reviews-list" class="list-group-scrollbar">
@@ -148,6 +150,17 @@
     </div>
 </div>
 <script type="text/javascript">
+    //jQuery for filtering the reviews based on users search.
+    //Commenting the funtion below and commenting the input with id=tablequery would remove the filter query
+    $(document).ready(function() {
+        $("#tablequery").on("keyup", function() {
+            var value = $(this).val().toLowerCase();
+            $("#reviews-list li").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+        });
+    });
+    //
     //Star rating function
     // Starrr plugin (https://github.com/dobtco/starrr)
     var __slice = [].slice;
