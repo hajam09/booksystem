@@ -147,7 +147,7 @@
     function addgenres(buttonELement){
         var ugenre = document.getElementById("currentgenre").value;
         if(ugenre && !document.getElementById(ugenre)){
-            $("#usergenre").append('<div id="'+ugenre+'"<li name="genrename" class="list-group-item" id="'+ugenre+'">'+ugenre+'</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger">Delete</button></div>');
+            $("#usergenre").append('<div style="height: 50px;" id="'+ugenre+'"<li name="genrename" class="list-group-item" id="'+ugenre+'">'+ugenre+'</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger pull-right">Delete</button></div>');
             document.getElementById("currentgenre").value = "";
             var genreElementID = ugenre+"option";
             var deletegenreoption = document.getElementById(genreElementID);
@@ -190,7 +190,7 @@
         var genrelist = "{{userfavouritegenre}}".replace(/[[\]]/g,'').replace(/&/g,'').replace(/#/g,'').replace(/;/g,'').replace(/[0-9]/g, '').replace(/, /g, ',').split(",");
 
         for(var i=0; i<genrelist.length; i++){
-            $("#usergenre").append('<div id="'+genrelist[i]+'"<li name="genrename" class="list-group-item" id="'+genrelist[i]+'">'+genrelist[i]+'</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger">Delete</button></div>');
+            $("#usergenre").append('<div style="height: 50px;" id="'+genrelist[i]+'"<li name="genrename" class="list-group-item" id="'+genrelist[i]+'">'+genrelist[i]+'</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger pull-right">Delete</button></div>');
         }
     }
     console.log("AA");

@@ -7,7 +7,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780674631113,Science,1,1,1,1,8.0,2
 9780141389103,Juvenile Fiction,0,0,0,0,8.4,9
 9781350035959,Literary Criticism,0,0,0,0,0.0,0
-9781442456860,Juvenile Fiction,2,2,2,2,7.8,8
+9781442456860,Juvenile Fiction,2,2,2,2,7.8,9
 9780141185101,Fiction,0,0,0,0,8,3278
 9780738665474,Study Aids,0,0,0,0,8,1
 9780313330568,Literary Criticism,0,0,0,0,0.0,0
@@ -67,7 +67,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780810850132,Performing Arts,0,0,0,0,0.0,0
 9781786032720,Juvenile Nonfiction,1,1,1,1,8.0,1
 9781906838560,Amusements,0,0,0,0,0.0,0
-9780415892902,Psychology,1,1,1,1,0.0,0
+9780415892902,Psychology,1,1,1,1,8.0,1
 9781845931230,Travel,1,1,1,1,9.0,4
 9780822332879,Business Economics,0,0,0,0,7.0,11
 9781423623823,None,0,0,0,0,10,2
