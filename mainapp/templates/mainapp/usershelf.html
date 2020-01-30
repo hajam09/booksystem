@@ -19,7 +19,7 @@
 	<div class="tab-content" style="height: 500px; overflow: auto;">
 		<div id="rated" class="tab-pane fade in active">
 			<h3>Rated and Reviewed Books</h3>
-			<table class="table" id="rated-table">
+			<table class="table" id="rated-table" style="table-layout:fixed;">
 				<thead>
 					<tr>
 						<th scope="col">Book Title / Page</th>
@@ -34,7 +34,7 @@
 		</div>
 		<div id="recentlyviewed" class="tab-pane fade">
 			<h3>Recently Viewed Books</h3>
-			<table class="table" id="visited-table">
+			<table class="table" id="visited-table" style="table-layout:fixed;">
 				<thead>
 					<tr>
 						<th scope="col">Book Title / Page</th>
@@ -49,7 +49,7 @@
 		</div>
 		<div id="favourites" class="tab-pane fade">
 			<h3>Favourite Books</h3>
-			<table class="table" id="favourites-table">
+			<table class="table" id="favourites-table" style="table-layout:fixed;">
 				<thead>
 					<tr>
 						<th scope="col">Book Title / Page</th>
@@ -64,7 +64,7 @@
 		</div>
 		<div id="readingnow" class="tab-pane fade">
 			<h3>Reading Now Books</h3>
-			<table class="table" id="reading-now-table">
+			<table class="table" id="reading-now-table" style="table-layout:fixed;">
 				<thead>
 					<tr>
 						<th scope="col">Book Title / Page</th>
@@ -79,7 +79,7 @@
 		</div>
 		<div id="toread" class="tab-pane fade">
 			<h3>To Read Books</h3>
-			<table class="table" id="toread-table">
+			<table class="table" id="toread-table" style="table-layout:fixed;">
 				<thead>
 					<tr>
 						<th scope="col">Book Title / Page</th>
@@ -94,7 +94,7 @@
 		</div>
 		<div id="haveread" class="tab-pane fade">
 			<h3>Have Read</h3>
-			<table class="table" id="have-read-table">
+			<table class="table" id="have-read-table" style="table-layout:fixed;">
 				<thead>
 					<tr>
 						<th scope="col">Book Title / Page</th>
@@ -168,7 +168,7 @@
 			var average_rating = "{{books.average_rating}}";
 			var action = "<button type='button' class='btn btn-danger' onclick='removefromfavourites("+isbn_13+","+isbn_10+")'>Remove From Favourites</button>";
 
-			$("#favourites-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+			$("#favourites-table").find('tbody').append("<tr id="+uid+"><td scope='row' style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
 		"{% endfor %}"
 
 		"{% for books in reading_Book %}"
@@ -181,7 +181,7 @@
 			var average_rating = "{{books.average_rating}}";
 			var action = "<button type='button' class='btn btn-danger' onclick='removefromreadingnow("+isbn_13+","+isbn_10+")'>Remove From Reading</button>";
 
-			$("#reading-now-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+			$("#reading-now-table").find('tbody').append("<tr id="+uid+"><td scope='row' style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
 		"{% endfor %}"
 
 		"{% for books in to_read_Book %}"
@@ -194,7 +194,7 @@
 			var average_rating = "{{books.average_rating}}";
 			var action = "<button type='button' class='btn btn-danger' onclick='removefromtoread("+isbn_13+","+isbn_10+")'>Remove From To Read</button>";
 
-			$("#toread-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+			$("#toread-table").find('tbody').append("<tr id="+uid+"><td scope='row' style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
 		"{% endfor %}"
 
 		"{% for books in have_read_Book %}"
@@ -207,7 +207,7 @@
 			var average_rating = "{{books.average_rating}}";
 			var action = "<button type='button' class='btn btn-danger' onclick='removefromhaveread("+isbn_13+","+isbn_10+")'>Remove From To Have Read</button>";
 
-			$("#have-read-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+			$("#have-read-table").find('tbody').append("<tr id="+uid+"><td scope='row' style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
 		"{% endfor %}"
 
 		"{% for reviews in reviewed_Book %}"
@@ -220,7 +220,7 @@
 			var user_rating = "{{reviews.user_rating}}";
 			var description = "{{reviews.description}}";
 
-			$("#rated-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + user_rating + "/5</td><td>" + description + "</td></tr>");
+			$("#rated-table").find('tbody').append("<tr id="+uid+"><td scope='row' style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>" + book_name + "</td><td>" + categories + "</td><td>" + user_rating + "/5</td><td style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>" + description + "</td></tr>");
 		"{% endfor %}"
 
 		"{% for books in visited_Book %}"
@@ -233,7 +233,7 @@
 			var average_rating = "{{books.average_rating}}";
 			var action = "";
 
-			$("#visited-table").find('tbody').append("<tr id="+uid+"><td scope='row'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
+			$("#visited-table").find('tbody').append("<tr id="+uid+"><td scope='row' style='white-space: nowrap; overflow: hidden; text-overflow: ellipsis;'>" + book_name + "</td><td>" + categories + "</td><td>" + average_rating + "</td><td>" + action + "</td></tr>");
 
 		"{% endfor %}"
 	}
