@@ -668,7 +668,8 @@ def book_page(request, isbn_13):
 				#Writing review score to csv.
 				with open('user_rating.csv', 'a') as csv_file:
 					# Fields are uid,user_id,isbn_13,rating_score
-					towrite = "\n"+str(uuid.uuid1())+","+customer_account.email+","+isbn_13+","+str(float(2*int(user_rating)))
+					#towrite = "\n"+str(uuid.uuid1())+","+customer_account.email+","+isbn_13+","+str(float(2*int(user_rating)))
+					towrite = "\n"+customer_account.email+","+isbn_13+","+str(float(2*int(user_rating)))
 					csv_file.write(towrite)
 
 				#Need to make adjustments to ratingscount and average rating in book_rating.csv
@@ -1018,7 +1019,7 @@ def pearson_correlation_collaborative_filtering(request):
 	books.columns = ['isbn_13','title','authors','publisher','publishedDate']
 
 	ratings = pd.read_csv("user_rating.csv")
-	ratings.columns = ['uid','user_id','isbn_13','rating_score']
+	ratings.columns = ['user_id','isbn_13','rating_score']
 
 	# Recommendation Based on Rating Counts
 	rating_count = pd.DataFrame(ratings.groupby('isbn_13')['rating_score'].count())
