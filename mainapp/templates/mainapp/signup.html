@@ -191,8 +191,7 @@
 		var ugenre = document.getElementById("currentgenre").value;
 		if(ugenre && !document.getElementById(ugenre)){
 			//$("#usergenre").append('<div id="'+ugenre+'"<li name="genrename" class="list-group-item" id="'+ugenre+'">'+ugenre+'</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger">Delete</button></div>');
-            //$("#usergenre").append('<div id="'+ugenre+'"> <div class="col-xs-10 col-sm-7"> <li name="genrename" class="list-group-item" id="'+ugenre+'">' +ugenre+ '</li></div> <div class="col-xs-10 col-sm-3"> <button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger">Delete</button> </div></div>');
-            $("#usergenre").append('<div style="height: 50px;" id="'+ugenre+'"<li name="genrename" class="list-group-item" id="'+ugenre+'">'+ugenre+'</li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger pull-right">Delete</button></div>');
+            $("#usergenre").append('<div id="'+ugenre+'"> <div class="col-xs-10 col-sm-7"> <li name="genrename" class="list-group-item" id="'+ugenre+'">' +ugenre+ '</li></div> <div class="col-xs-10 col-sm-3"> <button onclick="deletegenre(this);return false;" type="button" class="btn btn-danger">Delete</button> </div></div>');
 			document.getElementById("currentgenre").value = "";
 			var genreElementID = ugenre+"option";
 			var deletegenreoption = document.getElementById(genreElementID);
