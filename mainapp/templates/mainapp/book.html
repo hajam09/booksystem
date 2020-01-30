@@ -71,7 +71,7 @@
                                     {% csrf_token %}
                                     <textarea rows="3" class="form-control" placeholder="Write a review" id="user_review"></textarea>
                                     <div class="margin-top-10">
-                                        <button type="submit" class="btn btn-sm btn-primary pull-right" onclick="postReview();return false;">
+                                        <button id="submitbutton" type="submit" class="btn btn-sm btn-primary pull-right" onclick="postReview();return false;">
                                             Submit Review
                                         </button>
                                         <div class="row lead">
@@ -150,6 +150,29 @@
     </div>
 </div>
 <script type="text/javascript">
+
+    // Block review submit button if user already gave a review
+    "{% if user.is_authenticated %}"
+        function block_review_button() {
+            console.log("RAHHHhhhhhh");
+            var user_full_name = '{{ request.user.first_name }}'+' '+'{{ request.user.last_name }}';
+            var all_user_name = document.getElementsByClassName("username");
+            for (var i = 0; i < all_user_name.length; i++) {
+                var commentor = all_user_name[i].innerHTML.split("<")[0];
+                commentor = commentor.split(" ");
+                commentor.shift();
+                commentor.pop();
+                commentor = commentor.join(" ");
+                if (user_full_name==commentor) {
+                    $('#submitbutton').prop('disabled', true);
+                    document.getElementById('user_review').placeholder = "You have already gave a review!"
+                    break;
+                }
+            }
+        }
+    "{% endif %}"
+    //
+
     //jQuery for filtering the reviews based on users search.
     //Commenting the funtion below and commenting the input with id=tablequery would remove the filter query
     $(document).ready(function() {
@@ -326,6 +349,7 @@
                     }
 
                     $("#reviews-list").append('<li class="message" id="'+new_review_id+'"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+' <span class="pull-right">'+stars_icons+'</span></a>'+review_message+'</span><ul class="list-inline font-xs"><li><a style="cursor: pointer;" onclick="addlike('+new_review_id+')" class="text-info"><i class="fa fa-thumbs-up">(0)</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike('+new_review_id+')" class="text-info"><i class="fa fa-thumbs-down">(0)</i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: '+creation_date+'</small></li></ul><br></li>');
+                    block_review_button();
                 }
             }
         })
@@ -512,7 +536,29 @@
                 counter = counter+1;
                 $("#reviews-list").append('<li class="message" id="{{reviews.pk}}"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+verification_statement+' <span class="pull-right">'+stars_icons+'</span></a>{{reviews.description}}</span><ul class="list-inline font-xs"><li id="like_dislike_{{reviews.pk}}"><a style="cursor: pointer;" onclick="addlike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-up">({{reviews.likes.count}})</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-down">({{reviews.dislikes.count}})</i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: {{reviews.created_at}} </small></li></ul><br></li>');
             "{% endfor %}"
+            block_review_button();
         }
+
+        // "{% if user.is_authenticated %}"
+        //     function block_review_button() {
+        //         console.log("RAHHHhhhhhh");
+        //         var user_full_name = '{{ request.user.first_name }}'+' '+'{{ request.user.last_name }}';
+        //         var all_user_name = document.getElementsByClassName("username");
+        //         for (var i = 0; i < all_user_name.length; i++) {
+        //             var commentor = all_user_name[i].innerHTML.split("<")[0];
+        //             commentor = commentor.split(" ");
+        //             commentor.shift();
+        //             commentor.pop();
+        //             commentor = commentor.join(" ");
+        //             if (user_full_name==commentor) {
+        //                 $('#submitbutton').prop('disabled', true);
+        //                 document.getElementById('user_review').placeholder = "You have already gave a review!"
+        //                 break;
+        //             }
+        //         }
+        //     }
+        //     block_review_button();
+        // "{% endif %}"
 
         "{% for reviews in book_reviews %}"
             //console.log("#############", "{{reviews}}", "{{reviews.bookID}}");
