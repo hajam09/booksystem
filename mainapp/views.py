@@ -228,7 +228,14 @@ def index(request):
 	#Getting the recently added items
 	recently_added_books = Book.objects.all()
 	recently_added_books = recently_added_books[len(recently_added_books)-20:] if recently_added_books.count()>20 else recently_added_books[:]
-	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books})
+	#Getting highly rated books
+	highly_rated_books = []
+	for books in recently_added_books:
+		book_data = books.book_data
+		#In the future need hight average rating and higher ratings count
+		if(book_data["averageRating"]>=5.0 and book_data["ratingsCount"]>=1):
+			highly_rated_books.append(book_data)
+	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books})
 
 @csrf_exempt
 def signup(request):
