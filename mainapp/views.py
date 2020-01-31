@@ -225,7 +225,10 @@ def index(request):
 				# 	text_file.write(item_to_write)
 				# 	text_file.close()
 	recent_search = request.session['search_result']
-	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search})
+	#Getting the recently added items
+	recently_added_books = Book.objects.all()
+	recently_added_books = recently_added_books[len(recently_added_books)-20:] if recently_added_books.count()>20 else recently_added_books[:]
+	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books})
 
 @csrf_exempt
 def signup(request):
