@@ -543,21 +543,6 @@ def get_row_from_csv(isbn_13, isbn_10):
 
 @csrf_exempt
 def book_page(request, isbn_13):
-	#########################
-	# Storing this book in the session for logged in users
-	# may need to fix it becuase if user logs in first time and gets to the book page directly
-	# then it only creates the session and does not store the isbn13 in the session unless if the user
-	#refreshes the page again manually
-	if request.user.is_authenticated:
-		if 'history' not in request.session:
-			request.session['history'] = []
-		else:
-			history = request.session['history']
-			if isbn_13 not in history:
-				history.append(isbn_13)
-			request.session['history'] = history
-	#########################
-
 	# if 'search_result' not in request.session:
 	# 	request.session['search_result'] = []
 	# else:
@@ -612,6 +597,20 @@ def book_page(request, isbn_13):
 	# Redirecting to 404 page if book is not found
 	try:
 		b1 = Book.objects.get(isbn_13=isbn_13)
+		#########################
+		# Storing this book in the session for logged in users
+		# may need to fix it becuase if user logs in first time and gets to the book page directly
+		# then it only creates the session and does not store the isbn13 in the session unless if the user
+		#refreshes the page again manually
+		if request.user.is_authenticated:
+			if 'history' not in request.session:
+				request.session['history'] = []
+			else:
+				history = request.session['history']
+				if isbn_13 not in history:
+					history.append(isbn_13)
+				request.session['history'] = history
+		#########################
 	except Book.DoesNotExist:
 		return redirect('mainapp:not_found')
 	book_detail = b1.book_data
