@@ -69,7 +69,55 @@
     </div>
 </div>
 <!-- End of Image Carousel & Search -->
+<div class="container">
+
+    <!-- <h1>Recently Added Books!</h1> -->
+    <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recently Added Books...</p>
+
+    <!--  <a href="https://github.com/rtpHarry/Bootstrap3-ShowManySlideOneCarousel">this code sample</a>   -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="carousel carousel-showmanymoveone slide" id="carousel-tilenav" data-interval="false">
+                <div class="carousel-inner">
+                    {% for books in recently_added_books %}
+                        <div class="item">
+                            <div class="col-xs-12 col-sm-6 col-md-2">
+                                <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                    <div class="item active">
+                        <!-- <div class="col-xs-12 col-sm-6 col-md-2">
+                            <a href="#"><img src="http://placehold.it/500/0054A6/fff/&amp;text=1" class="img-responsive"></a>
+                        </div> -->
+                    </div>
+                </div>
+                <a class="left carousel-control" href="#carousel-tilenav" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+                <a class="right carousel-control" href="#carousel-tilenav" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
+            </div>
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
+    (function() {
+        $('.carousel-showmanymoveone .item').each(function() {
+            var itemToClone = $(this);
+
+            for (var i = 1; i < 6; i++) {
+                itemToClone = itemToClone.next();
+
+                // wrap around if at end of item collection
+                if (!itemToClone.length) {
+                    itemToClone = $(this).siblings(':first');
+                }
+
+                // grab item, clone, add marker class, add to collection
+                itemToClone.children(':first-child').clone()
+                .addClass("cloneditem-" + (i))
+                .appendTo($(this));
+            }
+        });
+    }());
     // if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
         //only display when user goes form book page to front page of some backpage to frontpage.html
     //     "{% if recent_search %}"

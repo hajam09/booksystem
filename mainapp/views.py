@@ -224,17 +224,32 @@ def index(request):
 				# 	item_to_write = ISBN_13 + "|" + ISBN_10 + "|" + description + "\n"
 				# 	text_file.write(item_to_write)
 				# 	text_file.close()
+
+
+		# 		for isbn_13 in all_similar_books:
+		# the_book = Book.objects.get(isbn_13=str(isbn_13))
+		# the_data = the_book.book_data
+		# book_item = {"isbn_13": the_book.isbn_13, "isbn_10": the_book.isbn_10, "title": the_book.title, "thumbnail": the_data["thumbnail"]}
+		# list_of_books.append(book_item)
+
 	recent_search = request.session['search_result']
 	#Getting the recently added items
 	recently_added_books = Book.objects.all()
 	recently_added_books = recently_added_books[len(recently_added_books)-20:] if recently_added_books.count()>20 else recently_added_books[:]
+	recently_added_books_list = []
+	for items in recently_added_books:
+		the_data = items.book_data
+		book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
+		recently_added_books_list.append(book_item)
+	recently_added_books = recently_added_books_list
+	print("recently_added_books", recently_added_books)
 	#Getting highly rated books
 	highly_rated_books = []
-	for books in recently_added_books:
-		book_data = books.book_data
-		#In the future need hight average rating and higher ratings count
-		if(book_data["averageRating"]>=5.0 and book_data["ratingsCount"]>=1):
-			highly_rated_books.append(book_data)
+	# for books in recently_added_books:
+	# 	book_data = books.book_data
+	# 	#In the future need hight average rating and higher ratings count
+	# 	if(book_data["averageRating"]>=5.0 and book_data["ratingsCount"]>=1):
+	# 		highly_rated_books.append(book_data)
 	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books})
 
 @csrf_exempt
