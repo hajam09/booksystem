@@ -233,23 +233,26 @@ def index(request):
 		# list_of_books.append(book_item)
 
 	recent_search = request.session['search_result']
-	#Getting the recently added items
-	recently_added_books = Book.objects.all()
-	recently_added_books = recently_added_books[len(recently_added_books)-20:] if recently_added_books.count()>20 else recently_added_books[:]
-	recently_added_books_list = []
-	for items in recently_added_books:
+
+	# Getting the recently added items
+	all_books = Book.objects.all()
+	top_20_books = all_books[len(all_books)-20:] if all_books.count()>20 else all_books[:]
+	recently_added_books = []
+
+	for items in top_20_books:
 		the_data = items.book_data
 		book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
-		recently_added_books_list.append(book_item)
-	recently_added_books = recently_added_books_list
-	print("recently_added_books", recently_added_books)
-	#Getting highly rated books
+		recently_added_books.append(book_item)
+
+	# Getting highly rated books
 	highly_rated_books = []
-	# for books in recently_added_books:
-	# 	book_data = books.book_data
-	# 	#In the future need hight average rating and higher ratings count
-	# 	if(book_data["averageRating"]>=5.0 and book_data["ratingsCount"]>=1):
-	# 		highly_rated_books.append(book_data)
+
+	for items in all_books:
+		the_data = items.book_data
+		# In the future need hight average rating and higher ratings count
+		if(the_data["averageRating"]>=5.0 and the_data["ratingsCount"]>=1):
+			book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
+			highly_rated_books.append(book_item)
 	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books})
 
 @csrf_exempt
