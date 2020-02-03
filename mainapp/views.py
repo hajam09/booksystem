@@ -144,6 +144,7 @@ def index(request):
 					"thumbnail": thumbnail}
 
 					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+					print("Create New Book")
 
 					book_genre = " ".join(categories)
 					book_genre = book_genre.replace("&", "").replace("  ", " ")
@@ -171,15 +172,20 @@ def index(request):
 						
 						# Fields are isbn_13,title,authors,publisher,publishedDate
 						authors = authors.replace(",", " ")
+						authors = authors.replace(",", "").replace("-", " ").replace("  ", " ")
 						authors = unidecode.unidecode(authors)
+						authors = re.sub(" +", " ", authors)
 
 						publisher = publisher.replace(",", "")
+						publisher = ''.join(e for e in publisher if e.isalnum() or e==" ")
 						publisher = re.sub(" +", " ", publisher)
 
 						title = title.replace(",", "").replace("-", "").replace("–", "")
+						title = ''.join(e for e in title if e.isalnum() or e==" ")
 						title = re.sub(" +", " ", title)
+						title = unidecode.unidecode(title)
 						#Use regular expression to allow letters numbers and brackets
-						bi_write = "\n"+ISBN_13+","+title+","+authors.replace(",", "").replace("-", " ").replace("  ", " ")+","+publisher.title()+","+publishedDate.replace("-","/")
+						bi_write = "\n"+ISBN_13+","+title+","+authors+","+publisher.title()+","+publishedDate.replace("-","/")
 
 						description = ''.join(e for e in description if e.isalnum() or e==" ")
 						description = re.sub(" +", " ", description)
@@ -233,7 +239,13 @@ def index(request):
 		# list_of_books.append(book_item)
 
 	#Can use this for displaying this items in book.html with tag: Book's with good ratings.
-	average_rating_recommendation = weighted_average_and_favourite_score(request)
+	try:
+		print("AS")
+		average_rating_recommendation = weighted_average_and_favourite_score(request)
+		print("DA")
+	except:
+		average_rating_recommendation = []
+	
 
 	recent_search = request.session['search_result']
 
@@ -1048,7 +1060,9 @@ def content_based_similar_items(request, title):
 	# Testing our content-based recommendation system with the seminal film Of Mice and Men
 	#Loop thorugh user favourite book title/title of the user favourite book
 	title = title.replace(",", "").replace("-", "").replace("–", "")
+	title = ''.join(e for e in title if e.isalnum() or e==" ")
 	title = re.sub(" +", " ", title)
+	title = unidecode.unidecode(title)
 	original_table = give_rec(title)
 
 	movies_cleaned_df = movies_cleaned_df[movies_cleaned_df.title.isin(list(original_table))]
