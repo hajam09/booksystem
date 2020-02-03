@@ -232,6 +232,9 @@ def index(request):
 		# book_item = {"isbn_13": the_book.isbn_13, "isbn_10": the_book.isbn_10, "title": the_book.title, "thumbnail": the_data["thumbnail"]}
 		# list_of_books.append(book_item)
 
+	#Can use this for displaying this items in book.html with tag: Book's with good ratings.
+	average_rating_recommendation = weighted_average_and_favourite_score(request)
+
 	recent_search = request.session['search_result']
 
 	# Getting the recently added items
@@ -244,7 +247,7 @@ def index(request):
 		book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
 		recently_added_books.append(book_item)
 
-	# Getting highly rated books
+	# Getting highly rated books // May not need this
 	highly_rated_books = []
 
 	for items in all_books:
@@ -253,7 +256,7 @@ def index(request):
 		if(the_data["averageRating"]>=5.0 and the_data["ratingsCount"]>=1):
 			book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
 			highly_rated_books.append(book_item)
-	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books})
+	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books, "average_rating_recommendation": average_rating_recommendation})
 
 @csrf_exempt
 def signup(request):
@@ -617,7 +620,7 @@ def book_page(request, isbn_13):
 
 	#Set of books to display for suggestions.
 	#item_based_recommendation = get_item_based_recommendation(csv_file)
-	average_rating_recommendation = weighted_average_and_favourite_score(request)
+	# average_rating_recommendation = weighted_average_and_favourite_score(request)# Not sure if this is used in book.html
 	pearson_correlation_collaborative_filtering(request)
 
 	#Need to get all the reviews associated with the book.
