@@ -635,7 +635,7 @@ def book_page(request, isbn_13):
 	#Set of books to display for suggestions.
 	#item_based_recommendation = get_item_based_recommendation(csv_file)
 	average_rating_recommendation = weighted_average_and_favourite_score(request)# Not sure if this is used in book.html
-	pearson_correlation_collaborative_filtering(request)
+	# pearson_correlation_collaborative_filtering(request) Don't think this is used anywhere in any template.
 
 	#Need to get all the reviews associated with the book.
 	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
