@@ -47,7 +47,7 @@ def index(request):
 					#book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
 					request.session['search_result'] = new_result
 				except:
-					break
+					pass
 			print("search_result exists")
 		else:
 			print("Empty search_result session")
@@ -430,12 +430,21 @@ def user_shelf(request):
 
 	user_pk = request.user.pk
 
+	#Return 404 page if no shelf items are found for this profile
 	#Need to return to login page if user not logged in when accessing shelf.
 	try:
 		customer_account = User.objects.get(pk=user_pk)
 		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-	except:
+	except CustomerAccountProfile.DoesNotExist:
+		return redirect('mainapp:not_found')
+	except User.DoesNotExist:
 		return redirect('mainapp:login')
+
+	# try:
+	# 	customer_account = User.objects.get(pk=user_pk)
+	# 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+	# except:
+	# 	return redirect('mainapp:login')
 
 	#Need to check if the Book are already in favourites, reading now, to read and have read.
 	favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
@@ -471,7 +480,12 @@ def user_shelf(request):
 		# isbn_13 = remaining_zero+isbn_13
 
 		#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
-		b1 = Book.objects.get(isbn_13=isbn_13)
+		try:
+			# Not sure if this is necessary or just leave it as  b1 = Book.objects.get(isbn_13=isbn_13)
+			b1 = Book.objects.get(isbn_13=isbn_13)
+		except b1.DoesNotExist:
+			return redirect('mainapp:not_found')
+		# b1 = Book.objects.get(isbn_13=isbn_13)
 
 		if(functionality=="remove-from-favourites"):
 			if(b1 in favourite_Book):
@@ -667,8 +681,20 @@ def book_page(request, isbn_13):
 
 	if user_pk:
 		#If user is logged we can get more personal data
-		customer_account = User.objects.get(pk=user_pk)
-		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+		# Initially below 2 lines were sufficient, but then the try/except is added.
+		# customer_account = User.objects.get(pk=user_pk)
+		# customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+
+		#Return 404 page if no shelf items are found for this profile
+		#Need to return to login page if user not logged in when accessing shelf.
+		try:
+			customer_account = User.objects.get(pk=user_pk)
+			customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+		except CustomerAccountProfile.DoesNotExist:
+			return redirect('mainapp:not_found')
+		except User.DoesNotExist:
+			return redirect('mainapp:login')
+
 
 		#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 		# Ajax requests when the review button is clicked on the book.html
