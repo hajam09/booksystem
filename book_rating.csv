@@ -5,14 +5,14 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780764118128,Pets,1,1,1,1,8.0,2
 9788184974560,Juvenile Fiction,1,1,1,1,0.0,0
 9780674631113,Science,1,1,1,1,8.0,2
-9780141389103,Juvenile Fiction,0,0,0,0,8.4,9
+9780141389103,Juvenile Fiction,0,1,0,1,8.4,9
 9781350035959,Literary Criticism,0,0,0,0,0.0,0
 9781442456860,Juvenile Fiction,2,2,2,2,7.8,9
 9780141185101,Fiction,0,0,0,0,8,3278
 9780738665474,Study Aids,0,0,0,0,8,1
 9780313330568,Literary Criticism,0,0,0,0,0.0,0
 9781410336330,Literary Criticism,0,0,0,0,0.0,0
-9781609339043,Fiction,0,0,0,0,0.0,0
+9781609339043,Fiction,0,0,0,0,9.0,2
 9781101615218,Fiction,1,1,1,1,6.0,2
 9781438139975,None,0,0,0,0,0.0,0
 9781493860869,None,0,0,0,0,5.2,23
@@ -26,7 +26,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781444920451,Juvenile Fiction,0,0,0,0,0.0,0
 9780415262903,Social Policy,0,0,0,0,0.0,0
 9781488026034,Young Adult Fiction,0,0,0,0,0.0,0
-9781101583821,Fiction,0,0,0,0,0.0,0
+9781101583821,Fiction,0,0,0,0,7.0,2
 9781799031697,Reference,0,0,0,0,0.0,0
 9788862080699,Antiques Collectibles,0,0,0,0,0.0,0
 9780801471810,History,0,0,0,0,0.0,0
@@ -116,7 +116,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781473567856,Fiction,0,0,0,0,6,38
 9781448183739,Fiction,0,0,0,0,6,38
 9781538750131,Fiction,0,0,0,0,2,1
-9780356043388,Mice,0,0,0,0,9.0,2
+9780356043388,Mice,1,1,1,1,8.6,3
 9781425980245,Health Fitness,0,0,0,0,0.0,0
 9781444920468,Juvenile Fiction,0,0,0,0,8,1
 9781429971768,Science,0,0,0,0,8,2
@@ -133,7 +133,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780007269709,Adventure Stories,0,0,0,0,8,2407
 9780547952093,Fiction,0,0,0,0,8,9
 9780007269723,Baggins Frodo (Fictitious Character),0,0,0,0,9.0,102
-9780395285237,Biography Autobiography,0,0,0,0,0.0,0
+9780395285237,Biography Autobiography,0,0,0,0,8.0,1
 9780008131401,Literary Criticism,0,0,0,0,0.0,0
 9780618260225,Performing Arts,0,0,0,0,10,1
 9780486242132,House Home,0,0,0,0,0.0,0

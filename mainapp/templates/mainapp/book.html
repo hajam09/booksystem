@@ -347,10 +347,12 @@
                         no_review_element.remove();
                     }
                     document.getElementById("user_review").value = "";
+                    var like_dislike_id = "like_dislike_"+new_review_id;
 
-                    $("#reviews-list").append('<li class="message" id="'+new_review_id+'"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+' <span class="pull-right">'+stars_icons+'</span></a>'+review_message+'</span><ul class="list-inline font-xs"><li><a style="cursor: pointer;" onclick="addlike('+new_review_id+')" class="text-info"><i class="fa fa-thumbs-up">(0)</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike('+new_review_id+')" class="text-info"><i class="fa fa-thumbs-down">(0)</i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: '+creation_date+'</small></li></ul><br></li>');
-                    block_review_button();
+                    $("#reviews-list").append('<li class="message" id="'+new_review_id+'"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+' <span class="pull-right">'+stars_icons+'</span></a>'+review_message+'</span><ul class="list-inline font-xs"><li id="'+like_dislike_id+'"><a style="cursor: pointer;" onclick="addlike('+new_review_id+')" class="text-info"><i class="fa fa-thumbs-up">(0)</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike('+new_review_id+')" class="text-info"><i class="fa fa-thumbs-down">(0)</i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: '+creation_date+'</small></li></ul><br></li>');
+                    //block_review_button();
                 }
+                // $("#reviews-list").append('<li class="message" id="{{reviews.pk}}"><img src="https://bootdey.com/img/Content/avatar/avatar1.png" class="online"><span class="message-text"><a href="javascript:void(0);" class="username"> '+user_full_name+verification_statement+' <span class="pull-right">'+stars_icons+'</span></a>{{reviews.description}}</span><ul class="list-inline font-xs"><li id="like_dislike_{{reviews.pk}}"><a style="cursor: pointer;" onclick="addlike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-up">({{reviews.likes.count}})</i></a>&nbsp;&nbsp;&nbsp;&nbsp;<a style="cursor: pointer;" onclick="adddislike({{reviews.pk}})" class="text-info"><i class="fa fa-thumbs-down">({{reviews.dislikes.count}})</i></a></li><li class="pull-right"><small class="text-muted pull-right ultra-light"> Posted at: {{reviews.created_at}} </small></li></ul><br></li>');
             }
         })
     }
