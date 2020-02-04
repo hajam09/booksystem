@@ -18,6 +18,8 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import sigmoid_kernel
+from scipy import sparse
+from sklearn.metrics.pairwise import cosine_similarity
 # Create your views here.
 
 @csrf_exempt
@@ -587,6 +589,9 @@ def user_shelf(request):
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
 		visited_Book.append(book_attributes)
 
+	# Collaborative Filtering
+	pearson_correlation_collaborative_filtering(request)
+
 	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book, 'visited_Book': visited_Book}
 	return render(request,'mainapp/usershelf.html', context)
 
@@ -647,7 +652,6 @@ def book_page(request, isbn_13):
 	#Set of books to display for suggestions.
 	#item_based_recommendation = get_item_based_recommendation(csv_file)
 	average_rating_recommendation = weighted_average_and_favourite_score(request)# Not sure if this is used in book.html
-	# pearson_correlation_collaborative_filtering(request) Don't think this is used anywhere in any template.
 
 	#Need to get all the reviews associated with the book.
 	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
@@ -1081,9 +1085,58 @@ def content_based_similar_items(request, title):
 	return list_of_books
 	#return [Book.objects.get(isbn_13=isbn_13) for isbn_13 in all_similar_books]
 
-
-
 def pearson_correlation_collaborative_filtering(request):
+	ratings = pd.read_csv('user_rating.csv')
+	movies = pd.read_csv('book_info.csv')
+	ratings = pd.merge(movies,ratings).drop(['authors','publisher','publishedDate'],axis=1)
+
+	userRatings = ratings.pivot_table(index=['user_id'],columns=['title'],values='rating_score')
+	# Fixing books that have less than 10 user ratings. Uncomment this in the future
+	#userRatings = userRatings.dropna(thresh=10, axis=1).fillna(0,axis=1)
+
+	corrMatrix = userRatings.corr(method='pearson')
+
+	def get_similar(movie_name,rating):
+	    similar_ratings = corrMatrix[movie_name]*(rating-2.5)
+	    similar_ratings = similar_ratings.sort_values(ascending=False)
+	    return similar_ratings
+
+	# Getting user's top rated books
+	user_pk = request.user.pk
+	customer_account = User.objects.get(pk=user_pk)
+	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+	user_high_reviews = Review.objects.filter(customerID=customer_details.pk).filter(rating_value=4).order_by('-rating_value') |  Review.objects.filter(customerID=customer_details.pk).filter(rating_value=5).order_by('-rating_value')
+	#May not need this because user would only reate once, check.
+	unique_books = []
+	mining_books = []
+	
+	for items in user_high_reviews:
+		if(items.bookID.isbn_13 not in unique_books):
+			unique_books.append(items.bookID.isbn_13)
+
+			title = items.bookID.title
+			title = title.replace(",", "").replace("-", "").replace("–", "")
+			title = ''.join(e for e in title if e.isalnum() or e==" ")
+			title = re.sub(" +", " ", title)
+			title = str(unidecode.unidecode(title))
+			mining_books.append((title, 2.0*items.rating_value))
+	top_10_books = mining_books[len(mining_books)-10:] if len(mining_books)>10 else mining_books[:]
+
+	similar_books = pd.DataFrame()
+	for book, rating in top_10_books:
+		try:
+			similar_books = similar_books.append(get_similar(book,rating),ignore_index = True)
+		except:
+			pass
+
+	top_recommended_books = similar_books.sum().sort_values(ascending=False).head(20)
+
+	for books in top_recommended_books:
+		print(books)
+	print("SAGJfj")
+	#was here
+
+def pearson_correlation_collaborative_filtering_2(request):
 	#needs testing
 	books = pd.read_csv("book_info.csv")
 	books.columns = ['isbn_13','title','authors','publisher','publishedDate']
