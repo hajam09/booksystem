@@ -242,9 +242,7 @@ def index(request):
 
 	#Can use this for displaying this items in book.html with tag: Book's with good ratings.
 	try:
-		print("AS")
 		average_rating_recommendation = weighted_average_and_favourite_score(request)
-		print("DA")
 	except:
 		average_rating_recommendation = []
 	
@@ -415,7 +413,6 @@ def update_profile(request):
 
 		genre_to_csv = " ".join(listofgenre)
 		genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ")
-		print(genre_to_csv)
 
 		with open('user_genre.csv', 'r') as reader, open('user_genre_temp.csv', 'w') as writer:
 			for row in reader:
@@ -590,9 +587,9 @@ def user_shelf(request):
 		visited_Book.append(book_attributes)
 
 	# Collaborative Filtering
-	pearson_correlation_collaborative_filtering(request)
+	personalized_books = pearson_correlation_collaborative_filtering(request)
 
-	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book, 'visited_Book': visited_Book}
+	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book, 'visited_Book': visited_Book, 'personalized_books': personalized_books}
 	return render(request,'mainapp/usershelf.html', context)
 
 def get_row_from_csv(isbn_13, isbn_10):
@@ -1130,11 +1127,22 @@ def pearson_correlation_collaborative_filtering(request):
 			pass
 
 	top_recommended_books = similar_books.sum().sort_values(ascending=False).head(20)
+	top_book_titles = [top_recommended_books[top_recommended_books==i].index[0] for i in top_recommended_books]
+	top_book_objects = [Book.objects.filter(title__icontains=titles.strip().lower())  for titles in top_book_titles]
 
-	for books in top_recommended_books:
-		print(books)
-	print("SAGJfj")
-	#was here
+	list_of_books = []
+
+	for isbn_13 in top_book_objects:
+		try:
+			book_object = isbn_13[0]
+			the_data = book_object.book_data
+			if(the_data["averageRating"]>=3):
+				book_item = {"isbn_13": book_object.isbn_13, "isbn_10": book_object.isbn_10, "title": book_object.title, "average_rating": the_data["averageRating"], "categories": ",".join(the_data["categories"])}
+				list_of_books.append(book_item)
+		except Exception as e:
+			pass
+	return list_of_books
+
 
 def pearson_correlation_collaborative_filtering_2(request):
 	#needs testing
