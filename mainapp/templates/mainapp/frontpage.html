@@ -128,6 +128,39 @@
         </div>
     </div>
 </div>
+<hr>
+<!-- other_user_favourite_books books carousel -->
+{% if user.is_authenticated %}
+    {% if other_user_favourite_books %}
+        <div class="container">
+            <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Books from similar users..</p>
+
+            <!--  <a href="https://github.com/rtpHarry/Bootstrap3-ShowManySlideOneCarousel">this code sample</a>   -->
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="carousel carousel-showmanymoveone slide" id="carousel-tilenav_3" data-interval="false">
+                        <div class="carousel-inner">
+                            {% for books in other_user_favourite_books %}
+                                <div class="item">
+                                    <div class="col-xs-12 col-sm-6 col-md-2">
+                                        <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="item active">
+                                <!-- <div class="col-xs-12 col-sm-6 col-md-2">
+                                    <a href="#"><img src="http://placehold.it/500/0054A6/fff/&amp;text=1" class="img-responsive"></a>
+                                </div> -->
+                            </div>
+                        </div>
+                        <a class="left carousel-control" href="#carousel-tilenav_3" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
+                        <a class="right carousel-control" href="#carousel-tilenav_3" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endif %}
 <script type="text/javascript">
     (function() {
         $('.carousel-showmanymoveone .item').each(function() {

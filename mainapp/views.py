@@ -268,7 +268,10 @@ def index(request):
 		if(the_data["averageRating"]>=5.0 and the_data["ratingsCount"]>=1):
 			book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
 			highly_rated_books.append(book_item)
-	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books, "average_rating_recommendation": average_rating_recommendation})
+	other_user_favourite_books = []
+	if request.user.is_authenticated:
+		other_user_favourite_books = content_based_similar_user_items(request)
+	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books, "average_rating_recommendation": average_rating_recommendation, "other_user_favourite_books": other_user_favourite_books})
 
 @csrf_exempt
 def signup(request):
@@ -419,7 +422,7 @@ def update_profile(request):
 				row = row.split(",")
 				if row[0] == email:
 					# Fields are user_id,genres
-					row[1] = genre_to_csv
+					row[1] = genre_to_csv+"\n"
 				row = ",".join(row)
 				writer.write(row)
 
@@ -961,6 +964,64 @@ def clear_session(request):
 	if 'search_result' in request.session:
 		request.session['search_result'] = []
 	return HttpResponse("session-cleared")
+
+def content_based_similar_user_items(request):
+	users = pd.read_csv("user_genre_2.csv")# Need to change this to user_genre when there are lots of data.
+	tfv = TfidfVectorizer(min_df=3,  max_features=None, 
+            strip_accents='unicode', analyzer='word',token_pattern=r'\w{1,}',
+            ngram_range=(1, 3))
+
+	# Fitting the TF-IDF on the 'genres' text
+	tfv_matrix = tfv.fit_transform(users['genres'])
+
+	# Compute the sigmoid kernel
+	sig = sigmoid_kernel(tfv_matrix, tfv_matrix)
+
+	# Reverse mapping of indices and book titles
+	# If more than one user has same genre list, then considering one of them is sufficient.
+	indices = pd.Series(users.index, index=users['genres']).drop_duplicates()
+
+	def give_rec(title, sig=sig):
+	    try:
+	        idx = indices[title].iloc[0]
+	    except:
+	        idx = indices[title]
+	    sig_scores = list(enumerate(sig[idx]))
+	    sig_scores = sorted(sig_scores, key=lambda x: x[1], reverse=True)
+	    sig_scores = sig_scores[1:11]
+	    movie_indices = [i[0] for i in sig_scores]
+	    return users['genres'].iloc[movie_indices]
+
+	user_pk = request.user.pk
+	customer_account = User.objects.get(pk=user_pk)
+	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+	this_user_genres = " ".join(eval(customer_details.userfavouritegenre))
+	this_user_favourite_book = Book.objects.filter(favourites__id=customer_details.pk)[::1]
+
+	original_table = give_rec(this_user_genres)
+
+	#Top 10 similar users
+	book_df = list(users[users.genres.isin(list(original_table))]["user_id"])
+
+	#Testing
+	book_df = ["hajam09@yahoo.com", "oliverqueen12@gmail.com"]
+	###
+	to_recommended_books = []
+	for users in book_df:
+		customer_account = User.objects.get(email=users)
+		customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+		favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
+		to_recommended_books = to_recommended_books+favourite_Book[::1]
+
+	#Remove duplicate book objects
+	to_recommended_books = list(dict.fromkeys(to_recommended_books))
+	final_result = []
+
+	for i in range(len(to_recommended_books)):
+		book_json = to_recommended_books[i].book_data
+		if book_json['averageRating'] > 3.0:
+			final_result.append({"isbn_13": to_recommended_books[i].isbn_13, "isbn_10": to_recommended_books[i].isbn_10, "title": to_recommended_books[i].title, "thumbnail": book_json["thumbnail"]})
+	return final_result
 
 def weighted_average_and_favourite_score(request):
 	#Can use this for displaying this items in book.html with tag: Book's with good ratings.
