@@ -650,6 +650,30 @@ def get_row_from_csv(isbn_13, isbn_10):
 			return row
 	return None
 
+def create_review():
+	i = 0
+	with open("user_rating.csv", "r") as reader:
+		for lines in reader:
+			try:
+				lines = lines.replace("\n","").split(",")
+				emails = lines[0]
+				isbn_13 = lines[1]
+				user_rating = int(eval(lines[2])/2)
+
+				b1 = Book.objects.get(isbn_13=isbn_13)
+
+				customer_account = User.objects.get(email=emails)
+				customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+
+				user_review = random.choice(["This book is AWESOME!", "I liked the twist at the end!", "Some confusion, but alright", "I love this book", "One of the best books I've ever read", "I highly recommend this book to anyone", "This author is the best"])
+
+				created_date = dt.now()
+
+				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
+			except:
+				pass
+		time.sleep(1)
+	#new_review = Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
 
 @csrf_exempt
 def book_page(request, isbn_13):
@@ -1014,7 +1038,7 @@ def clear_session(request):
 	return HttpResponse("session-cleared")
 
 def content_based_similar_user_items(request):
-	users = pd.read_csv("user_genre_2.csv")# Need to change this to user_genre when there are lots of data.
+	users = pd.read_csv("user_genre.csv")# Need to change this to user_genre when there are lots of data.
 	tfv = TfidfVectorizer(min_df=3,  max_features=None, 
             strip_accents='unicode', analyzer='word',token_pattern=r'\w{1,}',
             ngram_range=(1, 3))
