@@ -9,7 +9,7 @@ from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Book, Review, Category
-import string, random, csv, re, os, uuid, unidecode
+import string, random, csv, re, os, uuid, unidecode, time
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
 import pandas as pd
@@ -20,7 +20,55 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import sigmoid_kernel
 from scipy import sparse
 from sklearn.metrics.pairwise import cosine_similarity
+from datetime import date
 # Create your views here.
+
+def createaccount():
+	file = open("names.txt", "r").readlines()
+	file2 = open("genres.txt", "r").readlines()
+	all_names = [names.replace("\n", "") for names in file]
+	all_genres = [genres.replace("\n", "") for genres in file2]
+
+	start_dt = date.today().replace(day=1, month=1).toordinal()
+	end_dt = date.today().toordinal()
+
+	def domains():
+	    return random.choice(["@yahoo.com","@gmail.com","@hotmail.com","@outlook.com","@hotmail.fr"])
+
+	def gender():
+	    return random.choice(["Male", "Female"])
+
+	for i in all_names:
+		email = i.split(" ")[0].lower()+"."+i.split(" ")[1].lower()+str(random.randint(0,99))+domains()
+		password ="Maideen69"
+		first_name = i.split(" ")[0]
+		last_name = i.split(" ")[1]
+		birthDate = str(date.fromordinal(random.randint(start_dt, end_dt)))
+		genders = gender()
+		random_genre = random.sample(all_genres, random.randint(3, 9))
+		random_genre.sort()
+		random_genre = str(random_genre)
+		print(username,email,password,first_name,last_name, birthDate,genders,random_genre)
+
+		checkAccountExist = User.objects.filter(email=email)
+		if(len(checkAccountExist)==0):
+			user = User.objects.create_user(username=email, email=email, password=password, first_name=first_name, last_name=last_name)
+			print("New user object")
+
+			#Creating the profile for the user
+			user.customeraccountprofile_set.create(birthDate=birthDate, gender=genders, userfavouritegenre=random_genre)
+			print("new customer profile object")
+
+			listofgenre = eval(random_genre)
+			genre_to_csv = " ".join(listofgenre)
+			genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ")
+
+			with open('user_genre.csv', 'a') as csv_file:
+				# Fields are user_id,genres
+				towrite = "\n"+email+","+genre_to_csv
+				csv_file.write(towrite)
+
+		time.sleep(1)
 
 @csrf_exempt
 def index(request):
