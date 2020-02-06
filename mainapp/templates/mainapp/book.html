@@ -465,6 +465,12 @@
 		var averageRating = "{{averageRating}}";
 		//console.log(averageRating);
 		for (var i = 0; i < averageRating; i++) {
+            //To prevent 4.5 ratings from getting 5 stars
+            if (i==4) {
+                if(averageRating!=5) {
+                    break;
+                }
+            }
 			$('#star-rating').append('<i class="fa fa-star fa-2x text-primary">&nbsp;&nbsp;</i>');
 		}
 		//console.log(i);
