@@ -31,7 +31,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9788862080699,Antiques Collectibles,0,0,0,0,0.0,0
 9780801471810,History,0,0,0,0,0.0,0
 9780330462136,Juvenile Fiction,1,1,1,1,6,5
-9781781106945,Drama,0,0,0,0,7.0,200
+9781781106945,Drama,1,1,1,1,7.0,200
 9781781105757,Fiction,0,0,0,0,8,76
 9781911641926,Crafts Hobbies,0,0,0,0,0.0,0
 9780563533375,None,0,0,0,0,9.0,15
@@ -170,3 +170,17 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9783734039836,Fiction,0,0,0,0,0.0,0
 9781469112930,History,0,0,0,0,0.0,0
 9780333408117,Children'S Plays,0,0,0,0,0.0,0
+9780747574514,None,0,0,0,0,9.0,2
+9780742539594,Literary Criticism,0,0,0,0,8,6
+9781408855935,Fiction,0,0,0,0,8,125
+9781409478416,Literary Criticism,0,0,0,0,10,1
+9781598002218,Juvenile Nonfiction,0,0,0,0,10,1
+9781449316648,Computers,0,0,0,0,7.0,2
+9780596554637,Computers,0,0,0,0,4,1
+9781449341985,Computers,0,0,0,0,0.0,0
+9780596555498,Computers,0,0,0,0,8,1
+9780596004460,Computers,0,0,0,0,6,2
+9781491956625,Computers,0,0,0,0,6,1
+9781449379377,Computers,0,0,0,0,10,1
+9780596005726,Computers,0,0,0,0,0.0,0
+9780596003289,Computers,0,0,0,0,2,1

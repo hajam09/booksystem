@@ -61,7 +61,10 @@ def createaccount():
 
 			listofgenre = eval(random_genre)
 			genre_to_csv = " ".join(listofgenre)
-			genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ")
+			genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ").replace("-", " ")
+			genre_to_csv = ''.join(e for e in genre_to_csv if e.isalnum() or e==" ")
+			genre_to_csv = re.sub(" +", " ", genre_to_csv)
+			genre_to_csv = unidecode.unidecode(genre_to_csv)
 
 			with open('user_genre.csv', 'a') as csv_file:
 				# Fields are user_id,genres
@@ -211,7 +214,10 @@ def index(request):
 							if(split_item[len(split_item)-1]==" "):
 								split_item = split_item[:len(split_item)-1]
 							item = "".join(split_item)
+							item = item.replace(",", " ").replace("-", " ").replace("  ", " ")
 							item = ''.join(e for e in item if e.isalnum() or e==" ")
+							item = re.sub(" +", " ", item)
+							item = unidecode.unidecode(item)
 							checkGenreExist = Category.objects.filter(name=item)
 							if(len(checkGenreExist)==0):
 								Category.objects.create(name=item)
@@ -221,23 +227,24 @@ def index(request):
 						br_write = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(2*averageRating)+","+str(ratingsCount)
 						
 						# Fields are isbn_13,title,authors,publisher,publishedDate
-						authors = authors.replace(",", " ")
-						authors = authors.replace(",", "").replace("-", " ").replace("  ", " ")
-						authors = unidecode.unidecode(authors)
+						authors = authors.replace(",", " ").replace("-", " ").replace("–", " ")
+						authors = ''.join(e for e in authors if e.isalnum() or e==" ")
 						authors = re.sub(" +", " ", authors)
+						authors = unidecode.unidecode(authors)
 
-						publisher = publisher.replace(",", "")
+						publisher = publisher.replace(",", " ").replace("-", " ").replace("–", " ")
 						publisher = ''.join(e for e in publisher if e.isalnum() or e==" ")
 						publisher = re.sub(" +", " ", publisher)
 						publisher = unidecode.unidecode(publisher)
 
-						title = title.replace(",", "").replace("-", "").replace("–", "")
+						title = title.replace(",", " ").replace("-", " ").replace("–", " ")
 						title = ''.join(e for e in title if e.isalnum() or e==" ")
 						title = re.sub(" +", " ", title)
 						title = unidecode.unidecode(title)
 						#Use regular expression to allow letters numbers and brackets
 						bi_write = "\n"+ISBN_13+","+title+","+authors+","+publisher.title()+","+publishedDate.replace("-","/")
 
+						description = description.replace(",", " ").replace("-", " ").replace("–", " ")
 						description = ''.join(e for e in description if e.isalnum() or e==" ")
 						description = re.sub(" +", " ", description)
 						description = unidecode.unidecode(description)
@@ -356,7 +363,11 @@ def signup(request):
 			listofgenre = eval(listOfUserGenre)
 			listofgenre.sort()
 			genre_to_csv = " ".join(listofgenre)
-			genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ")
+			genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ").replace("-", " ")
+			genre_to_csv = ''.join(e for e in genre_to_csv if e.isalnum() or e==" ")
+			genre_to_csv = re.sub(" +", " ", genre_to_csv)
+			genre_to_csv = unidecode.unidecode(genre_to_csv)
+
 			with open('user_genre.csv', 'a') as csv_file:
 				# Fields are user_id,genres
 				towrite = "\n"+email+","+genre_to_csv
@@ -464,7 +475,10 @@ def update_profile(request):
 		#listofgenre.sort()
 
 		genre_to_csv = " ".join(listofgenre)
-		genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ")
+		genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ").replace("-", " ")
+		genre_to_csv = ''.join(e for e in genre_to_csv if e.isalnum() or e==" ")
+		genre_to_csv = re.sub(" +", " ", genre_to_csv)
+		genre_to_csv = unidecode.unidecode(genre_to_csv)
 
 		with open('user_genre.csv', 'r') as reader, open('user_genre_temp.csv', 'w') as writer:
 			for row in reader:
@@ -1064,7 +1078,7 @@ def clear_session(request):
 	return HttpResponse("session-cleared")
 
 def content_based_similar_user_items(request):
-	users = pd.read_csv("user_genre.csv")# Need to change this to user_genre when there are lots of data.
+	users = pd.read_csv("user_genre.csv")
 	tfv = TfidfVectorizer(min_df=3,  max_features=None, 
             strip_accents='unicode', analyzer='word',token_pattern=r'\w{1,}',
             ngram_range=(1, 3))
@@ -1100,9 +1114,12 @@ def content_based_similar_user_items(request):
 
 	#Top 10 similar users
 	book_df = list(users[users.genres.isin(list(original_table))]["user_id"])
+	#Top 3 users who are similar to this user
+	book_df = book_df[:3] if len(book_df)>3 else A[:]
+	print(book_df)
 
 	#Testing
-	book_df = ["hajam09@yahoo.com", "oliverqueen12@gmail.com"]
+	#book_df = ["hajam09@yahoo.com", "oliverqueen12@gmail.com"]
 	###
 	to_recommended_books = []
 	for users in book_df:
@@ -1223,6 +1240,7 @@ def content_based_similar_items(request, title):
 	title = ''.join(e for e in title if e.isalnum() or e==" ")
 	title = re.sub(" +", " ", title)
 	title = unidecode.unidecode(title)
+	print("TITLE",title)
 	original_table = give_rec(title)
 
 	movies_cleaned_df = movies_cleaned_df[movies_cleaned_df.title.isin(list(original_table))]
