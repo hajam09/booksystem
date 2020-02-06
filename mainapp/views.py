@@ -1078,6 +1078,7 @@ def clear_session(request):
 	return HttpResponse("session-cleared")
 
 def content_based_similar_user_items(request):
+	# Used in front_page under Favourite books from similar users'...
 	users = pd.read_csv("user_genre.csv")
 	tfv = TfidfVectorizer(min_df=3,  max_features=None, 
             strip_accents='unicode', analyzer='word',token_pattern=r'\w{1,}',
@@ -1141,7 +1142,7 @@ def content_based_similar_user_items(request):
 	return final_result
 
 def weighted_average_and_favourite_score(request):
-	#Can use this for displaying this items in book.html with tag: Book's with good ratings.
+	# Used in front_page under Books Based on Ratings...
 	book_info = pd.read_csv("book_info.csv")
 	book_rating = pd.read_csv("book_rating.csv")
 
@@ -1185,6 +1186,7 @@ def weighted_average_and_favourite_score(request):
 	return list_of_books
 
 def content_based_similar_items(request, title):
+	# Used in book.html
 	books = pd.read_csv("book_info.csv")
 	rating = pd.read_csv("book_rating.csv")
 	description = pd.read_csv("book_description.csv")
@@ -1262,6 +1264,7 @@ def content_based_similar_items(request, title):
 	#return [Book.objects.get(isbn_13=isbn_13) for isbn_13 in all_similar_books]
 
 def pearson_correlation_collaborative_filtering(request):
+	# Used in user_shelf
 	ratings = pd.read_csv('user_rating.csv')
 	movies = pd.read_csv('book_info.csv')
 	ratings = pd.merge(movies,ratings).drop(['authors','publisher','publishedDate'],axis=1)

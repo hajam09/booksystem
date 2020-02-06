@@ -16,7 +16,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781101615218,Fiction,1,1,1,1,6.0,2
 9781438139975,None,0,0,0,0,0.0,0
 9781493860869,None,0,0,0,0,5.2,23
-9780142000656,Fiction,1,1,1,0,9.0,213
+9780142000656,Fiction,1,1,1,1,9.0,213
 9780241960110,Drama,0,0,0,0,8,15
 9781474225588,Drama,1,0,0,0,0.0,0
 9780582506244,American Drama,0,0,0,0,0.0,0
@@ -45,7 +45,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781444008555,Juvenile Fiction,0,0,0,0,0.0,0
 9780955679308,None,0,0,0,0,0.0,0
 9781402256752,Juvenile Fiction,0,0,0,0,0.0,0
-9781317776338,History,0,0,0,0,6,1
+9781317776338,History,0,0,0,1,6,1
 9780878057580,Art,1,2,1,2,5.0,2
 9780878054060,Antiques Collectibles,0,0,0,0,0.0,0
 9780801874505,History,0,1,1,1,7.2,9
