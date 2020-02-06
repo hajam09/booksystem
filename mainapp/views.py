@@ -1107,15 +1107,17 @@ def content_based_similar_user_items(request):
 	user_pk = request.user.pk
 	customer_account = User.objects.get(pk=user_pk)
 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-	this_user_genres = " ".join(eval(customer_details.userfavouritegenre))
+	this_user_genres = eval(customer_details.userfavouritegenre)
+	this_user_genres.sort()
+	this_user_genres = " ".join(this_user_genres)
 	this_user_favourite_book = Book.objects.filter(favourites__id=customer_details.pk)[::1]
-
+	
 	original_table = give_rec(this_user_genres)
 
 	#Top 10 similar users
 	book_df = list(users[users.genres.isin(list(original_table))]["user_id"])
-	#Top 3 users who are similar to this user
-	book_df = book_df[:3] if len(book_df)>3 else A[:]
+	#Top 5 users who are similar to this user
+	book_df = book_df[:5] if len(book_df)>5 else A[:]
 	print(book_df)
 
 	#Testing
