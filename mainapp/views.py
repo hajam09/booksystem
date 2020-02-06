@@ -229,6 +229,7 @@ def index(request):
 						publisher = publisher.replace(",", "")
 						publisher = ''.join(e for e in publisher if e.isalnum() or e==" ")
 						publisher = re.sub(" +", " ", publisher)
+						publisher = unidecode.unidecode(publisher)
 
 						title = title.replace(",", "").replace("-", "").replace("–", "")
 						title = ''.join(e for e in title if e.isalnum() or e==" ")
