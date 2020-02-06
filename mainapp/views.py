@@ -665,14 +665,39 @@ def create_review():
 				customer_account = User.objects.get(email=emails)
 				customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
 
-				user_review = random.choice(["This book is AWESOME!", "I liked the twist at the end!", "Some confusion, but alright", "I love this book", "One of the best books I've ever read", "I highly recommend this book to anyone", "This author is the best"])
+				if(user_rating==2):
+					user_review = random.choice(["Worst book ever!!!","I just don't get it!", "I wasted my time reading this.", "AWFUL"])
+				elif(user_rating==4):
+					user_review = random.choice(["Some confusion, but alright", "Could be better!", "MEh!!!!!!!", "Could have given better thought!!!"])
+				elif(user_rating==6):
+					user_review = random.choice(["This book is alright, but I wouldn't recommend this to anyone.", "OK I guess", "3/5 I would say"])
+				elif(user_rating==8):
+					user_review = random.choice(["I highly recommend this book to anyone","I liked the twist at the end!", "One of the best books I've ever read"])
+				else:
+					user_review = random.choice(["This author is the best","This book is AWESOME!", "I love this book"])
 
 				created_date = dt.now()
 
 				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
+				
+				book_detail = b1.book_data
+
+				new_rating_count = book_detail["ratingsCount"]+1
+
+				#Calculating new average rating
+				total_rating_points = book_detail["ratingsCount"]*book_detail["averageRating"]
+				total_rating_points = total_rating_points+user_rating
+				new_average_rating = round(total_rating_points/new_rating_count, 1)
+				book_detail["ratingsCount"] = new_rating_count
+				book_detail["averageRating"] = new_average_rating
+
+				#Updating the database with the new rating count and new average rating value.
+				Book.objects.filter(isbn_13=isbn_13).update(book_data=book_detail)
+				i = i+1
+				if(i%1000==0):
+					print(i)
 			except:
 				pass
-		time.sleep(1)
 	#new_review = Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
 
 @csrf_exempt
@@ -685,6 +710,7 @@ def book_page(request, isbn_13):
 	# 		search_result.append(isbn_13)
 	# 	request.session['search_result'] = search_result
 	##########################
+
 
 	user_pk = request.user.pk
 
@@ -724,7 +750,6 @@ def book_page(request, isbn_13):
 	#Set of books to display for suggestions.
 	#item_based_recommendation = get_item_based_recommendation(csv_file)
 	average_rating_recommendation = weighted_average_and_favourite_score(request)# Not sure if this is used in book.html
-
 	#Need to get all the reviews associated with the book.
 	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 	# Redirecting to 404 page if book is not found
