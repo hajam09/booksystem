@@ -23,6 +23,39 @@ from sklearn.metrics.pairwise import cosine_similarity
 from datetime import date
 # Create your views here.
 
+
+# user_pk = request.user.pk
+# 	customer_account = User.objects.get(pk=user_pk)
+# 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+# 	this_user_genres = eval(customer_details.userfavouritegenre)
+# 	this_user_genres.sort()
+# 	this_user_genres = " ".join(this_user_genres)
+# # 	this_user_favourite_book = Book.objects.filter(favourites__id=customer_details.pk)[::1]
+
+# if(functionality=="add-to-favourites"):
+# 				favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
+# 				if(b1 not in favourite_Book):
+# 					customer_details.favourites.add(b1)
+# 					add_feature_value(isbn_13, "favourites_count")
+# 					return HttpResponse("new_object")
+
+def add_favourite_books():
+	all_users = User.objects.all()
+	for users in all_users:
+		try:
+			customer_account =  User.objects.get(pk=users.pk)
+			customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
+
+			this_user_high_rated = Review.objects.filter(customerID=customer_details.pk).filter(rating_value=5).order_by('-rating_value')# |  Review.objects.filter(customerID=customer_details.pk).filter(rating_value=5).order_by('-rating_value')
+			this_user_favourite_book = Book.objects.filter(favourites__id=customer_details.pk)
+			the_books = [i.bookID for i in this_user_high_rated]
+
+			for books in the_books:
+				if books not in this_user_favourite_book:
+					customer_details.favourites.add(books)
+		except:
+			pass
+
 def createaccount():
 	file = open("names.txt", "r").readlines()
 	file2 = open("genres.txt", "r").readlines()
