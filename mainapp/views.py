@@ -50,12 +50,11 @@ def add_favourite_books():
 			this_user_favourite_book = Book.objects.filter(favourites__id=customer_details.pk)
 			the_books = [i.bookID for i in this_user_high_rated]
 
-			for books in the_books:
-				if books not in this_user_favourite_book:
-					customer_details.favourites.add(books)
+			# for books in the_books:
+			# 	if books not in this_user_favourite_book:
+			# 		customer_details.favourites.add(books)
 		except:
 			pass
-
 def createaccount():
 	file = open("names.txt", "r").readlines()
 	file2 = open("genres.txt", "r").readlines()
@@ -1152,7 +1151,6 @@ def content_based_similar_user_items(request):
 	book_df = list(users[users.genres.isin(list(original_table))]["user_id"])
 	#Top 5 users who are similar to this user
 	book_df = book_df[:5] if len(book_df)>5 else A[:]
-	print(book_df)
 
 	#Testing
 	#book_df = ["hajam09@yahoo.com", "oliverqueen12@gmail.com"]
