@@ -631,16 +631,6 @@ def create_review():
 
 @csrf_exempt
 def book_page(request, isbn_13):
-	# if 'search_result' not in request.session:
-	# 	request.session['search_result'] = []
-	# else:
-	# 	search_result = request.session['search_result']
-	# 	if isbn_13 not in search_result:
-	# 		search_result.append(isbn_13)
-	# 	request.session['search_result'] = search_result
-	##########################
-
-
 	user_pk = request.user.pk
 
 	if request.method == "PUT" and not user_pk:
@@ -649,38 +639,13 @@ def book_page(request, isbn_13):
 	if request.method == "POST" and not user_pk:
 		return HttpResponse("not_authenticated")
 
-	#Need to add leading zero's to ISBN 10 and 13.
-	#remaining_zero = "0"*(10-len(isbn_10))
-	#isbn_10 = remaining_zero+isbn_10
+	# Need to add leading zero's to ISBN 10 and 13.
+	# remaining_zero = "0"*(10-len(isbn_10))
+	# isbn_10 = remaining_zero+isbn_10
 	# remaining_zero = ""
 	# remaining_zero = "0"*(13-len(isbn_13))
 	# isbn_13 = remaining_zero+isbn_13
 
-	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
-	# line = None
-
-	# #Need threading to improve search efficiency
-	# for row in csv_file:
-	# 	if(row[1]==isbn_13 or row[2]==isbn_10):#used to be and instead of or
-	# 		line = row
-	# 		break
-	# #Need to read file book_description file to get the description
-	# file = open("book_descriptions.txt", "r").readlines()
-	# description_line = None
-	# for row in file:
-	# 	c_line = row.split("|")
-	# 	if((c_line[0]==isbn_13 or c_line[0]=="0"+isbn_13) and (c_line[1]==isbn_10 or c_line[1]=="0"+isbn_10)):
-	# 		description_line = c_line[2].strip()
-	# 		break
-
-	#categories = replace_last_occurence(line[7], '|', ' & ', 1)#has some errors
-	#categories = re.sub("[|]", ", ", line[7])
-
-	#Set of books to display for suggestions.
-	#item_based_recommendation = get_item_based_recommendation(csv_file)
-	average_rating_recommendation = weighted_average_and_favourite_score(request)# Not sure if this is used in book.html
-	#Need to get all the reviews associated with the book.
-	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 	# Redirecting to 404 page if book is not found
 	try:
 		b1 = Book.objects.get(isbn_13=isbn_13)
@@ -701,13 +666,12 @@ def book_page(request, isbn_13):
 	except Book.DoesNotExist:
 		return redirect('mainapp:not_found')
 	book_detail = b1.book_data
-	#b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
 	book_reviews = Review.objects.filter(bookID=b1.pk)
 
 	book_title = b1.title
-	similar_books = content_based_similar_items(request, book_title)
+	similar_books = content_based_similar_items(request, book_title)#Set of books to display for suggestions.
 
-	# Remocing this instance of the book from similar_books list
+	# Removing this instance of the book from similar_books list
 	similar_books = [i for i in similar_books if not (i['isbn_13'] == isbn_13)]
 
 	# Verifying whether the comment is valid or not
@@ -722,13 +686,9 @@ def book_page(request, isbn_13):
 		review_validity.append(comment_valid)
 
 	if user_pk:
-		#If user is logged we can get more personal data
-		# Initially below 2 lines were sufficient, but then the try/except is added.
-		# customer_account = User.objects.get(pk=user_pk)
-		# customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-
-		#Return 404 page if no shelf items are found for this profile
-		#Need to return to login page if user not logged in when accessing shelf.
+		# If user is logged we can get more personal data
+		# Return 404 page if no shelf items are found for this profile
+		# Need to return to login page if user not logged in when accessing shelf.
 		try:
 			customer_account = User.objects.get(pk=user_pk)
 			customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
@@ -737,8 +697,6 @@ def book_page(request, isbn_13):
 		except User.DoesNotExist:
 			return redirect('mainapp:login')
 
-
-		#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 		# Ajax requests when the review button is clicked on the book.html
 		if request.method == "POST":
 			functionality = request.POST['functionality']
@@ -766,7 +724,6 @@ def book_page(request, isbn_13):
 				#Writing review score to csv.
 				with open('user_rating.csv', 'a') as csv_file:
 					# Fields are uid,user_id,isbn_13,rating_score
-					#towrite = "\n"+str(uuid.uuid1())+","+customer_account.email+","+isbn_13+","+str(float(2*int(user_rating)))
 					towrite = "\n"+customer_account.email+","+isbn_13+","+str(float(2*int(user_rating)))
 					csv_file.write(towrite)
 
@@ -793,18 +750,15 @@ def book_page(request, isbn_13):
 						writer.write(row)
 
 				os.remove('book_rating_temp.csv')
-				#os.rename('book_info_temp.csv', 'book_info.csv')
 				return HttpResponse(response_items)
 
-		#Ajax requests when user clicks like or dislikes the comment
-
-		# Ajax requests when the one of the four buttons are clicked on the book.html
+		# Ajax requests when user clicks like or dislike icon in in the comment.
+		# Ajax requests when one of the four buttons are clicked on the book.html
 		if request.method == "PUT":
 			put = QueryDict(request.body)
 			functionality = put.get("functionality")
 			isbn_13 = put.get("isbn_13")
 			isbn_10 = put.get("isbn_10")
-			print(functionality)
 
 			if(functionality=="add-to-favourites"):
 				favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
@@ -880,16 +834,6 @@ def book_page(request, isbn_13):
 		in_to_read_Book = True if b1 in in_to_read_Book else False
 		in_have_read_Book = True if b1 in in_have_read_Book else False
 
-		# similar_books = []
-		# if in_favourite_Book:
-		# 	#This book is one of the favourite books of this user.
-		# 	#So we can suggest similar book from this favourite book.
-		# 	book_title = b1.title
-		# 	similar_books = content_based_similar_items(request, book_title)
-		# 	#Need to display this in the book.html
-		# 	print(similar_books)
-
-
 		context = {'isbn_13': book_detail["ISBN_13"], 'isbn_10': book_detail["ISBN_10"],
 					'title': book_detail["title"], 'authors': book_detail["authors"],
 					'publisher': book_detail["publisher"], 'publishedDate': book_detail["publishedDate"],
@@ -897,18 +841,8 @@ def book_page(request, isbn_13):
 					'ratingsCount': book_detail["ratingsCount"], 'thumbnail': book_detail["thumbnail"],
 					'description': book_detail["description"], 'in_favourite_Book': in_favourite_Book,
 					'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
-					'in_have_read_Book': in_have_read_Book, 'average_rating_recommendation': average_rating_recommendation,
-					'book_reviews': book_reviews, 'review_validity': review_validity, 'similar_books': similar_books}
-
-		# context = {'isbn_13':line[1], 'isbn_10': line[2],
-		# 			'title': line[3], 'authors': line[4].replace("|", ","),
-		# 			'publisher': line[5].replace("|", ","), 'publishedDate': line[6] ,
-		# 			'categories': categories, 'averageRating': line[8],
-		# 			'ratingsCount': line[9], 'thumbnail': line[14],
-		# 			'description': description_line, 'in_favourite_Book': in_favourite_Book,
-		# 			'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
-		# 			'in_have_read_Book': in_have_read_Book, 'item_based_recommendation': item_based_recommendation,
-		# 			'book_reviews': book_reviews}
+					'in_have_read_Book': in_have_read_Book,	'book_reviews': book_reviews,
+					'review_validity': review_validity, 'similar_books': similar_books}
 		return render(request,'mainapp/book.html', context)
 
 	context = {'isbn_13': book_detail["ISBN_13"], 'isbn_10': book_detail["ISBN_10"],
@@ -918,8 +852,8 @@ def book_page(request, isbn_13):
 				'ratingsCount': book_detail["ratingsCount"], 'thumbnail': book_detail["thumbnail"],
 				'description': book_detail["description"], 'in_favourite_Book': False,
 				'in_reading_Book': False, 'in_to_read_Book': False,
-				'in_have_read_Book': False, 'average_rating_recommendation': average_rating_recommendation,
-				'book_reviews': book_reviews, 'review_validity': review_validity, 'similar_books': similar_books}
+				'in_have_read_Book': False,'book_reviews': book_reviews,
+				'review_validity': review_validity, 'similar_books': similar_books}
 	return render(request,'mainapp/book.html', context)
 
 def add_feature_value(isbn_13, feature):
