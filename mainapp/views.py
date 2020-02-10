@@ -354,9 +354,8 @@ def login(request):
 	
 	return render(request,'mainapp/login.html', {})
 
-
 def log_out(request):
-    """Log out - note that the session will be deleted"""
+    # Log out - note that the session will be deleted
     request.session.flush()
     logout(request)
     return redirect('mainapp:index')
