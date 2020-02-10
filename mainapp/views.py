@@ -378,7 +378,7 @@ def passwordforgotten(request):
 @csrf_exempt
 def update_profile(request):
 	user_pk = request.user.pk
-	if not request.user.is_authenticated:#used to be if(not user_pk):
+	if not request.user.is_authenticated:
 		return redirect('mainapp:login')
 
 	#Return 404 page if no profile found
@@ -408,6 +408,7 @@ def update_profile(request):
 		sname = "".join(fullname[len(fullname)-1])
 		email = put.get('email')
 		listofgenre = str(put.get('listofgenre').split(","))
+		print(fullname,fname,sname)
 
 		User.objects.filter(pk=int(user_pk)).update(username=email, email=email, first_name=fname, last_name=sname)
 		u = User.objects.get(pk=int(user_pk))
@@ -417,10 +418,8 @@ def update_profile(request):
 			# User wants to change the password
 			# Checking if the password is secure.
 			if(len(password)<8 or any(letter.isalpha() for letter in password)==False or any(capital.isupper() for capital in password)==False or any(number.isdigit() for number in password)==False):
-				#any(letter.isalpha() for letter in password)==False is not necessary because if checking for capitals it should check
-				#for letters as well.
 				return HttpResponse("Password is not secure enough!")
-			u.set_password(put.get('password'))
+			u.set_password(password)
 			u.save()
 
 		#Updating the user profile
@@ -430,9 +429,6 @@ def update_profile(request):
 		CustomerAccountProfile.objects.filter(pk=int(customer_details.pk)).update(userfavouritegenre=update_genre)
 
 		#Updating the genres to CSV for Data Mining
-		#listofgenre = eval(listofgenre)
-		#listofgenre.sort()
-
 		genre_to_csv = " ".join(listofgenre)
 		genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ").replace("-", " ")
 		genre_to_csv = ''.join(e for e in genre_to_csv if e.isalnum() or e==" ")
@@ -454,7 +450,6 @@ def update_profile(request):
 				writer.write(row)
 
 		os.remove('user_genre_temp.csv')
-
 		return HttpResponse("Your details are updated!")
 	return render(request,'mainapp/profilepage.html', context)
 
