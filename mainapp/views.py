@@ -301,8 +301,6 @@ def signup(request):
 
 		# Checking if the password is secure.
 		if(len(password)<8 or any(letter.isalpha() for letter in password)==False or any(capital.isupper() for capital in password)==False or any(number.isdigit() for number in password)==False):
-			#any(letter.isalpha() for letter in password)==False is not necessary because if checking for capitals it should check
-			#for letters as well.
 			return HttpResponse("Password is not secure enough!")
 		#Check if the account with same email id exist before creating a new one
 		checkAccountExist = User.objects.filter(email=email)
@@ -322,8 +320,9 @@ def signup(request):
 			#Updating the genres to CSV for Data Mining
 			listofgenre = eval(listOfUserGenre)
 			listofgenre.sort()
+
 			genre_to_csv = " ".join(listofgenre)
-			genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ").replace("-", " ")
+			genre_to_csv = genre_to_csv.replace(",", " ").replace("-", " ").replace("–", " ")
 			genre_to_csv = ''.join(e for e in genre_to_csv if e.isalnum() or e==" ")
 			genre_to_csv = re.sub(" +", " ", genre_to_csv)
 			genre_to_csv = unidecode.unidecode(genre_to_csv)
@@ -335,6 +334,7 @@ def signup(request):
 
 			return render(request,'mainapp/login.html', {})
 		return HttpResponse("An account already exists for this email address, please try again!")
+	
 	#Retrive all the categories from the database
 	all_categories = Category.objects.all()
 	categories = [i.name for i in all_categories]
