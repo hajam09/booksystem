@@ -461,7 +461,6 @@ def user_shelf(request):
 
 	user_pk = request.user.pk
 
-	#Return 404 page if no shelf items are found for this profile
 	#Need to return to login page if user not logged in when accessing shelf.
 	try:
 		customer_account = User.objects.get(pk=user_pk)
@@ -470,12 +469,6 @@ def user_shelf(request):
 		return redirect('mainapp:not_found')
 	except User.DoesNotExist:
 		return redirect('mainapp:login')
-
-	# try:
-	# 	customer_account = User.objects.get(pk=user_pk)
-	# 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-	# except:
-	# 	return redirect('mainapp:login')
 
 	#Need to check if the Book are already in favourites, reading now, to read and have read.
 	favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
@@ -486,7 +479,7 @@ def user_shelf(request):
 	user_reviewed_Book = Review.objects.filter(customerID=customer_details.pk)
 	user_visited_Book = []
 
-	##Using session to retrive all the books the user has visited recently
+	# Using session to retrive all the books the user has visited recently
 	if 'history' not in request.session:
 		request.session['history'] = []
 	else:
@@ -495,7 +488,6 @@ def user_shelf(request):
 			user_visited_Book.append(Book.objects.get(isbn_13=items))
 
 	# Ajax requests when the buttons are clicked to remove the books from the list.
-	#Need to change this to delete REQUEST
 	if request.method == "PUT":
 		put = QueryDict(request.body)
 		functionality = put.get("functionality")
@@ -510,13 +502,10 @@ def user_shelf(request):
 		# remaining_zero = "0"*(13-len(isbn_13))
 		# isbn_13 = remaining_zero+isbn_13
 
-		#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 		try:
-			# Not sure if this is necessary or just leave it as  b1 = Book.objects.get(isbn_13=isbn_13)
 			b1 = Book.objects.get(isbn_13=isbn_13)
 		except b1.DoesNotExist:
 			return redirect('mainapp:not_found')
-		# b1 = Book.objects.get(isbn_13=isbn_13)
 
 		if(functionality=="remove-from-favourites"):
 			if(b1 in favourite_Book):
@@ -539,7 +528,6 @@ def user_shelf(request):
 				return HttpResponse("remove_object_success")
 			return HttpResponse("remove_object_failure")
 
-	#Get categories and average_rating for favourite_books from csv
 	favourite_book = []
 	reading_now_book = []
 	toread_book = []
@@ -549,51 +537,27 @@ def user_shelf(request):
 	visited_Book = []
 
 	for i in favourite_Book:
-		#line = get_row_from_csv(i.isbn_13, i.isbn_10)
-		#categories = replace_last_occurence(line[7], '|', ' & ', 1)
-		#categories = re.sub("[|]", ", ", categories)
-		#book_attributes = {"isbn_13": i.isbn_13, "isbn_10": i.isbn_10, "title": i.title, "categories": categories, "average_rating": line[8]}
-		#favourite_Book[i] = book_attributes
-		#favourite_book.append(book_attributes)
 		book_detail = i.book_data
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
 		# favourite_Book[i] = book_attributes
 		favourite_book.append(book_attributes)
 
 	for j in reading_Book:
-		# line = get_row_from_csv(j.isbn_13, j.isbn_10)
-		# categories = replace_last_occurence(line[7], '|', ' & ', 1)
-		# categories = re.sub("[|]", ", ", categories)
-		#book_attributes = {"isbn_13": j.isbn_13, "isbn_10": j.isbn_10, "title": j.title, "categories": categories, "average_rating": line[8]}
-		#reading_Book[i] = book_attributes
-		#reading_now_book.append(book_attributes)
 		book_detail = j.book_data
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
-		# reading_Book[i] = book_attributes
+		# reading_Book[j] = book_attributes
 		reading_now_book.append(book_attributes)
 
 	for k in to_read_Book:
-		# line = get_row_from_csv(k.isbn_13, k.isbn_10)
-		# categories = replace_last_occurence(line[7], '|', ' & ', 1)
-		# categories = re.sub("[|]", ", ", categories)
-		#book_attributes = {"isbn_13": k.isbn_13, "isbn_10": k.isbn_10, "title": k.title, "categories": categories, "average_rating": line[8]}
-		#to_read_Book[i] = book_attributes
-		#toread_book.append(book_attributes)
 		book_detail = k.book_data
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
-		# to_read_Book[i] = book_attributes
+		# to_read_Book[k] = book_attributes
 		toread_book.append(book_attributes)
 
 	for l in have_read_Book:
-		# line = get_row_from_csv(l.isbn_13, l.isbn_10)
-		# categories = replace_last_occurence(line[7], '|', ' & ', 1)
-		# categories = re.sub("[|]", ", ", categories)
-		#book_attributes = {"isbn_13": l.isbn_13, "isbn_10": l.isbn_10, "title": l.title, "categories": categories, "average_rating": line[8]}
-		#have_read_Book[i] = book_attributes
-		#haveread_book.append(book_attributes)
 		book_detail = l.book_data
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
-		# have_read_Book[i] = book_attributes
+		# have_read_Book[l] = book_attributes
 		haveread_book.append(book_attributes)
 
 	for m in user_reviewed_Book:
@@ -606,7 +570,7 @@ def user_shelf(request):
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
 		visited_Book.append(book_attributes)
 
-	# Collaborative Filtering
+	# Collaborative Filtering from user ratings.
 	personalized_books = pearson_correlation_collaborative_filtering(request)
 
 	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book, 'visited_Book': visited_Book, 'personalized_books': personalized_books}
