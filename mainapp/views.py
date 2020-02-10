@@ -584,7 +584,6 @@ def get_row_from_csv(isbn_13, isbn_10):
 	return None
 
 def create_review():
-	i = 0
 	with open("user_rating.csv", "r") as reader:
 		for lines in reader:
 			try:
@@ -626,12 +625,9 @@ def create_review():
 
 				#Updating the database with the new rating count and new average rating value.
 				Book.objects.filter(isbn_13=isbn_13).update(book_data=book_detail)
-				i = i+1
-				if(i%1000==0):
-					print(i)
 			except:
 				pass
-	#new_review = Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
+	return
 
 @csrf_exempt
 def book_page(request, isbn_13):
