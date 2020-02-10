@@ -21,23 +21,8 @@ from sklearn.metrics.pairwise import sigmoid_kernel
 from scipy import sparse
 from sklearn.metrics.pairwise import cosine_similarity
 from datetime import date
+# 1413 lines of code before cleanup
 # Create your views here.
-
-
-# user_pk = request.user.pk
-# 	customer_account = User.objects.get(pk=user_pk)
-# 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-# 	this_user_genres = eval(customer_details.userfavouritegenre)
-# 	this_user_genres.sort()
-# 	this_user_genres = " ".join(this_user_genres)
-# # 	this_user_favourite_book = Book.objects.filter(favourites__id=customer_details.pk)[::1]
-
-# if(functionality=="add-to-favourites"):
-# 				favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
-# 				if(b1 not in favourite_Book):
-# 					customer_details.favourites.add(b1)
-# 					add_feature_value(isbn_13, "favourites_count")
-# 					return HttpResponse("new_object")
 
 def add_favourite_books():
 	all_users = User.objects.all()
@@ -50,11 +35,12 @@ def add_favourite_books():
 			this_user_favourite_book = Book.objects.filter(favourites__id=customer_details.pk)
 			the_books = [i.bookID for i in this_user_high_rated]
 
-			# for books in the_books:
-			# 	if books not in this_user_favourite_book:
-			# 		customer_details.favourites.add(books)
+			for books in the_books:
+				if books not in this_user_favourite_book:
+					customer_details.favourites.add(books)
 		except:
 			pass
+	return
 def createaccount():
 	file = open("names.txt", "r").readlines()
 	file2 = open("genres.txt", "r").readlines()
@@ -104,6 +90,7 @@ def createaccount():
 				csv_file.write(towrite)
 
 		time.sleep(1)
+	return
 
 @csrf_exempt
 def index(request):
@@ -127,9 +114,8 @@ def index(request):
 					the_book = Book.objects.get(isbn_13=books)
 					book_detail = the_book.book_data
 					book_attributes = {"uid": book_detail["id"], "thumbnail": book_detail["thumbnail"], "isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "authors": book_detail["authors"], "ratingsCount": book_detail["ratingsCount"], "averageRating": book_detail["averageRating"]}
-					#print("book_attributes", book_attributes)
+
 					new_result.append(book_attributes)
-					#book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
 					request.session['search_result'] = new_result
 				except:
 					pass
@@ -152,13 +138,10 @@ def index(request):
 					authors = book['volumeInfo']['authors']
 					authors.sort()
 					authors = ",".join(authors)
-					#authors = authors[0].replace(",", "|")
 				except:
 					authors = "None"
 				try:
 					publisher = book['volumeInfo']['publisher']
-					#publisher = ",".join(publisher)
-					#publisher = publisher.replace(",", "|")
 				except:
 					publisher = "None"
 				try:
@@ -191,9 +174,6 @@ def index(request):
 				try:
 					categorie = book['volumeInfo']['categories']
 					categories = [i.title().replace(",", " &").replace("  ", "") for i in categorie]
-
-					#categories = "".join(categories)
-					#categories = re.sub("[,&]", "|", categories)
 				except:
 					categories = ["None"]
 				
@@ -219,9 +199,9 @@ def index(request):
 				# remaining_zero = "0"*(13-len(ISBN_13))
 				# ISBN_13 = remaining_zero+ISBN_13
 				# Add book to system if not exist
+
 				checkBookExist = Book.objects.filter(isbn_13=ISBN_13)
 				if(len(checkBookExist)==0):
-					#print("New book")
 					book_data = {"id": uid, "etag": etag, "title": title,
 					"authors": authors, "publisher": publisher, "publishedDate": publishedDate,
 					"description": description, "ISBN_10": ISBN_10, "ISBN_13": ISBN_13,
@@ -273,7 +253,7 @@ def index(request):
 						title = ''.join(e for e in title if e.isalnum() or e==" ")
 						title = re.sub(" +", " ", title)
 						title = unidecode.unidecode(title)
-						#Use regular expression to allow letters numbers and brackets
+
 						bi_write = "\n"+ISBN_13+","+title+","+authors+","+publisher.title()+","+publishedDate.replace("-","/")
 
 						description = description.replace(",", " ").replace("-", " ").replace("–", " ")
@@ -285,56 +265,13 @@ def index(request):
 						br_writer.write(br_write)
 						bi_writer.write(bi_write)
 						bd_writer.write(bd_write)
-					# # Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
-					# with open('book_rating.csv', 'a') as csv_file:
-					# 	# Fields are isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
-					# 	towrite = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(2*averageRating)+","+str(ratingsCount)
-					# 	csv_file.write(towrite)
 
-					# # Writing isbn_13,title,authors,publisher,publishedDate to book_info.csv
-					# with open('book_info.csv', 'a') as csv_file:
-					# 	# Fields are isbn_13,title,authors,publisher,publishedDate
-					# 	authors = authors.replace(",", " ")
-					# 	authors = unidecode.unidecode(authors)
-					# 	publisher = publisher.replace(",", "")
-					# 	publisher = re.sub(" +", " ", publisher)
-
-					# 	title = title.replace(",", "").replace("-", "").replace("–", "")
-					# 	title = re.sub(" +", " ", title)
-					# 	#Use regular expression to allow letters numbers and brackets
-					# 	towrite = "\n"+ISBN_13+","+title+","+authors.replace(",", "").replace("-", " ").replace("  ", " ")+","+publisher.title()+","+publishedDate.replace("-","/")
-					# 	csv_file.write(towrite)
-
-
-				# #Add book to system if not exist
-				# checkBookExist = Book.objects.filter(isbn_13=ISBN_13, isbn_10=ISBN_10)
-				# #checkBookExist = Book.objects.filter(isbn_13 = ISBN_13) | Item.objects.filter(isbn_10 = ISBN_10)
-				# if(len(checkBookExist)==0):
-				# 	print("New book")
-				# 	Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title)
-				# 	with open('book_info.csv', 'a') as csv_file:
-				# 		towrite = "\n"+uid+","+ISBN_13+","+ISBN_10+","+title+","+authors+","+publisher+","+publishedDate+","+categories+","+str(float(averageRating))+","+str(ratingsCount)+","+"0"+","+"0"+","+"0"+","+"0"+","+thumbnail
-				# 		csv_file.write(towrite)
-
-				# 	text_file = open("book_descriptions.txt", "a")
-				# 	item_to_write = ISBN_13 + "|" + ISBN_10 + "|" + description + "\n"
-				# 	text_file.write(item_to_write)
-				# 	text_file.close()
-
-
-		# 		for isbn_13 in all_similar_books:
-		# the_book = Book.objects.get(isbn_13=str(isbn_13))
-		# the_data = the_book.book_data
-		# book_item = {"isbn_13": the_book.isbn_13, "isbn_10": the_book.isbn_10, "title": the_book.title, "thumbnail": the_data["thumbnail"]}
-		# list_of_books.append(book_item)
-
-	#Can use this for displaying this items in book.html with tag: Book's with good ratings.
+	#Can use this for displaying items in book.html with tag: Book's with good ratings.
 	try:
 		average_rating_recommendation = weighted_average_and_favourite_score(request)
 	except:
 		average_rating_recommendation = []
 	
-
 	recent_search = request.session['search_result']
 
 	# Getting the recently added items
@@ -347,19 +284,10 @@ def index(request):
 		book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
 		recently_added_books.append(book_item)
 
-	# Getting highly rated books // May not need this
-	highly_rated_books = []
-
-	for items in all_books:
-		the_data = items.book_data
-		# In the future need hight average rating and higher ratings count
-		if(the_data["averageRating"]>=5.0 and the_data["ratingsCount"]>=1):
-			book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
-			highly_rated_books.append(book_item)
 	other_user_favourite_books = []
 	if request.user.is_authenticated:
 		other_user_favourite_books = content_based_similar_user_items(request)
-	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books, "average_rating_recommendation": average_rating_recommendation, "other_user_favourite_books": other_user_favourite_books})
+	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "average_rating_recommendation": average_rating_recommendation, "other_user_favourite_books": other_user_favourite_books})
 
 @csrf_exempt
 def signup(request):
