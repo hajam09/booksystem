@@ -148,28 +148,29 @@ def index(request):
 				uid = book['id']
 				etag = book['etag']
 				title = book['volumeInfo']['title']
-				try:
+
+				if('authors' in  book['volumeInfo']):
 					authors = book['volumeInfo']['authors']
 					authors.sort()
 					authors = ",".join(authors)
-					#authors = authors[0].replace(",", "|")
-				except:
+				else:
 					authors = "None"
-				try:
+
+				if('publisher' in book['volumeInfo']):
 					publisher = book['volumeInfo']['publisher']
-					#publisher = ",".join(publisher)
-					#publisher = publisher.replace(",", "|")
-				except:
+				else:
 					publisher = "None"
-				try:
+
+				if('publishedDate' in book['volumeInfo']):
 					publishedDate = book['volumeInfo']['publishedDate']
-				except:
+				else:
 					publishedDate = "None"
-				try:
+
+				if('description' in book['volumeInfo']):
 					description = book['volumeInfo']['description']
-				except:
+				else:
 					description = "None"
-				#In the response ISBN10 and ISBN13 position may change
+
 				ISBN_13 = None
 				ISBN_10 = None
 				if(book['volumeInfo']['industryIdentifiers'][0]['type'] == "ISBN_10"):
@@ -182,35 +183,82 @@ def index(request):
 				elif(book['volumeInfo']['industryIdentifiers'][1]['type'] == "ISBN_13"):
 					ISBN_13 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
 
+				if('categories' in book['volumeInfo']):
+					categorie = book['volumeInfo']['categories']
+					categories = [i.title().replace(",", " &").replace("  ", "") for i in categorie]
+				else:
+					categories = ["None"]
+
+				if('averageRating' in book['volumeInfo']):
+					averageRating = book['volumeInfo']['averageRating']
+				else:
+					averageRating = 0.0
+				averageRating = round(averageRating,1)
+
+				if('ratingsCount' in book['volumeInfo']):
+					ratingsCount = book['volumeInfo']['ratingsCount']
+				else:
+					ratingsCount = 0
+
+				if('thumbnail' in book['volumeInfo']['imageLinks']):
+					thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
+				else:
+					thumbnail = "None"
+
 				#Add isbn13 to search_result session
 				if 'search_result' in request.session:
 					search_result_history = request.session["search_result"]
 					search_result_history.append(ISBN_13)
 				request.session["search_result"] = search_result_history
 
-				try:
-					categorie = book['volumeInfo']['categories']
-					categories = [i.title().replace(",", " &").replace("  ", "") for i in categorie]
 
-					#categories = "".join(categories)
-					#categories = re.sub("[,&]", "|", categories)
-				except:
-					categories = ["None"]
+
+				# try:
+				# 	authors = book['volumeInfo']['authors']
+				# 	authors.sort()
+				# 	authors = ",".join(authors)
+				# 	#authors = authors[0].replace(",", "|")
+				# except:
+				# 	authors = "None"
+				# try:
+				# 	publisher = book['volumeInfo']['publisher']
+				# 	#publisher = ",".join(publisher)
+				# 	#publisher = publisher.replace(",", "|")
+				# except:
+				# 	publisher = "None"
+				# try:
+				# 	publishedDate = book['volumeInfo']['publishedDate']
+				# except:
+				# 	publishedDate = "None"
+				# try:
+				# 	description = book['volumeInfo']['description']
+				# except:
+				# 	description = "None"
+				#In the response ISBN10 and ISBN13 position may change
+
+				# try:
+				# 	categorie = book['volumeInfo']['categories']
+				# 	categories = [i.title().replace(",", " &").replace("  ", "") for i in categorie]
+
+				# 	#categories = "".join(categories)
+				# 	#categories = re.sub("[,&]", "|", categories)
+				# except:
+				# 	categories = ["None"]
 				
-				try:
-					averageRating = book['volumeInfo']['averageRating']
-				except:
-					averageRating = 0.0
-				averageRating = round(averageRating,1)
-				try:
-					ratingsCount = book['volumeInfo']['ratingsCount']
-				except:
-					ratingsCount = 0
+				# try:
+				# 	averageRating = book['volumeInfo']['averageRating']
+				# except:
+				# 	averageRating = 0.0
+				# averageRating = round(averageRating,1)
+				# try:
+				# 	ratingsCount = book['volumeInfo']['ratingsCount']
+				# except:
+				# 	ratingsCount = 0
 
-				try:
-					thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
-				except:
-					thumbnail = "None"
+				# try:
+				# 	thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
+				# except:
+				# 	thumbnail = "None"
 
 				#Need to add leading zero's to ISBN 10 and 13.
 				# remaining_zero = "0"*(10-len(ISBN_10))
@@ -221,7 +269,7 @@ def index(request):
 				# Add book to system if not exist
 				checkBookExist = Book.objects.filter(isbn_13=ISBN_13)
 				if(len(checkBookExist)==0):
-					#print("New book")
+					print("New book")
 					book_data = {"id": uid, "etag": etag, "title": title,
 					"authors": authors, "publisher": publisher, "publishedDate": publishedDate,
 					"description": description, "ISBN_10": ISBN_10, "ISBN_13": ISBN_13,
