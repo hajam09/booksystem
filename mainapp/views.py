@@ -875,7 +875,6 @@ def add_feature_value(isbn_13, feature):
 		for row in reader:
 			writer.write(row)
 	os.remove('book_rating_temp.csv')
-	#os.rename('book_info_temp.csv', 'book_info.csv')
 	return
 
 def subtract_feature_value(isbn_13, feature):
@@ -897,7 +896,6 @@ def subtract_feature_value(isbn_13, feature):
 		for row in reader:
 			writer.write(row)
 	os.remove('book_rating_temp.csv')
-	#os.rename('book_info_temp.csv', 'book_info.csv')
 	return
 
 def get_item_based_recommendation(csv_file):
