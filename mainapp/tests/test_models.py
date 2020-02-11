@@ -54,8 +54,8 @@ class CustomerAccountProfileTest(TestCase):
 		user_profile = CustomerAccountProfile.objects.get(userid=user)
 		user_genre = user_profile.userfavouritegenre
 		self.assertEqual(user_genre, "['Adventures', 'Horror', 'Romance']")
-		self.assertTrue(isinstance(user_genre, str))
-		self.assertTrue(isinstance(eval(user_genre), list))
+		self.assertIsInstance(user_genre, str)
+		self.assertIsInstance(eval(user_genre), list)
 
 class BookTest(TestCase):
 	def setUp(self):
@@ -116,13 +116,15 @@ class ReviewTest(TestCase):
 		self.assertEqual(self.new_review.bookID, self.book)
 
 	def test_rating_value(self):
-		self.assertTrue(self.checkifless(self.new_review.rating_value))
+		self.assertLessEqual(self.new_review.rating_value, 5)
+		self.assertTrue(self.checkifless(self.new_review.rating_value))#Same as above.
 
 	def checkifless(self, rating_value):
 		return rating_value<=5
 
 	def test_review_date(self):
-		self.assertTrue(self.checkdate(self.new_review.created_at))
+		self.assertLessEqual(self.new_review.created_at, dt.now())
+		self.assertTrue(self.checkdate(self.new_review.created_at))#Same as above.
 
 	def checkdate(self, created_at):
 		return created_at<=dt.now()
