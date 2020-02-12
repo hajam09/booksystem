@@ -844,7 +844,7 @@ def book_page(request, isbn_13):
 
 	#Set of books to display for suggestions.
 	#item_based_recommendation = get_item_based_recommendation(csv_file)
-	average_rating_recommendation = weighted_average_and_favourite_score(request)# Not sure if this is used in book.html
+	
 	#Need to get all the reviews associated with the book.
 	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 	# Redirecting to 404 page if book is not found
@@ -866,6 +866,7 @@ def book_page(request, isbn_13):
 		#########################
 	except Book.DoesNotExist:
 		return redirect('mainapp:not_found')
+	average_rating_recommendation = weighted_average_and_favourite_score(request)# Not sure if this is used in book.html
 	book_detail = b1.book_data
 	#b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
 	book_reviews = Review.objects.filter(bookID=b1.pk)
@@ -928,6 +929,7 @@ def book_page(request, isbn_13):
 				book_detail["averageRating"] = new_average_rating
 
 				#Updating the database with the new rating count and new average rating value.
+				## Need to comment these below when unit testing
 				Book.objects.filter(isbn_13=isbn_13).update(book_data=book_detail)
 				#Writing review score to csv.
 				with open('user_rating.csv', 'a') as csv_file:

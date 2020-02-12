@@ -150,7 +150,7 @@ class UserShelfTest(TestCase):
 		self.assertEquals(response.status_code, 302)
 		self.assertRedirects(response, '/not_found/')
 
-		#In correct ISBN 13
+		#Incorrect ISBN 13
 		payload = {"functionality": "remove-from-favourites", "isbn_13": 9876555512345, "isbn_10": 7685747586}
 		response = self.client.put(reverse('mainapp:user_shelf'), payload)
 		self.assertEquals(response.status_code, 302)
@@ -158,10 +158,59 @@ class UserShelfTest(TestCase):
 
 		#Function is not receiving payload
 
-	def test_ajax_put_book_does_not_exist(self):
+	def test_ajax_put(self):
 		pass
-class BookPageTest(TestCase):
-	pass
 
+class BookPageTest(TestCase):
+	def create_user(self, u, e, p, f, l):
+		return User.objects.create_user(username=u, email=e, password=p, first_name=f, last_name=l)
+
+	def create_user_profile(self, u ,b, g, ug):
+		return u.customeraccountprofile_set.create(birthDate=b, gender=g, userfavouritegenre=ug)
+
+	def setUp(self):
+		self.client = Client()
+		self.factory = RequestFactory()
+		newuser = self.create_user("josh.brolin@gmail.com", "josh.brolin@gmail.com", "RanDomPasWord56", "Josh", "Brolin")
+		newprofile = self.create_user_profile(newuser, "2019-03-22", "Male", "['Adventures', 'Horror', 'Romance']")
+		self.logged_in = self.client.login(username='josh.brolin@gmail.com', password='RanDomPasWord56')
+
+		ISBN_13 = 9876543212345
+		ISBN_10 = 7685747586
+		title = "A View from the Bridge"
+		book_data = { "id": "vKJewgEACAAJ", "etag": "e8wZTpMgieo", "title": "A View from the Bridge",
+		"authors": "Mohamed,Haja,Nijam", "publisher": "Longman", "publishedDate": "1999-02-11",
+		"description": "Some random description for this book.", "ISBN_10": "7685747586",
+		"ISBN_13": "9876543212345", "categories": [ "Digital Communications" ], "averageRating": 0.0,
+		"ratingsCount": 0, "thumbnail": "http://books.google.com/books/content?id=vKJewgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" }
+		self.new_book = Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+
+	def test_redirects(self):
+
+		response = self.client.get(reverse('mainapp:book_page', kwargs={'isbn_13': 7876543212345}))
+		self.assertEquals(response.status_code, 302)
+		self.assertRedirects(response, '/not_found/')
+
+		self.client.logout()
+
+		payload = {"functionality": "remove-from-favourites", "isbn_13": 9876543212345, "isbn_10": 7685747586}
+		response = self.client.put(reverse('mainapp:book_page', kwargs={'isbn_13':9876543212345}), payload)
+		self.assertEquals(response.status_code, 200)
+		self.assertEquals(response.content.decode("utf-8"), "not_authenticated")
+
+		payload = {"functionality": "remove-from-favourites", "isbn_13": 9876543212345, "isbn_10": 7685747586}
+		response = self.client.post(reverse('mainapp:book_page', kwargs={'isbn_13':"9876543212345"}), payload)
+		self.assertEquals(response.status_code, 200)
+		self.assertEquals(response.content.decode("utf-8"), "not_authenticated")
+
+	def test_user_with_no_profile(self):
+		# newuser = self.create_user("joshu.brolin2@gmail.com", "joshu.brolin2@gmail.com", "RanDomPasWord56", "Josh", "Brolin")
+		# self.logged_in = self.client.login(username='joshu.brolin@gmail.com', password='RanDomPasWord56')
+		# response = self.client.get(reverse('mainapp:book_page', kwargs={'isbn_13':9876543212345}))
+		# self.assertRedirects(response, '/not_found/')
+		pass
+
+	def test_create_review(self):
+		pass
 class NotFoundTest(TestCase):
 	pass
