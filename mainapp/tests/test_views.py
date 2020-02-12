@@ -99,13 +99,15 @@ class UpdateProfileTest(TestCase):
 
 		response = self.client.get(reverse('mainapp:update_profile'))
 		self.assertEquals(response.status_code, 302)
-		self.assertEquals(response.url, '/login/')
+		self.assertRedirects(response, '/login/')
+		#self.assertEquals(response.url, '/login/')
 
 		newuser = self.create_user("joshu.brolin@gmail.com", "joshu.brolin@gmail.com", "RanDomPasWord56", "Josh", "Brolin")
 		self.logged_in = self.client.login(username='joshu.brolin@gmail.com', password='RanDomPasWord56')
 		response = self.client.get(reverse('mainapp:update_profile'))
 		self.assertEquals(response.status_code, 302)
-		self.assertEquals(response.url, '/not_found/')
+		self.assertRedirects(response, '/not_found/')
+		# self.assertEquals(response.url, '/not_found/')
 
 class UserShelfTest(TestCase):
 	pass
