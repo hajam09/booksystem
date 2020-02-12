@@ -1,7 +1,8 @@
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.contrib import auth
 from django.urls import path, include, reverse, resolve
 from datetime import datetime as dt, date
 from mainapp.models import CustomerAccountProfile, Book, Review, Category
@@ -52,20 +53,59 @@ class SignupTest(TestCase):
 
 class LoginTest(TestCase):
 	def setUp(self):
-		client = Client()
+		self.client = Client()
+		user = User.objects.create_user(username='josh.brolin@gmail.com', email='josh.brolin@gmail.com', password='Maideen69', first_name='Josh', last_name='Brolin')
 
-	# def test_ajax_post(self):
-	# 	# With correct password
-	# 	payload = {'email': 'hajam09@yahoo.com', 'password': 'Maideen69'}
-	# 	response = self.client.post(reverse('mainapp:login'), payload, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
-	# 	self.assertEquals(response.status_code, 200)
-	# 	print("###",response.content)
+	def test_ajax_post(self):
+		#Incorrect e-mail / password
+		payload = {'email': 'josh.brolin@gmail.com', 'password': 'Ma8hgv6een89'}
+		response = self.client.post(reverse('mainapp:login'), payload, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+		self.assertEquals(response.status_code, 200)
+		self.assertEquals(response.content.decode("utf-8"), "Sorry! Username and Password didn't match, Please try again!")
+
+		#Correct e-mail / password
+		payload = {'email': 'josh.brolin@gmail.com', 'password': 'Maideen69'}
+		response = self.client.post(reverse('mainapp:login'), payload,follow=True, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+		self.assertEquals(response.status_code, 200)
+		self.assertTrue(response.context['user'].is_authenticated)
 
 class LogoutTest(TestCase):
 	pass
 
 class UpdateProfileTest(TestCase):
-	pass
+	def create_user(self, u, e, p, f, l):
+		return User.objects.create_user(username=u, email=e, password=p, first_name=f, last_name=l)
+
+	def create_user_profile(self, u ,b, g, ug):
+		return u.customeraccountprofile_set.create(birthDate=b, gender=g, userfavouritegenre=ug)
+
+	def setUp(self):
+		self.client = Client()
+		self.factory = RequestFactory()
+		newuser = self.create_user("josh.brolin@gmail.com", "josh.brolin@gmail.com", "RanDomPasWord56", "Josh", "Brolin")
+		newprofile = self.create_user_profile(newuser, "2019-03-22", "Male", "['Adventures', 'Horror', 'Romance']")
+		self.logged_in = self.client.login(username='josh.brolin@gmail.com', password='RanDomPasWord56')
+
+	def test_ajax_put(self):
+		#payload not passed to the view function
+		# payload = {'fullname': 'Anthony Josh', 'email': 'josh.brolin@gmail.com', 'password': "123", 'listofgenre': "['Crime', 'Comics', 'Action']"}
+		# response = self.client.put(reverse('mainapp:update_profile'), payload, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+		# self.assertEquals(response.status_code, 200)
+		# self.assertEquals(response.content.decode("utf-8"), "Passsword is not secure enough!")
+		pass
+
+	def test_redirects(self):
+		self.client.logout()
+
+		response = self.client.get(reverse('mainapp:update_profile'))
+		self.assertEquals(response.status_code, 302)
+		self.assertEquals(response.url, '/login/')
+
+		newuser = self.create_user("joshu.brolin@gmail.com", "joshu.brolin@gmail.com", "RanDomPasWord56", "Josh", "Brolin")
+		self.logged_in = self.client.login(username='joshu.brolin@gmail.com', password='RanDomPasWord56')
+		response = self.client.get(reverse('mainapp:update_profile'))
+		self.assertEquals(response.status_code, 302)
+		self.assertEquals(response.url, '/not_found/')
 
 class UserShelfTest(TestCase):
 	pass
