@@ -625,7 +625,7 @@ def user_shelf(request):
 	if request.method == "PUT":
 		put = QueryDict(request.body)
 		functionality = put.get("functionality")
-		objective = put.get("objective")
+		objective = put.get("objective")# Not sure if this used in html and here
 		isbn_13 = put.get("isbn_13")
 		isbn_10 = put.get("isbn_10")
 
@@ -640,7 +640,7 @@ def user_shelf(request):
 		try:
 			# Not sure if this is necessary or just leave it as  b1 = Book.objects.get(isbn_13=isbn_13)
 			b1 = Book.objects.get(isbn_13=isbn_13)
-		except b1.DoesNotExist:
+		except Book.DoesNotExist:
 			return redirect('mainapp:not_found')
 		# b1 = Book.objects.get(isbn_13=isbn_13)
 
