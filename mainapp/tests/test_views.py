@@ -220,6 +220,8 @@ class BookPageTest(TestCase):
 		# self.assertEquals(int(the_response[3]), payload["user_rating"])
 		pass
 
+	#Need to test for put request for 4 buttons
+
 class NotFoundTest(TestCase):
 	def test_404_page(self):
 		response = self.client.get(reverse('mainapp:not_found'))
