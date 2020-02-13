@@ -221,6 +221,13 @@ class BookPageTest(TestCase):
 		pass
 
 	#Need to test for put request for 4 buttons
+	def test_put_favourites(self):
+		# payload not received for put request
+		# self.logged_in = self.client.login(username='josh.brolin@gmail.com', password='RanDomPasWord56')
+		# payload = {"functionality": "add-to-favourites", "isbn_13": "9876543212345"}
+		# response = self.client.put(reverse('mainapp:book_page', kwargs={'isbn_13':"9876543212345"}), payload)
+		# self.assertEquals(response.status_code, 200)
+		pass
 
 class NotFoundTest(TestCase):
 	def test_404_page(self):
