@@ -156,7 +156,7 @@ class UserShelfTest(TestCase):
 		self.assertEquals(response.status_code, 302)
 		self.assertRedirects(response, '/not_found/')
 
-		#Function is not receiving payload
+		#Function is not receiving payload for put request
 
 	def test_ajax_put(self):
 		pass
@@ -175,15 +175,16 @@ class BookPageTest(TestCase):
 		newprofile = self.create_user_profile(newuser, "2019-03-22", "Male", "['Adventures', 'Horror', 'Romance']")
 		self.logged_in = self.client.login(username='josh.brolin@gmail.com', password='RanDomPasWord56')
 
-		ISBN_13 = 9876543212345
-		ISBN_10 = 7685747586
+		ISBN_13 = "9876543212345"
+		ISBN_10 = "7685747586"
 		title = "A View from the Bridge"
 		book_data = { "id": "vKJewgEACAAJ", "etag": "e8wZTpMgieo", "title": "A View from the Bridge",
 		"authors": "Mohamed,Haja,Nijam", "publisher": "Longman", "publishedDate": "1999-02-11",
 		"description": "Some random description for this book.", "ISBN_10": "7685747586",
 		"ISBN_13": "9876543212345", "categories": [ "Digital Communications" ], "averageRating": 0.0,
 		"ratingsCount": 0, "thumbnail": "http://books.google.com/books/content?id=vKJewgEACAAJ&printsec=frontcover&img=1&zoom=1&source=gbs_api" }
-		self.new_book = Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+		new_book = Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+		self.book = new_book
 
 	def test_redirects(self):
 
@@ -203,14 +204,23 @@ class BookPageTest(TestCase):
 		self.assertEquals(response.status_code, 200)
 		self.assertEquals(response.content.decode("utf-8"), "not_authenticated")
 
-	def test_user_with_no_profile(self):
-		# newuser = self.create_user("joshu.brolin2@gmail.com", "joshu.brolin2@gmail.com", "RanDomPasWord56", "Josh", "Brolin")
-		# self.logged_in = self.client.login(username='joshu.brolin@gmail.com', password='RanDomPasWord56')
-		# response = self.client.get(reverse('mainapp:book_page', kwargs={'isbn_13':9876543212345}))
-		# self.assertRedirects(response, '/not_found/')
+	def test_create_review(self):
+		# Need to comment out some following in views.py BUT WORKS
+		#average_rating_recommendation = weighted_average_and_favourite_score(request)
+		#similar_books = content_based_similar_items(request, book_title)
+		# payload = {"functionality": "create-review", "isbn_13": "9876543212345", "isbn_10": "7685747586", 'user_review': "Some review for this book", "user_rating": 4}
+		# self.logged_in = self.client.login(username='josh.brolin@gmail.com', password='RanDomPasWord56')
+		# response = self.client.post(reverse('mainapp:book_page', kwargs={'isbn_13':"9876543212345"}), payload, HTTP_X_REQUESTED_WITH='XMLHttpRequest')
+		# self.assertEquals(response.status_code, 200)
+		# the_response = response.content.decode("utf-8").split("&nbsp;")
+		# self.assertEquals(the_response[0], "revew_created_successfully")
+		# the_user = User.objects.get(email="josh.brolin@gmail.com")
+		# self.assertEquals(the_response[1], the_user.first_name+" "+the_user.last_name)
+		# self.assertEquals(the_response[2], payload["user_review"])
+		# self.assertEquals(int(the_response[3]), payload["user_rating"])
 		pass
 
-	def test_create_review(self):
-		pass
 class NotFoundTest(TestCase):
-	pass
+	def test_404_page(self):
+		response = self.client.get(reverse('mainapp:not_found'))
+		self.assertEquals(response.status_code, 200)
