@@ -111,7 +111,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781250048097,Fiction,0,0,0,0,8,3101
 9781446439746,Fiction,0,0,0,0,8,3102
 9781539092346,None,0,0,0,0,0.0,0
-9780099586579,Fiction,0,0,0,0,8,3101
+9780099586579,Fiction,0,0,1,0,8.0,3202
 9781848941328,Fiction,0,0,0,0,6,8
 9781473567856,Fiction,0,0,0,0,6,38
 9781448183739,Fiction,0,0,0,0,6,38
