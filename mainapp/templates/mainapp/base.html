@@ -27,10 +27,10 @@
 	    <nav class="navbar navbar-inverse" style="background-color: #002952"><!--navbar-default for white navbar-->
 	    	<div class="container-fluid">
 	    		<div class="navbar-header">
-	    			<a class="navbar-brand" href="{% url 'mainapp:index' %}" onclick="clearSession();">One Book</a>
+	    			<a class="navbar-brand" href="{% url 'mainapp:clear_session' %}" >One Book</a>
 	    		</div>
 	    		<ul class="nav navbar-nav navbar-right" style="background-color: #002952">
-	    			<li class="active"><a href="{% url 'mainapp:index' %}" onclick="clearSession();" style="background-color: #002952">Home</a></li>
+	    			<li class="active"><a href="{% url 'mainapp:clear_session' %}" style="background-color: #002952">Home</a></li>
 	    			{% if user.is_authenticated %}
 	    			<li class="dropdown">
 	    				<a class="dropdown-toggle" data-toggle="dropdown" href="#">Account<span class="caret"></span></a>

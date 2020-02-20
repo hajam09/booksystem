@@ -135,6 +135,7 @@ def index(request):
 					pass
 			print("search_result exists")
 		else:
+			request.session['search_result'] = []
 			print("Empty search_result session")
 
 	if request.method == 'POST':
@@ -1157,6 +1158,7 @@ def clear_session(request):
 	#Function called when One Book button or Home button is clicked in base.html
 	if 'search_result' in request.session:
 		request.session['search_result'] = []
+		return redirect("mainapp:index")
 	return HttpResponse("session-cleared")
 
 def content_based_similar_user_items(request):
