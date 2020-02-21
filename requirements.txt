@@ -6,3 +6,4 @@ django-jsonfield
 Unidecode
 -U scikit-learn
 seaborn
+selenium==3.0.2
