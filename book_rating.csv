@@ -3,7 +3,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780822208389,Drama,0,0,0,0,7.0,14
 9780399549199,Juvenile Fiction,1,2,2,2,8.0,27
 9780764118128,Pets,1,2,2,2,5.8,113
-9788184974560,Juvenile Fiction,2,1,1,1,0.0,0
+9788184974560,Juvenile Fiction,2,1,1,1,6.2,91
 9780674631113,Science,1,1,1,1,8.0,2
 9780141389103,Juvenile Fiction,0,1,0,1,8.4,9
 9781350035959,Literary Criticism,0,0,0,0,0.0,0
@@ -242,7 +242,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781869555467,Beginner Reader,0,0,0,0,0.0,0
 9781869610791,Children'S Stories New Zealand,0,0,0,0,0.0,0
 9781869611033,Animals,0,0,0,0,0.0,0
-9780763573966,Education,0,0,0,0,0.0,0
+9780763573966,Education,1,1,1,1,6.0,1
 9780763574277,Education,0,0,0,0,0.0,0
 9781606891124,Mice,0,0,0,0,0.0,0
 9780985920425,None,0,0,0,0,0.0,0
@@ -261,3 +261,4 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780822329398,History,0,0,0,0,0.0,0
 9781476674445,Literary Criticism,0,0,0,0,0.0,0
 9780132704823,Computers,0,0,0,0,0.0,0
+9781136108389,Photography,0,0,0,0,0.0,0
