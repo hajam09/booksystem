@@ -4,6 +4,6 @@ pandas
 django-mysql
 django-jsonfield
 Unidecode
--U scikit-learn
+scikit-learn
 seaborn
 selenium==3.0.2
