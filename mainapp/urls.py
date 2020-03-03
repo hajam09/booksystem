@@ -12,5 +12,7 @@ urlpatterns = [
 	path('user_shelf/', views.user_shelf, name='user_shelf'),
 	path('book_page/<slug:isbn_13>/', views.book_page, name='book_page'),
 	path('not_found/', views.not_found, name='not_found'),
-	path('clearsession/', views.clear_session, name='clear_session')
+	path('clearsession/', views.clear_session, name='clear_session'),
+	path('dashboard/', views.dashboard, name='dashboard'),
+	path('permissiondenied/', views.permissiondenied, name='permissiondenied')
 ]

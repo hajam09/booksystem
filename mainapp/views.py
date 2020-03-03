@@ -408,7 +408,7 @@ def index(request):
 			book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
 			highly_rated_books.append(book_item)
 	other_user_favourite_books = []
-	if request.user.is_authenticated:
+	if request.user.is_authenticated and request.user.username!="admin":
 		other_user_favourite_books = content_based_similar_user_items(request)
 	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books, "average_rating_recommendation": average_rating_recommendation, "other_user_favourite_books": other_user_favourite_books})
 
@@ -594,6 +594,9 @@ def update_profile(request):
 
 def not_found(request):
 	return render(request,'mainapp/404.html', {})
+
+def permissiondenied(request):
+	return render(request,'mainapp/permissiondenied.html', {})
 
 @csrf_exempt
 def user_shelf(request):
@@ -1475,3 +1478,17 @@ def pearson_correlation_collaborative_filtering_2(request):
 			final_isbns = list(corr_books['isbn_13'])
 		except:
 			pass
+
+
+def dashboard(request):
+	if not request.user.is_authenticated:
+		return redirect('mainapp:login')
+	if(request.user.username!="admin"):
+		return redirect("mainapp:permissiondenied")
+	username = request.user.username
+	print(username)
+	users_count = User.objects.all().count()
+	book_count = Book.objects.all().count()
+	reviews_count = Review.objects.all().count()
+	context = {"users_count": users_count, "reviews_count": reviews_count, "book_count": book_count}
+	return render(request,'mainapp/dashboard.html', context)
