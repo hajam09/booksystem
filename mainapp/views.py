@@ -5,11 +5,12 @@ from django.template import RequestContext, loader
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
 from django.contrib.auth.models import User
+from django.conf import settings
 from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Book, Review, Category
-import string, random, csv, re, os, uuid, unidecode, time
+import string, random, csv, re, os, uuid, unidecode, time, smtplib, ssl
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
 import pandas as pd
@@ -21,6 +22,7 @@ from sklearn.metrics.pairwise import sigmoid_kernel
 from scipy import sparse
 from sklearn.metrics.pairwise import cosine_similarity
 from datetime import date
+from django.core.mail import send_mail
 # Create your views here.
 
 
@@ -485,16 +487,26 @@ def log_out(request):
 def passwordforgotten(request):
 	if request.user.is_authenticated:
 		return redirect('mainapp:index')
-	#Not DONE
 	if request.method == 'POST':
-		try:
-			if(request.POST["email"]):
-				return HttpResponse("Email has been sent to {}".format(request.POST["email"]))
-		except Exception as e:
-			if(request.POST["idvalue"]):
-				if(confirmationid==request.POST["idvalue"]):
-					return HttpResponse("codevalid")
-				return HttpResponse("codeinvalid")
+		email = request.POST['email'].lower()
+		fullname = request.POST['fullname'].title()
+		birthDate = request.POST['birthDate']
+
+		fullname = fullname.split(" ")
+		fname = " ".join(fullname[:len(fullname)-1])
+		sname = "".join(fullname[len(fullname)-1])
+
+		checkAccountExist = User.objects.filter(email=email)
+		if(len(checkAccountExist)!=0):
+			user_account = checkAccountExist[0]
+			if(user_account.first_name==fname and user_account.last_name==sname and str(CustomerAccountProfile.objects.get(userid=user_account.pk).birthDate)==str(birthDate)):
+				temporary_password = ''.join(random.choice(string.ascii_uppercase + string.digits) for _ in range(20))
+				subject = 'Request to change password'
+				message = """Hi {},\n\n You have recently request to change your account password. We have set a temporary password for your account. Please go to the login page and sign-in with your email and temporary password. One you are logged in, go to Profile under Account and enter a new strong password. \n\n Your Temporary Password is: {}""".format(" ".join(fullname), temporary_password)
+				user_account.set_password(temporary_password)
+				user_account.save()
+				send_mail(subject,message,settings.EMAIL_HOST_USER,[email])
+		return render(request,'mainapp/resetpasswordconfirm.html',{})
 	return render(request,'mainapp/forgotpassword.html',{})
 
 @csrf_exempt
