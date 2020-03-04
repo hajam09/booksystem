@@ -30,3 +30,6 @@ class Review(models.Model):
 
 class Category(models.Model):
 	name = models.CharField(max_length=1000)
+
+class Metrics(models.Model):
+	metrics_data = jsonfield.JSONField()

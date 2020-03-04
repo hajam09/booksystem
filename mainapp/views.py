@@ -10,7 +10,7 @@ from django.conf import settings
 from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
-from .models import CustomerAccountProfile, Book, Review, Category
+from .models import CustomerAccountProfile, Book, Review, Category, Metrics
 import string, random, csv, re, os, uuid, unidecode, time, smtplib, ssl
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
@@ -110,6 +110,7 @@ def createaccount():
 
 @csrf_exempt
 def index(request):
+	metric = Metrics.objects.all()[0].metrics_data
 	#Creating session for authenticated users
 	if request.user.is_authenticated:
 		if 'history' not in request.session:
@@ -142,6 +143,8 @@ def index(request):
 			print("Empty search_result session")
 
 	if request.method == 'POST':
+		metric["post_request_count"]+=1
+		Metrics.objects.filter(id=1).update(metrics_data=metric)
 		#Clear the search_result session for new post
 		if 'search_result' in request.session:
 			request.session['search_result'] = []
@@ -411,11 +414,19 @@ def index(request):
 	other_user_favourite_books = []
 	if request.user.is_authenticated and request.user.username!="admin":
 		other_user_favourite_books = content_based_similar_user_items(request)
+	# Metric update
+	metric["total_page_visit"] +=1
+	metric["get_request_count"] +=1
+	metric["page_visit_counter"]["frontpage"]+=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books, "average_rating_recommendation": average_rating_recommendation, "other_user_favourite_books": other_user_favourite_books})
 
 @csrf_exempt
 def signup(request):
+	metric = Metrics.objects.all()[0].metrics_data
 	if request.method == 'POST':
+		metric["post_request_count"] +=1
+		Metrics.objects.filter(id=1).update(metrics_data=metric)
 		fullname = request.POST['fullname']
 		email = request.POST['email']
 		password = request.POST['password']
@@ -463,32 +474,52 @@ def signup(request):
 	all_categories = Category.objects.all()
 	categories = [i.name for i in all_categories]
 	categories.sort()
+	metric["total_page_visit"] +=1
+	metric["get_request_count"] +=1
+	metric["page_visit_counter"]["signup"] +=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/signup.html', {"categories": categories})
 
 def login(request):
+	metric = Metrics.objects.all()[0].metrics_data
 	if request.method == 'POST':
+		metric["post_request_count"] +=1
 		email = request.POST['email']
 		password = request.POST['password']
 
 		user = authenticate(username=email, password=password)
 		if user:
 			auth_login(request, user)
+			metric["total_login_count"] +=1
+			metric["logged_in_user_count"] +=1
+			Metrics.objects.filter(id=1).update(metrics_data=metric)
 		else:
 			return HttpResponse("Sorry! Username and Password didn't match, Please try again!")
-	
+	metric["total_page_visit"] +=1
+	metric["get_request_count"] +=1
+	metric["page_visit_counter"]["login"] +=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/login.html', {})
 
 
 def log_out(request):
-    """Log out - note that the session will be deleted"""
-    request.session.flush()
-    logout(request)
-    return redirect('mainapp:index')
+	metric = Metrics.objects.all()[0].metrics_data
+	metric["logged_in_user_count"] -=1
+	metric["get_request_count"] +=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
+	"""Log out - note that the session will be deleted"""
+	request.session.flush()
+	logout(request)
+	return redirect('mainapp:index')
 
 def passwordforgotten(request):
+	metric = Metrics.objects.all()[0].metrics_data
 	if request.user.is_authenticated:
 		return redirect('mainapp:index')
 	if request.method == 'POST':
+		metric["post_request_count"] +=1
+		Metrics.objects.filter(id=1).update(metrics_data=metric)
+
 		email = request.POST['email'].lower()
 		fullname = request.POST['fullname'].title()
 		birthDate = request.POST['birthDate']
@@ -507,11 +538,18 @@ def passwordforgotten(request):
 				user_account.set_password(temporary_password)
 				user_account.save()
 				send_mail(subject,message,settings.EMAIL_HOST_USER,[email])
+				metric["password_request_count"] +=1
+				Metrics.objects.filter(id=1).update(metrics_data=metric)
 		return render(request,'mainapp/resetpasswordconfirm.html',{})
+	metric["total_page_visit"] +=1
+	metric["get_request_count"] +=1
+	metric["page_visit_counter"]["forgotpassword"] +=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/forgotpassword.html',{})
 
 @csrf_exempt
 def update_profile(request):
+	metric = Metrics.objects.all()[0].metrics_data
 	user_pk = request.user.pk
 	if not request.user.is_authenticated:#used to be if(not user_pk):
 		return redirect('mainapp:login')
@@ -536,6 +574,8 @@ def update_profile(request):
 				"categories": categories}
 
 	if request.method == "PUT":
+		metric["put_request_count"]+=1
+		Metrics.objects.filter(id=1).update(metrics_data=metric)
 		put = QueryDict(request.body)
 
 		fullname = put.get('fullname').split(" ")
@@ -591,16 +631,31 @@ def update_profile(request):
 		os.remove('user_genre_temp.csv')
 
 		return HttpResponse("Your details are updated!")
+	metric["total_page_visit"]+=1
+	metric["get_request_count"]+=1
+	metric["page_visit_counter"]["profilepage"]+=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/profilepage.html', context)
 
 def not_found(request):
+	metric = Metrics.objects.all()[0].metrics_data
+	metric["total_page_visit"] +=1
+	metric["get_request_count"] +=1
+	metric["page_visit_counter"]["404"] +=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/404.html', {})
 
 def permissiondenied(request):
+	metric = Metrics.objects.all()[0].metrics_data
+	metric["total_page_visit"] +=1
+	metric["get_request_count"] +=1
+	metric["page_visit_counter"]["permissiondenied"] +=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/permissiondenied.html', {})
 
 @csrf_exempt
 def user_shelf(request):
+	metric = Metrics.objects.all()[0].metrics_data
 
 	user_pk = request.user.pk
 
@@ -640,6 +695,8 @@ def user_shelf(request):
 	# Ajax requests when the buttons are clicked to remove the books from the list.
 	#Need to change this to delete REQUEST
 	if request.method == "PUT":
+		metric["put_request_count"]+=1
+		Metrics.objects.filter(id=1).update(metrics_data=metric)
 		put = QueryDict(request.body)
 		functionality = put.get("functionality")
 		objective = put.get("objective")# Not sure if this used in html and here
@@ -752,6 +809,11 @@ def user_shelf(request):
 	# Collaborative Filtering
 	personalized_books = pearson_correlation_collaborative_filtering(request)
 
+	metric["total_page_visit"]+=1
+	metric["get_request_count"]+=1
+	metric["page_visit_counter"]["usershelf"]+=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
+
 	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book, 'visited_Book': visited_Book, 'personalized_books': personalized_books}
 	return render(request,'mainapp/usershelf.html', context)
 
@@ -814,6 +876,9 @@ def create_review():
 
 @csrf_exempt
 def book_page(request, isbn_13):
+	metric = Metrics.objects.all()[0].metrics_data
+
+
 	# if 'search_result' not in request.session:
 	# 	request.session['search_result'] = []
 	# else:
@@ -925,6 +990,8 @@ def book_page(request, isbn_13):
 		#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 		# Ajax requests when the review button is clicked on the book.html
 		if request.method == "POST":
+			metric["post_request_count"]+=1
+			Metrics.objects.filter(id=1).update(metrics_data=metric)
 			functionality = request.POST['functionality']
 			if functionality == "create-review":
 				isbn_13 = request.POST['isbn_13']
@@ -985,6 +1052,8 @@ def book_page(request, isbn_13):
 
 		# Ajax requests when the one of the four buttons are clicked on the book.html
 		if request.method == "PUT":
+			metric["put_request_count"]+=1
+			Metrics.objects.filter(id=1).update(metrics_data=metric)
 			put = QueryDict(request.body)
 			functionality = put.get("functionality")
 			isbn_13 = put.get("isbn_13")
@@ -1094,6 +1163,10 @@ def book_page(request, isbn_13):
 		# 			'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
 		# 			'in_have_read_Book': in_have_read_Book, 'item_based_recommendation': item_based_recommendation,
 		# 			'book_reviews': book_reviews}
+		metric["total_page_visit"]+=1
+		metric["get_request_count"]+=1
+		metric["page_visit_counter"]["book"]+=1
+		Metrics.objects.filter(id=1).update(metrics_data=metric)
 		return render(request,'mainapp/book.html', context)
 
 	context = {'isbn_13': book_detail["ISBN_13"], 'isbn_10': book_detail["ISBN_10"],
@@ -1105,6 +1178,10 @@ def book_page(request, isbn_13):
 				'in_reading_Book': False, 'in_to_read_Book': False,
 				'in_have_read_Book': False, 'average_rating_recommendation': average_rating_recommendation,
 				'book_reviews': book_reviews, 'review_validity': review_validity, 'similar_books': similar_books}
+	metric["total_page_visit"]+=1
+	metric["get_request_count"]+=1
+	metric["page_visit_counter"]["book"]+=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/book.html', context)
 
 def add_feature_value(isbn_13, feature):
@@ -1482,15 +1559,24 @@ def pearson_correlation_collaborative_filtering_2(request):
 
 
 def dashboard(request):
-	if not request.user.is_authenticated:
-		return redirect('mainapp:login')
-	if(request.user.username!="admin"):
-		return redirect("mainapp:permissiondenied")
-	username = request.user.username
-	print(username)
-	users_count = User.objects.all().count()
-	book_count = Book.objects.all().count()
-	reviews_count = Review.objects.all().count()
-	members_online = User.objects.filter(last_login__startswith=timezone.now().date()).count()
-	context = {"users_count": users_count, "reviews_count": reviews_count, "book_count": book_count,"members_online": members_online}
-	return render(request,'mainapp/dashboard.html', context)
+	metric = Metrics.objects.all()[0].metrics_data
+	metric["get_request_count"]+=1
+	metric["total_page_visit"]+=1
+	Metrics.objects.filter(id=1).update(metrics_data=metric)
+	# if not request.user.is_authenticated:
+	# 	return redirect('mainapp:login')
+	# if(request.user.username!="admin"):
+	# 	return redirect("mainapp:permissiondenied")
+	"""{'password_request_count': 0,
+	'total_page_visit': 4,
+	'delete_request_count': 0, 'page_visit_counter': {'404': 1, 'book': 0, 'forgotpassword': 0,
+	'frontpage': 3, 'login': 0, 'permissiondenied': 0, 'profilepage': 0, 'resetpasswordconfirmation': 0,
+	'signup': 0, 'usershelf': 0},
+	'db_size': 2.6}"""
+	records = Metrics.objects.all()[0].metrics_data
+	records["user_count"] = User.objects.all().count()
+	records["book_count"] = Book.objects.all().count()
+	records["reviews_count"] = Review.objects.all().count()
+	records["today_member_count"] = User.objects.filter(last_login__startswith=timezone.now().date()).count()
+	records["db_size"] = round(os.stat(os.getcwd()+"\\db.sqlite3").st_size*0.000001,2)
+	return render(request,'mainapp/dashboard.html', records)
