@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.http import HttpResponse, Http404, QueryDict, HttpResponseRedirect
 from django.template import RequestContext, loader
+from django.contrib.sessions.models import Session
 from django.contrib.auth.hashers import make_password
 from django.db import IntegrityError
 from django.contrib.auth.models import User
@@ -1490,5 +1491,6 @@ def dashboard(request):
 	users_count = User.objects.all().count()
 	book_count = Book.objects.all().count()
 	reviews_count = Review.objects.all().count()
-	context = {"users_count": users_count, "reviews_count": reviews_count, "book_count": book_count}
+	members_online = User.objects.filter(last_login__startswith=timezone.now().date()).count()
+	context = {"users_count": users_count, "reviews_count": reviews_count, "book_count": book_count,"members_online": members_online}
 	return render(request,'mainapp/dashboard.html', context)
