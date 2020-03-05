@@ -11,7 +11,7 @@ from django.contrib.auth import logout, authenticate, login as auth_login
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Book, Review, Category, Metrics
-import string, random, csv, re, os, uuid, unidecode, time, smtplib, ssl
+import string, random, csv, re, os, uuid, unidecode, time, smtplib, ssl, requests
 from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
 import pandas as pd
@@ -107,9 +107,163 @@ def createaccount():
 				csv_file.write(towrite)
 
 		time.sleep(1)
+def add_books_to_system(booksearch):
+	response = requests.get("https://www.googleapis.com/books/v1/volumes?q="+booksearch)
+	try:
+		json_response = response.json()["items"]
+		for book in json_response:
+			try:
+				if(len(book['volumeInfo']['industryIdentifiers'])==2):
+					uid = book['id']
+					etag = book['etag']
+					title = book['volumeInfo']['title']
+
+					if('authors' in  book['volumeInfo']):
+						authors = book['volumeInfo']['authors']
+						authors.sort()
+						authors = ",".join(authors)
+					else:
+						authors = "None"
+
+					if('publisher' in book['volumeInfo']):
+						publisher = book['volumeInfo']['publisher']
+					else:
+						publisher = "None"
+
+					if('publishedDate' in book['volumeInfo']):
+						publishedDate = book['volumeInfo']['publishedDate']
+					else:
+						publishedDate = "None"
+
+					if('description' in book['volumeInfo']):
+						description = book['volumeInfo']['description']
+					else:
+						description = "None"
+
+					ISBN_13 = None
+					ISBN_10 = None
+					if(book['volumeInfo']['industryIdentifiers'][0]['type'] == "ISBN_10"):
+						ISBN_10 = book['volumeInfo']['industryIdentifiers'][0]['identifier']
+					elif(book['volumeInfo']['industryIdentifiers'][0]['type'] == "ISBN_13"):
+						ISBN_13 = book['volumeInfo']['industryIdentifiers'][0]['identifier']
+
+					if(book['volumeInfo']['industryIdentifiers'][1]['type'] == "ISBN_10"):
+						ISBN_10 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
+					elif(book['volumeInfo']['industryIdentifiers'][1]['type'] == "ISBN_13"):
+						ISBN_13 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
+
+					if('categories' in book['volumeInfo']):
+						categorie = book['volumeInfo']['categories']
+						categories = [i.title().replace(",", " &").replace("  ", "") for i in categorie]
+					else:
+						categories = ["None"]
+
+					if('averageRating' in book['volumeInfo']):
+						averageRating = book['volumeInfo']['averageRating']
+					else:
+						averageRating = 0.0
+					averageRating = round(averageRating,1)
+
+					if('ratingsCount' in book['volumeInfo']):
+						ratingsCount = book['volumeInfo']['ratingsCount']
+					else:
+						ratingsCount = 0
+
+					print(ISBN_13)
+					try:
+						if('thumbnail' in book['volumeInfo']['imageLinks']):
+							thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
+					except:
+						thumbnail = "None"
+
+					# if('thumbnail' in book['volumeInfo']['imageLinks']):
+					# 	thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
+					# else:
+					# 	thumbnail = "None"
+
+					checkBookExist = Book.objects.filter(isbn_13=ISBN_13)
+					if(len(checkBookExist)==0):
+						print("New book")
+						book_data = {"id": uid, "etag": etag, "title": title,
+						"authors": authors, "publisher": publisher, "publishedDate": publishedDate,
+						"description": description, "ISBN_10": ISBN_10, "ISBN_13": ISBN_13,
+						"categories": categories, "averageRating": averageRating, "ratingsCount": ratingsCount,
+						"thumbnail": thumbnail}
+
+						Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+						print("Create New Book")
+
+						book_genre = " ".join(categories)
+						book_genre = book_genre.replace("&", "").replace("  ", " ")
+
+						# Adding the genre/category to DB.
+						category_db = "".join(categories)
+						category_db = category_db.split("&")
+
+						for item in category_db:
+							if(item!="None"):
+								split_item = list(item)
+								if(split_item[0]==" "):
+									split_item = split_item[1:]
+								if(split_item[len(split_item)-1]==" "):
+									split_item = split_item[:len(split_item)-1]
+								item = "".join(split_item)
+								item = item.replace(",", " ").replace("-", " ").replace("  ", " ")
+								item = ''.join(e for e in item if e.isalnum() or e==" ")
+								item = re.sub(" +", " ", item)
+								item = unidecode.unidecode(item)
+								checkGenreExist = Category.objects.filter(name=item)
+								if(len(checkGenreExist)==0):
+									Category.objects.create(name=item)
+
+						with open('book_rating.csv', 'a') as br_writer, open('book_info.csv', 'a') as bi_writer, open('book_description.csv', 'a') as bd_writer:
+							# Fields are isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
+							br_write = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(2*averageRating)+","+str(ratingsCount)
+							
+							# Fields are isbn_13,title,authors,publisher,publishedDate
+							authors = authors.replace(",", " ").replace("-", " ").replace("–", " ")
+							authors = ''.join(e for e in authors if e.isalnum() or e==" ")
+							authors = re.sub(" +", " ", authors)
+							authors = unidecode.unidecode(authors)
+
+							publisher = publisher.replace(",", " ").replace("-", " ").replace("–", " ")
+							publisher = ''.join(e for e in publisher if e.isalnum() or e==" ")
+							publisher = re.sub(" +", " ", publisher)
+							publisher = unidecode.unidecode(publisher)
+
+							title = title.replace(",", " ").replace("-", " ").replace("–", " ")
+							title = ''.join(e for e in title if e.isalnum() or e==" ")
+							title = re.sub(" +", " ", title)
+							title = unidecode.unidecode(title)
+							#Use regular expression to allow letters numbers and brackets
+							bi_write = "\n"+ISBN_13+","+title+","+authors+","+publisher.title()+","+publishedDate.replace("-","/")
+
+							description = description.replace(",", " ").replace("-", " ").replace("–", " ")
+							description = ''.join(e for e in description if e.isalnum() or e==" ")
+							description = re.sub(" +", " ", description)
+							description = unidecode.unidecode(description)
+							bd_write = "\n"+ISBN_13+","+description
+
+							br_writer.write(br_write)
+							bi_writer.write(bi_write)
+							bd_writer.write(bd_write)
+			except:
+				pass
+	except:
+		pass
+	return
 
 @csrf_exempt
 def index(request):
+	##//
+	# This code is for to adding 2000000 books to the database
+	# with open("BX-Books.csv","r") as reader:
+	# 	for row in reader:
+	# 		line = row.split(";")[1].replace('"',"")
+	# 		print(line)
+	# 		add_books_to_system(line)
+	##//
+
 	metric = Metrics.objects.all()[0].metrics_data
 	#Creating session for authenticated users
 	if request.user.is_authenticated:

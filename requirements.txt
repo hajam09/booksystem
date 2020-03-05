@@ -1,5 +1,6 @@
 django==2.2.*
 django-import-export
+requests
 pandas
 django-mysql
 django-jsonfield
