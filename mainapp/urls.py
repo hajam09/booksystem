@@ -14,5 +14,6 @@ urlpatterns = [
 	path('not_found/', views.not_found, name='not_found'),
 	path('clearsession/', views.clear_session, name='clear_session'),
 	path('dashboard/', views.dashboard, name='dashboard'),
-	path('permissiondenied/', views.permissiondenied, name='permissiondenied')
+	path('permissiondenied/', views.permissiondenied, name='permissiondenied'),
+	path('add_user_country_browser/', views.add_user_country_browser, name='add_user_country_browser')
 ]

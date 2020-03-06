@@ -330,5 +330,91 @@
         console.log(isbn_13, "Inside goToBookPage function");
         window.location.href = "book_page/"+isbn_13+"/";
     }
+
+    //Brower Type
+    function user_Browser_Version() {
+        var navUserAgent = navigator.userAgent;
+        var browserName = navigator.appName;
+        var browserVersion = '' + parseFloat(navigator.appVersion);
+        var majorVersion = parseInt(navigator.appVersion, 10);
+        var tempNameOffset, tempVersionOffset, tempVersion;
+
+        if ((tempVersionOffset = navUserAgent.indexOf("Opera")) != -1) {
+            browserName = "Opera";
+            browserVersion = navUserAgent.substring(tempVersionOffset + 6);
+            if ((tempVersionOffset = navUserAgent.indexOf("Version")) != -1)
+                browserVersion = navUserAgent.substring(tempVersionOffset + 8);
+        } else if ((tempVersionOffset = navUserAgent.indexOf("MSIE")) != -1) {
+            browserName = "Microsoft Internet Explorer";
+            browserVersion = navUserAgent.substring(tempVersionOffset + 5);
+        } else if ((tempVersionOffset = navUserAgent.indexOf("Chrome")) != -1) {
+            browserName = "Chrome";
+            browserVersion = navUserAgent.substring(tempVersionOffset + 7);
+        } else if ((tempVersionOffset = navUserAgent.indexOf("Safari")) != -1) {
+            browserName = "Safari";
+            browserVersion = navUserAgent.substring(tempVersionOffset + 7);
+            if ((tempVersionOffset = navUserAgent.indexOf("Version")) != -1)
+                browserVersion = navUserAgent.substring(tempVersionOffset + 8);
+        } else if ((tempVersionOffset = navUserAgent.indexOf("Firefox")) != -1) {
+            browserName = "Firefox";
+            browserVersion = navUserAgent.substring(tempVersionOffset + 8);
+        } else if ((tempNameOffset = navUserAgent.lastIndexOf(' ') + 1) < (tempVersionOffset = navUserAgent.lastIndexOf('/'))) {
+            browserName = navUserAgent.substring(tempNameOffset, tempVersionOffset);
+            browserVersion = navUserAgent.substring(tempVersionOffset + 1);
+            if (browserName.toLowerCase() == browserName.toUpperCase()) {
+                browserName = navigator.appName;
+            }
+        }
+
+        // trim version
+        if ((tempVersion = browserVersion.indexOf(";")) != -1)
+            browserVersion = browserVersion.substring(0, tempVersion);
+        if ((tempVersion = browserVersion.indexOf(" ")) != -1)
+            browserVersion = browserVersion.substring(0, tempVersion);
+
+        //alert("BrowserName = " + browserName + "\n" + "Version = " + browserVersion);
+        return browserName;
+    }
+
+    function ipLookUp() {
+        var user_country = "Unknown";
+        $.ajax('http://ip-api.com/json')
+            .then(
+                function success(response) {
+                   user_country = response.country;
+                   user_browser = user_Browser_Version();
+                   $.ajax({
+                        type: "POST",
+                        url: "add_user_country_browser/",
+                        data: {
+                            user_country: user_country,
+                            user_browser: user_browser,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                        },
+                        success: function(response)
+                        {
+                        }
+                   });
+                },
+                function fail(data, status) {
+                    user_country =  "Unknowns";
+                    user_browser = user_Browser_Version();
+                    $.ajax({
+                        type: "POST",
+                        url: "add_user_country_browser/",
+                        data: {
+                            user_country: user_country,
+                            user_browser: user_browser,
+                            csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+                        },
+                        success: function(response)
+                        {
+                        }
+                   });
+                }
+            );
+        return user_country;
+    }
+    ipLookUp();
 </script>
 {% endblock %}

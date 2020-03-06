@@ -1711,18 +1711,30 @@ def pearson_correlation_collaborative_filtering_2(request):
 		except:
 			pass
 
+def add_user_country_browser(request):
+	if request.method == "POST":
+		user_country = request.POST["user_country"]
+		user_browser = request.POST["user_browser"]
+		metric = Metrics.objects.all()[0].metrics_data
+		if "user_data" not in request.session:
+			request.session["user_data"] = [user_country, user_browser]
+			if(user_country in metric["countries"]):
+				metric["countries"][user_country] +=1
+			else:
+				metric["countries"][user_country] = 1
+		Metrics.objects.filter(id=1).update(metrics_data=metric)
+		return HttpResponse("Added")
+	return
 
 def dashboard(request):
+	add_user_country_browser(request)
 	metric = Metrics.objects.all()[0].metrics_data
-	metric["get_request_count"]+=1
 	metric["total_page_visit"]+=1
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	# if not request.user.is_authenticated:
 	# 	return redirect('mainapp:login')
 	# if(request.user.username!="admin"):
 	# 	return redirect("mainapp:permissiondenied")
-	"""{
-	'db_size': 2.6}"""
 	records = Metrics.objects.all()[0].metrics_data
 	records["user_count"] = User.objects.all().count()
 	records["book_count"] = Book.objects.all().count()
