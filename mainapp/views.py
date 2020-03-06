@@ -1406,7 +1406,8 @@ def clear_session(request):
 	if 'search_result' in request.session:
 		request.session['search_result'] = []
 		return redirect("mainapp:index")
-	return HttpResponse("session-cleared")
+	return redirect("mainapp:index")
+	#return HttpResponse("session-cleared")
 
 def content_based_similar_user_items(request):
 	# Used in front_page under Favourite books from similar users'...

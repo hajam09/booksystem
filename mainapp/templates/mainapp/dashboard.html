@@ -28,7 +28,7 @@
 </style>
 <div class="container-fluid">
     <div class="row content">
-        <div class="col-sm-3 sidenav hidden-xs" style="background-color: #2e323a">
+        <div class="col-sm-3 sidenav hidden-xs" style="background-color: #2e323a; height: 100vh;">
             <h2 style="color: white">Logo</h2>
             <ul class="nav nav-pills nav-stacked">
                 <li class="active"><a href="#section1" data-toggle="tab">Dashboard</a></li>
@@ -143,8 +143,16 @@
                 </div>
             </div>
             <div class="tab-pane" id="section3">
-                <div class="col-sm-9">
-                    <div id="regions_div"></div>
+                <div class="row" style="display: flex; justify-content: center;">
+                    <div class="col-sm-6" id="bar_chart_div">
+                        <canvas id="bar-chart" width="400" height="225"></canvas>
+                    </div>
+                    <div class="col-sm-6" id="pie_chart_div">
+                        <canvas id="pie-chart" width="400" height="225"></canvas>
+                    </div>
+                </div>
+                <div class="row" style="display: flex;">
+                    <div id="regions_div" width="250" height="225"></div>
                 </div>
             </div>
             <div class="tab-pane" id="section4">Settings Tab.</div>
@@ -155,11 +163,17 @@
     var page_visit_data = String("{{page_visit_counter}}".split("&#39;").join(""));
     page_visit_data = page_visit_data.replace("{","").replace("}","").split(",");
     var total_visit_count = 0;
+    var page_name = [];
+    var page_bar_colour = [];
+    var page_count = [];
 
     for (var i = 0; i < page_visit_data.length; i++) {
         page_value_data = page_visit_data[i].trim().split(": ");//may need to declare var here but works fine now
         $("#page-table").find('tbody').append("<tr><th scope='row'>"+i+"</th><td>"+page_value_data[0]+"</td><td>"+page_value_data[1]+"</td>");
         total_visit_count+=parseInt(page_value_data[1]);
+        page_name.push(page_value_data[0]);
+        page_bar_colour.push(getRandomColor());
+        page_count.push(parseInt(page_value_data[1]));
     }
     $("#page-table").find('tbody').append("<tr><th scope='row'>"+10+"</th><td>Total</td><td>"+total_visit_count+"</td>");
 
@@ -179,6 +193,7 @@
         return color;
     }
 
+    //World Map
     var country_list = [['Country', 'Number of Users']]
     var countries = String("{{countries}}".split("&#39;").join(""));
     countries = countries.replace("{","").replace("}","").split(",");
@@ -187,9 +202,7 @@
         var country = countries[i].trim().split(": ");
         country[1] = parseInt(country[1]);
         country_list.push(country)
-        console.log(country);
     }
-    console.log(country_list);
 
     google.charts.load('current', {
         'packages': ['geochart'],
@@ -205,5 +218,58 @@
         var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
         chart.draw(data, options);
     }
+
+    //Bar Chart
+    var browser_list = [];
+    var browser_colour = [];
+    var browser_count = [];
+    var all_browser = String("{{browser}}".split("&#39;").join(""));
+    all_browser = all_browser.replace("{","").replace("}","").split(",");
+
+    for (var i = 0; i < all_browser.length; i++){
+        var browser = all_browser[i].trim().split(": ");
+        browser_list.push(browser[0])
+        browser_colour.push(getRandomColor());
+        browser_count.push(parseInt(browser[1]));
+    }
+
+    new Chart(document.getElementById("bar-chart"), {
+        type: 'bar', data: {
+            labels: browser_list, datasets: [{label: "Count", backgroundColor: browser_colour, data: browser_count}]
+        }
+        , options: {
+            legend: {
+                display: false
+            }
+            , title: {
+                display: true, text: 'Browser Usage by the Users.'
+            }
+            , scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    }
+    );
+    var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
+    bar_chart_div.style.backgroundColor = new_light_color;
+
+    //Pie Chart
+    new Chart(document.getElementById("pie-chart"), {
+        type: 'pie', data: {
+            labels: page_name, datasets: [{label: "Page Visit", backgroundColor: page_bar_colour, data: page_count}]
+        }
+        , options: {
+            title: {
+                display: true, text: 'Number of Page Visit by Users'
+            }
+        }
+    }
+    );
+    var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
+    pie_chart_div.style.backgroundColor = new_light_color;
 </script>
 {% endblock %}
