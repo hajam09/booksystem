@@ -1722,6 +1722,11 @@ def add_user_country_browser(request):
 				metric["countries"][user_country] +=1
 			else:
 				metric["countries"][user_country] = 1
+			if(user_browser in metric["browser"]):
+				metric["browser"][user_browser] +=1
+			else:
+				metric["browser"][user_browser] = 1
+
 		Metrics.objects.filter(id=1).update(metrics_data=metric)
 		return HttpResponse("Added")
 	return
