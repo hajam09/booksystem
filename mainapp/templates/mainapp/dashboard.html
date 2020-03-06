@@ -26,118 +26,153 @@
 }
 
 </style>
-<nav class="navbar navbar-inverse visible-xs">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">Logo</a>
-        </div>
-        <div class="collapse navbar-collapse" id="myNavbar">
-            <ul class="nav navbar-nav">
-                <li class="active"><a href="#">Dashboard</a></li>
-                <li><a href="#">Pages</a></li>
-                <li><a href="#">Charts</a></li>
-                <li><a href="#">Tables</a></li>
-            </ul>
-        </div>
-    </div>
-</nav>
-
 <div class="container-fluid">
     <div class="row content">
         <div class="col-sm-3 sidenav hidden-xs" style="background-color: #2e323a">
             <h2 style="color: white">Logo</h2>
             <ul class="nav nav-pills nav-stacked">
-                <li class="active"><a href="#section1">Dashboard</a></li>
-                <li><a href="#section2">Pages</a></li>
-                <li><a href="#section3">Charts</a></li>
-                <li><a href="#section3">Tables</a></li>
+                <li class="active"><a href="#section1" data-toggle="tab">Dashboard</a></li>
+                <li><a href="#section2" data-toggle="tab">Pages</a></li>
+                <li><a href="#section3" data-toggle="tab">Charts</a></li>
+                <li><a href="#section3" data-toggle="tab">Tables</a></li>
             </ul>
             <br>
         </div>
         <br>
-
-        <div class="col-sm-9">
-            <div class="well">
-                <h4>Analytics Dashboard</h4>
+        <div class="tab-content">
+            <div class="tab-pane active" id="section1">
+                <div class="col-sm-9">
+                    <div class="well" id="dashboard_1">
+                        <h4>BookWire Analytics Dashboard</h4>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>Total Users</h4>
+                                <p>{{user_count}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>Today Users</h4>
+                                <p>{{today_member_count}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>Login Count</h4>
+                                <p>{{total_login_count}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>Online Members</h4>
+                                <p>{{logged_in_user_count}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>Reset Password Requests</h4>
+                                <p>{{password_request_count}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>Book Count</h4>
+                                <p>{{book_count}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>Reviews Count</h4>
+                                <p>{{reviews_count}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>DB Size</h4>
+                                <p>{{db_size}} MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>GET Requests</h4>
+                                <p>{{get_request_count}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>POST Requests</h4>
+                                <p>{{post_request_count}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>PUT Requests</h4>
+                                <p>{{put_request_count}}</p>
+                            </div>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="well" id="dashboard_1">
+                                <h4>Delete Requests</h4>
+                                <p>{{delete_request_count}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="row">
-                <div class="col-sm-3">
+            <div class="tab-pane" id="section2">
+                <div class="col-sm-9">
                     <div class="well">
-                        <h4>Total Users</h4>
-                        <p>{{user_count}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="well">
-                        <h4>Today Users</h4>
-                        <p>{{today_member_count}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="well">
-                        <h4>Login Count</h4>
-                        <p>{{total_login_count}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="well">
-                        <h4>Online Members</h4>
-                        <p>{{logged_in_user_count}}</p>
+                        <table class="table" id="page-table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Page</th>
+                                    <th scope="col"># of visits</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-4">
-                    <div class="well">
-                        <h4>Reset Password Requests</h4>
-                        <p>{{password_request_count}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="well">
-                        <h4>Book Count</h4>
-                        <p>{{book_count}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-4">
-                    <div class="well">
-                        <h4>Reviews Count</h4>
-                        <p>{{reviews_count}}</p>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-3">
-                    <div class="well">
-                        <h4>GET Requests</h4>
-                        <p>{{get_request_count}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="well">
-                        <h4>POST Requests</h4>
-                        <p>{{post_request_count}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="well">
-                        <h4>PUT Requests</h4>
-                        <p>{{put_request_count}}</p>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <div class="well">
-                        <h4>Delete Requests</h4>
-                        <p>{{delete_request_count}}</p>
-                    </div>
-                </div>
-            </div>
+            <div class="tab-pane" id="section3">Messages Tab.</div>
+            <div class="tab-pane" id="section4">Settings Tab.</div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    var page_visit_data = String("{{page_visit_counter}}".split("&#39;").join(""));
+    page_visit_data = page_visit_data.replace("{","").replace("}","").split(",");
+    var total_visit_count = 0;
+
+    for (var i = 0; i < page_visit_data.length; i++) {
+        page_value_data = page_visit_data[i].trim().split(": ");
+        $("#page-table").find('tbody').append("<tr><th scope='row'>"+i+"</th><td>"+page_value_data[0]+"</td><td>"+page_value_data[1]+"</td>");
+        total_visit_count+=parseInt(page_value_data[1]);
+    }
+    $("#page-table").find('tbody').append("<tr><th scope='row'>"+10+"</th><td>Total</td><td>"+total_visit_count+"</td>");
+
+    var all_metrics = document.querySelectorAll("#dashboard_1");
+    for (var i = 0; i < all_metrics.length; i++) {
+        var metric_box = all_metrics[i];
+        var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
+        metric_box.style.backgroundColor = new_light_color;
+    }
+
+    function getRandomColor(){
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>
 {% endblock %}

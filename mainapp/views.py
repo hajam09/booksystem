@@ -795,7 +795,7 @@ def not_found(request):
 	metric = Metrics.objects.all()[0].metrics_data
 	metric["total_page_visit"] +=1
 	metric["get_request_count"] +=1
-	metric["page_visit_counter"]["404"] +=1
+	metric["page_visit_counter"]["notfound"] +=1
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/404.html', {})
 
@@ -1721,11 +1721,7 @@ def dashboard(request):
 	# 	return redirect('mainapp:login')
 	# if(request.user.username!="admin"):
 	# 	return redirect("mainapp:permissiondenied")
-	"""{'password_request_count': 0,
-	'total_page_visit': 4,
-	'delete_request_count': 0, 'page_visit_counter': {'404': 1, 'book': 0, 'forgotpassword': 0,
-	'frontpage': 3, 'login': 0, 'permissiondenied': 0, 'profilepage': 0, 'resetpasswordconfirmation': 0,
-	'signup': 0, 'usershelf': 0},
+	"""{
 	'db_size': 2.6}"""
 	records = Metrics.objects.all()[0].metrics_data
 	records["user_count"] = User.objects.all().count()
