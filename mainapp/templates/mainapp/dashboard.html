@@ -142,7 +142,11 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane" id="section3">Messages Tab.</div>
+            <div class="tab-pane" id="section3">
+                <div class="col-sm-9">
+                    <div id="regions_div"></div>
+                </div>
+            </div>
             <div class="tab-pane" id="section4">Settings Tab.</div>
         </div>
     </div>
@@ -153,7 +157,7 @@
     var total_visit_count = 0;
 
     for (var i = 0; i < page_visit_data.length; i++) {
-        page_value_data = page_visit_data[i].trim().split(": ");
+        page_value_data = page_visit_data[i].trim().split(": ");//may need to declare var here but works fine now
         $("#page-table").find('tbody').append("<tr><th scope='row'>"+i+"</th><td>"+page_value_data[0]+"</td><td>"+page_value_data[1]+"</td>");
         total_visit_count+=parseInt(page_value_data[1]);
     }
@@ -173,6 +177,33 @@
             color += letters[Math.floor(Math.random() * 16)];
         }
         return color;
+    }
+
+    var country_list = [['Country', 'Number of Users']]
+    var countries = String("{{countries}}".split("&#39;").join(""));
+    countries = countries.replace("{","").replace("}","").split(",");
+
+    for (var i = 0; i < countries.length; i++){
+        var country = countries[i].trim().split(": ");
+        country[1] = parseInt(country[1]);
+        country_list.push(country)
+        console.log(country);
+    }
+    console.log(country_list);
+
+    google.charts.load('current', {
+        'packages': ['geochart'],
+        // Note: you will need to get a mapsApiKey for your project.
+        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+    });
+    google.charts.setOnLoadCallback(drawRegionsMap);
+
+    function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable(country_list)
+        var options = {};
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+        chart.draw(data, options);
     }
 </script>
 {% endblock %}
