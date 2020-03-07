@@ -49,25 +49,25 @@
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>Total Users</h4>
-                                <p>{{user_count}}</p>
+                                <p id="user_count">{{user_count}}</p>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>Today Users</h4>
-                                <p>{{today_member_count}}</p>
+                                <p id="today_member_count">{{today_member_count}}</p>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>Login Count</h4>
-                                <p>{{total_login_count}}</p>
+                                <p id="total_login_count">{{total_login_count}}</p>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>Online Members</h4>
-                                <p>{{logged_in_user_count}}</p>
+                                <p id="logged_in_user_count">{{logged_in_user_count}}</p>
                             </div>
                         </div>
                     </div>
@@ -75,25 +75,25 @@
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>Reset Password Requests</h4>
-                                <p>{{password_request_count}}</p>
+                                <p id="password_request_count">{{password_request_count}}</p>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>Book Count</h4>
-                                <p>{{book_count}}</p>
+                                <p id="book_count">{{book_count}}</p>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>Reviews Count</h4>
-                                <p>{{reviews_count}}</p>
+                                <p id="reviews_count">{{reviews_count}}</p>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>DB Size</h4>
-                                <p>{{db_size}} MB</p>
+                                <p id="db_size">{{db_size}} MB</p>
                             </div>
                         </div>
                     </div>
@@ -101,25 +101,25 @@
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>GET Requests</h4>
-                                <p>{{get_request_count}}</p>
+                                <p id="get_request_count">{{get_request_count}}</p>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>POST Requests</h4>
-                                <p>{{post_request_count}}</p>
+                                <p id="post_request_count">{{post_request_count}}</p>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>PUT Requests</h4>
-                                <p>{{put_request_count}}</p>
+                                <p id="put_request_count">{{put_request_count}}</p>
                             </div>
                         </div>
                         <div class="col-sm-3">
                             <div class="well" id="dashboard_1">
                                 <h4>Delete Requests</h4>
-                                <p>{{delete_request_count}}</p>
+                                <p id="delete_request_count">{{delete_request_count}}</p>
                             </div>
                         </div>
                     </div>
@@ -214,7 +214,7 @@
         browser_count.push(parseInt(browser[1]));
     }
 
-    new Chart(document.getElementById("bar-chart"), {
+    var bar_chart = new Chart(document.getElementById("bar-chart"), {
         type: 'bar', data: {
             labels: browser_list, datasets: [{label: "Count", backgroundColor: browser_colour, data: browser_count}]
         }
@@ -252,7 +252,7 @@
         domain_count.push(parseInt(domain[1]));
     }
 
-    new Chart(document.getElementById("bar-chart-horizontal"), {
+    var bar_chart_horizontal = new Chart(document.getElementById("bar-chart-horizontal"), {
         type: 'horizontalBar', data: {
             labels: domain_list, datasets: [{label: "Domain Count", backgroundColor: domain_colour, data: domain_count}]
         }
@@ -275,7 +275,7 @@
         x_axis.push(i);
     }
 
-    new Chart(document.getElementById("line-chart"), {
+    var line_chart = new Chart(document.getElementById("line-chart"), {
         type: 'line', data: {
             labels: x_axis, datasets: [ {
                 data: eval("{{page_load.notfound}}"), label: "404", borderColor: getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
@@ -353,5 +353,95 @@
         var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
         chart.draw(data, options);
     }
+
+    (function worker() {
+        $.ajax({
+            url: "add_user_country_browser/",
+            type: "GET",
+            success: function(response) {
+
+                // Section 1
+                $("#user_count").text(response.user_count);
+                $("#today_member_count").text(response.today_member_count);
+                $("#total_login_count").text(response.total_login_count);
+                $("#logged_in_user_count").text(response.logged_in_user_count);
+                $("#password_request_count").text(response.password_request_count);
+                $("#reviews_count").text(response.reviews_count);
+                $("#db_size").text(response.db_size);
+                $("#get_request_count").text(response.get_request_count);
+                $("#post_request_count").text(response.post_request_count);
+                $("#put_request_count").text(response.put_request_count);
+                $("#delete_request_count").text(response.delete_request_count);
+
+                // Section 2
+                var page_visit_count = response.page_visit_counter;
+                var sum = 0;
+                for (var key in response.page_visit_counter){
+                    sum += response.page_visit_counter[key];
+                }
+                // console.log(response.page_visit_counter);
+                document.getElementById("page-table").rows[1].cells[2].innerHTML = page_visit_count.notfound;
+                document.getElementById("page-table").rows[2].cells[2].innerHTML = page_visit_count.book;
+                document.getElementById("page-table").rows[3].cells[2].innerHTML = page_visit_count.forgotpassword;
+                document.getElementById("page-table").rows[4].cells[2].innerHTML = page_visit_count.frontpage;
+                document.getElementById("page-table").rows[5].cells[2].innerHTML = page_visit_count.login;
+                document.getElementById("page-table").rows[6].cells[2].innerHTML = page_visit_count.permissiondenied;
+                document.getElementById("page-table").rows[7].cells[2].innerHTML = page_visit_count.profilepage;
+                document.getElementById("page-table").rows[8].cells[2].innerHTML = page_visit_count.resetpasswordconfirmation;
+                document.getElementById("page-table").rows[9].cells[2].innerHTML = page_visit_count.signup;
+                document.getElementById("page-table").rows[10].cells[2].innerHTML = page_visit_count.usershelf;
+                document.getElementById("page-table").rows[11].cells[2].innerHTML = sum;
+
+                // Section 3
+                var browser_list = [];
+                var browser_count = []
+                for (var key in response.browser) {
+                    browser_list.push(key);
+                    browser_count.push(response.browser[key]);
+                }
+                bar_chart.data.labels = browser_list;
+                bar_chart.data.datasets[0].data = browser_count;
+                bar_chart.update();
+
+                var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
+                bar_chart_div.style.backgroundColor = new_light_color;
+
+                // Horizontal Bar
+                var domain_list = [];
+                var domain_count = [];
+                for (var key in response.domains) {
+                    domain_list.push(key);
+                    domain_count.push(response.domains[key]);
+                }
+
+                bar_chart_horizontal.data.labels = domain_list;
+                bar_chart_horizontal.data.datasets[0].data = domain_count;
+                bar_chart_horizontal.update();
+
+                var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
+                bar_chart_horizontal_div.style.backgroundColor = new_light_color;
+
+                // Line Graph
+                line_chart.data.datasets[0].data = response.page_load.notfound;
+                line_chart.data.datasets[1].data = response.page_load.book;
+                line_chart.data.datasets[2].data = response.page_load.forgotpassword;
+                line_chart.data.datasets[3].data = response.page_load.frontpage;
+                line_chart.data.datasets[4].data = response.page_load.login;
+                line_chart.data.datasets[5].data = response.page_load.permissiondenied;
+                line_chart.data.datasets[6].data = response.page_load.profilepage;
+                line_chart.data.datasets[7].data = response.page_load.resetpasswordconfirmation;
+                line_chart.data.datasets[8].data = response.page_load.signup;
+                line_chart.data.datasets[9].data = response.page_load.usershelf;
+                line_chart.update();
+
+                var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
+                line_chart_load_time.style.backgroundColor = getRandomColor;
+            },
+            complete: function() {
+                // Schedule the next request when the current one's complete
+                setTimeout(worker, 10000);
+            }
+        });
+    })();
 </script>
 {% endblock %}

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django.http import HttpResponse, Http404, QueryDict, HttpResponseRedirect
+from django.http import HttpResponse, Http404, QueryDict, HttpResponseRedirect, JsonResponse
 from django.template import RequestContext, loader
 from django.contrib.sessions.models import Session
 from django.contrib.auth.hashers import make_password
@@ -1838,8 +1838,18 @@ def add_user_country_browser(request):
 		return HttpResponse("Added")
 	return
 
+def dashboard_live_data(request):
+	records = Metrics.objects.all()[0].metrics_data
+	records["page_visit_counter"]["signup"] = records["page_visit_counter"]["signup"]//2 # Makes two requests on each refresh
+	records["user_count"] = User.objects.all().count()
+	records["book_count"] = Book.objects.all().count()
+	records["reviews_count"] = Review.objects.all().count()
+	records["today_member_count"] = User.objects.filter(last_login__startswith=timezone.now().date()).count()
+	records["db_size"] = round(os.stat(os.getcwd()+"\\db.sqlite3").st_size*0.000001,2)
+	return JsonResponse(records)
+
 def dashboard(request):
-	add_user_country_browser(request)
+	# add_user_country_browser(request)
 	metric = Metrics.objects.all()[0].metrics_data
 	metric["total_page_visit"]+=1
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
