@@ -151,9 +151,18 @@
                         <canvas id="pie-chart" width="400" height="225"></canvas>
                     </div>
                 </div>
-                <div class="row" style="display: flex;">
-                    <div id="regions_div" width="250" height="225"></div>
+                <hr>
+                <div class="row" style="display: flex; justify-content: center;">
+                    <div class="col-sm-6" id="bar_chart_horizontal_div">
+                        <canvas id="bar-chart-horizontal" width="400" height="225"></canvas>
+                    </div>
+                    <div class="row">
+                        <div id="regions_div" width="250" height="225"></div>
+                    </div>
                 </div>
+                <!-- <div class="row" style="display: flex;">
+                    <div id="regions_div" width="250" height="225"></div>
+                </div> -->
             </div>
             <div class="tab-pane" id="section4">Settings Tab.</div>
         </div>
@@ -271,5 +280,36 @@
     );
     var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
     pie_chart_div.style.backgroundColor = new_light_color;
+
+    //Bar Chart Horizontal
+    var domain_list = [];
+    var domain_colour = [];
+    var domain_count = [];
+    var all_domain = String("{{domains}}".split("&#39;").join(""));
+    all_domain = all_domain.replace("{","").replace("}","").split(",");
+
+    for (var i = 0; i < all_domain.length; i++){
+        var domain = all_domain[i].trim().split(": ");
+        domain_list.push(domain[0])
+        domain_colour.push(getRandomColor());
+        domain_count.push(parseInt(domain[1]));
+    }
+
+    new Chart(document.getElementById("bar-chart-horizontal"), {
+        type: 'horizontalBar', data: {
+            labels: domain_list, datasets: [{label: "Domain Count", backgroundColor: domain_colour, data: domain_count}]
+        }
+        , options: {
+            legend: {
+                display: false
+            }
+            , title: {
+                display: true, text: 'Domains User Registered With.'
+            }
+        }
+    }
+    );
+    var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
+    bar_chart_horizontal_div.style.backgroundColor = new_light_color;
 </script>
 {% endblock %}

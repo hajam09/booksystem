@@ -622,6 +622,15 @@ def signup(request):
 				towrite = "\n"+email+","+genre_to_csv
 				csv_file.write(towrite)
 
+			# Metrics havent tested this
+			domain_email = email.split("@")[1]
+			if(domain_email not in metric["domains"]):
+				metric["domains"][domain_email] = 1
+			else:
+				metric["domains"][domain_email] += 1
+			Metrics.objects.filter(id=1).update(metrics_data=metric)
+			#
+
 			return render(request,'mainapp/login.html', {})
 		return HttpResponse("An account already exists for this email address, please try again!")
 	#Retrive all the categories from the database
@@ -1741,6 +1750,18 @@ def dashboard(request):
 	# 	return redirect('mainapp:login')
 	# if(request.user.username!="admin"):
 	# 	return redirect("mainapp:permissiondenied")
+
+	# domains = {}
+
+	# all_users = User.objects.all()
+	# for users in all_users:
+	# 	user_domain = users.email.split("@")
+	# 	if(len(user_domain)==2):
+	# 		if(user_domain[1] not in domains):
+	# 			domains[user_domain[1]] = 1
+	# 		else:
+	# 			domains[user_domain[1]] += 1
+	# print(domains)
 	records = Metrics.objects.all()[0].metrics_data
 	records["user_count"] = User.objects.all().count()
 	records["book_count"] = Book.objects.all().count()
