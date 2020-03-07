@@ -1848,17 +1848,6 @@ def dashboard(request):
 	# if(request.user.username!="admin"):
 	# 	return redirect("mainapp:permissiondenied")
 
-	# domains = {}
-
-	# all_users = User.objects.all()
-	# for users in all_users:
-	# 	user_domain = users.email.split("@")
-	# 	if(len(user_domain)==2):
-	# 		if(user_domain[1] not in domains):
-	# 			domains[user_domain[1]] = 1
-	# 		else:
-	# 			domains[user_domain[1]] += 1
-	# print(domains)
 	records = Metrics.objects.all()[0].metrics_data
 	records["user_count"] = User.objects.all().count()
 	records["book_count"] = Book.objects.all().count()
