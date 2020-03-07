@@ -264,6 +264,7 @@ def index(request):
 	# 		add_books_to_system(line)
 	##//
 
+	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 	#Creating session for authenticated users
 	if request.user.is_authenticated:
@@ -572,11 +573,20 @@ def index(request):
 	metric["total_page_visit"] +=1
 	metric["get_request_count"] +=1
 	metric["page_visit_counter"]["frontpage"]+=1
+
+	duration = time.time() - start_time
+	duration = int(duration * 1000)
+	all_times = metric["page_load"]["frontpage"]
+	all_times.append(duration)
+	if(len(all_times)>50):
+		all_times = all_times[-50:]
+	metric["page_load"]["frontpage"] = all_times
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/frontpage.html',{"recent_search": recent_search, "recently_added_books": recently_added_books, "highly_rated_books": highly_rated_books, "average_rating_recommendation": average_rating_recommendation, "other_user_favourite_books": other_user_favourite_books})
 
 @csrf_exempt
 def signup(request):
+	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 	if request.method == 'POST':
 		metric["post_request_count"] +=1
@@ -640,10 +650,19 @@ def signup(request):
 	metric["total_page_visit"] +=1
 	metric["get_request_count"] +=1
 	metric["page_visit_counter"]["signup"] +=1
+	
+	duration = time.time() - start_time
+	duration = int(duration * 1000)
+	all_times = metric["page_load"]["signup"]
+	all_times.append(duration)
+	if(len(all_times)>50):
+		all_times = all_times[-50:]
+	metric["page_load"]["signup"] = all_times
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/signup.html', {"categories": categories})
 
 def login(request):
+	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 	if request.method == 'POST':
 		metric["post_request_count"] +=1
@@ -661,6 +680,15 @@ def login(request):
 	metric["total_page_visit"] +=1
 	metric["get_request_count"] +=1
 	metric["page_visit_counter"]["login"] +=1
+
+	duration = time.time() - start_time
+	duration = int(duration * 1000)
+	all_times = metric["page_load"]["login"]
+	all_times.append(duration)
+	if(len(all_times)>50):
+		all_times = all_times[-50:]
+	metric["page_load"]["login"] = all_times
+
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/login.html', {})
 
@@ -676,6 +704,7 @@ def log_out(request):
 	return redirect('mainapp:index')
 
 def passwordforgotten(request):
+	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 	if request.user.is_authenticated:
 		return redirect('mainapp:index')
@@ -707,11 +736,21 @@ def passwordforgotten(request):
 	metric["total_page_visit"] +=1
 	metric["get_request_count"] +=1
 	metric["page_visit_counter"]["forgotpassword"] +=1
+
+	duration = time.time() - start_time
+	duration = int(duration * 1000)
+	all_times = metric["page_load"]["forgotpassword"]
+	all_times.append(duration)
+	if(len(all_times)>50):
+		all_times = all_times[-50:]
+	metric["page_load"]["forgotpassword"] = all_times
+
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/forgotpassword.html',{})
 
 @csrf_exempt
 def update_profile(request):
+	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 	user_pk = request.user.pk
 	if not request.user.is_authenticated:#used to be if(not user_pk):
@@ -797,27 +836,57 @@ def update_profile(request):
 	metric["total_page_visit"]+=1
 	metric["get_request_count"]+=1
 	metric["page_visit_counter"]["profilepage"]+=1
+
+	duration = time.time() - start_time
+	duration = int(duration * 1000)
+	all_times = metric["page_load"]["profilepage"]
+	all_times.append(duration)
+	if(len(all_times)>50):
+		all_times = all_times[-50:]
+	metric["page_load"]["profilepage"] = all_times
+
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/profilepage.html', context)
 
 def not_found(request):
+	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 	metric["total_page_visit"] +=1
 	metric["get_request_count"] +=1
 	metric["page_visit_counter"]["notfound"] +=1
+
+	duration = time.time() - start_time
+	duration = int(duration * 1000)
+	all_times = metric["page_load"]["notfound"]
+	all_times.append(duration)
+	if(len(all_times)>50):
+		all_times = all_times[-50:]
+	metric["page_load"]["notfound"] = all_times
+
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/404.html', {})
 
 def permissiondenied(request):
+	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 	metric["total_page_visit"] +=1
 	metric["get_request_count"] +=1
 	metric["page_visit_counter"]["permissiondenied"] +=1
+
+	duration = time.time() - start_time
+	duration = int(duration * 1000)
+	all_times = metric["page_load"]["permissiondenied"]
+	all_times.append(duration)
+	if(len(all_times)>50):
+		all_times = all_times[-50:]
+	metric["page_load"]["permissiondenied"] = all_times
+
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/permissiondenied.html', {})
 
 @csrf_exempt
 def user_shelf(request):
+	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 
 	user_pk = request.user.pk
@@ -975,6 +1044,15 @@ def user_shelf(request):
 	metric["total_page_visit"]+=1
 	metric["get_request_count"]+=1
 	metric["page_visit_counter"]["usershelf"]+=1
+
+	duration = time.time() - start_time
+	duration = int(duration * 1000)
+	all_times = metric["page_load"]["usershelf"]
+	all_times.append(duration)
+	if(len(all_times)>50):
+		all_times = all_times[-50:]
+	metric["page_load"]["usershelf"] = all_times
+
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 
 	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book, 'visited_Book': visited_Book, 'personalized_books': personalized_books}
@@ -1039,6 +1117,7 @@ def create_review():
 
 @csrf_exempt
 def book_page(request, isbn_13):
+	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 
 
@@ -1329,6 +1408,15 @@ def book_page(request, isbn_13):
 		metric["total_page_visit"]+=1
 		metric["get_request_count"]+=1
 		metric["page_visit_counter"]["book"]+=1
+
+		duration = time.time() - start_time
+		duration = int(duration * 1000)
+		all_times = metric["page_load"]["book"]
+		all_times.append(duration)
+		if(len(all_times)>50):
+			all_times = all_times[-50:]
+		metric["page_load"]["book"] = all_times
+
 		Metrics.objects.filter(id=1).update(metrics_data=metric)
 		return render(request,'mainapp/book.html', context)
 
@@ -1344,6 +1432,15 @@ def book_page(request, isbn_13):
 	metric["total_page_visit"]+=1
 	metric["get_request_count"]+=1
 	metric["page_visit_counter"]["book"]+=1
+
+	duration = time.time() - start_time
+	duration = int(duration * 1000)
+	all_times = metric["page_load"]["book"]
+	all_times.append(duration)
+	if(len(all_times)>50):
+		all_times = all_times[-50:]
+	metric["page_load"]["book"] = all_times
+	
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
 	return render(request,'mainapp/book.html', context)
 

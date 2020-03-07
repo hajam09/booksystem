@@ -144,25 +144,21 @@
             </div>
             <div class="tab-pane" id="section3">
                 <div class="row" style="display: flex; justify-content: center;">
+                    <!-- Vertical bar chart showing broweser types and the counter -->
                     <div class="col-sm-6" id="bar_chart_div">
                         <canvas id="bar-chart" width="400" height="225"></canvas>
                     </div>
-                    <div class="col-sm-6" id="pie_chart_div">
-                        <canvas id="pie-chart" width="400" height="225"></canvas>
-                    </div>
-                </div>
-                <hr>
-                <div class="row" style="display: flex; justify-content: center;">
+                    <!-- Horizontal bar chart showing domains -->
                     <div class="col-sm-6" id="bar_chart_horizontal_div">
                         <canvas id="bar-chart-horizontal" width="400" height="225"></canvas>
                     </div>
-                    <div class="row">
-                        <div id="regions_div" width="250" height="225"></div>
+                </div>
+                <div class="row" style="justify-content: center;" id="line_chart_load_time">
+                    <!-- Line graph showing the load time for pages -->
+                    <div class="col-sm-6">
+                        <canvas id="line-chart" width="1000" height="300"></canvas>
                     </div>
                 </div>
-                <!-- <div class="row" style="display: flex;">
-                    <div id="regions_div" width="250" height="225"></div>
-                </div> -->
             </div>
             <div class="tab-pane" id="section4">Settings Tab.</div>
         </div>
@@ -202,33 +198,7 @@
         return color;
     }
 
-    //World Map
-    var country_list = [['Country', 'Number of Users']]
-    var countries = String("{{countries}}".split("&#39;").join(""));
-    countries = countries.replace("{","").replace("}","").split(",");
-
-    for (var i = 0; i < countries.length; i++){
-        var country = countries[i].trim().split(": ");
-        country[1] = parseInt(country[1]);
-        country_list.push(country)
-    }
-
-    google.charts.load('current', {
-        'packages': ['geochart'],
-        // Note: you will need to get a mapsApiKey for your project.
-        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
-        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
-    });
-    google.charts.setOnLoadCallback(drawRegionsMap);
-
-    function drawRegionsMap() {
-        var data = google.visualization.arrayToDataTable(country_list)
-        var options = {};
-        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-        chart.draw(data, options);
-    }
-
-    //Bar Chart
+    // Vertical bar chart showing broweser types and the counter
     var browser_list = [];
     var browser_colour = [];
     var browser_count = [];
@@ -266,22 +236,7 @@
     var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
     bar_chart_div.style.backgroundColor = new_light_color;
 
-    //Pie Chart
-    new Chart(document.getElementById("pie-chart"), {
-        type: 'pie', data: {
-            labels: page_name, datasets: [{label: "Page Visit", backgroundColor: page_bar_colour, data: page_count}]
-        }
-        , options: {
-            title: {
-                display: true, text: 'Number of Page Visit by Users'
-            }
-        }
-    }
-    );
-    var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
-    pie_chart_div.style.backgroundColor = new_light_color;
-
-    //Bar Chart Horizontal
+    // Horizontal bar chart showing domains
     var domain_list = [];
     var domain_colour = [];
     var domain_count = [];
@@ -311,5 +266,62 @@
     );
     var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
     bar_chart_horizontal_div.style.backgroundColor = new_light_color;
+
+    // Line graph showing the load time for pages
+    var x_axis = [];
+    for(var i = 1; i <= 50; i++){
+        x_axis.push(i);
+    }
+
+    new Chart(document.getElementById("line-chart"), {
+        type: 'line', data: {
+            labels: x_axis, datasets: [ {
+                data: eval("{{page_load.notfound}}"), label: "404", borderColor: getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            , {
+                data: eval("{{page_load.book}}"), label: "Book", borderColor: getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            , {
+                data: eval("{{page_load.forgotpassword}}"), label: "Password Forgotten", borderColor: getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            , {
+                data: eval("{{page_load.frontpage}}"), label: "Front Page", borderColor:getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            , {
+                data: eval("{{page_load.login}}"), label: "Login", borderColor: getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            , {
+                data: eval("{{page_load.permissiondenied}}"), label: "Permission Denied", borderColor:getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            , {
+                data: eval("{{page_load.profilepage}}"), label: "Profile Page", borderColor: getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            , {
+                data: eval("{{page_load.resetpasswordconfirmation}}"), label: "Reset Password Confirmation", borderColor: getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            , {
+                data: eval("{{page_load.signup}}"), label: "Sign-Up", borderColor: getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            , {
+                data: eval("{{page_load.usershelf}}"), label: "User Shelf", borderColor: getRandomColor(), fill: false, borderWidth: 2, pointRadius: 1
+            }
+            ]
+        }
+        , options: {
+            title: {
+                display: true, text: 'Average Page Load Time (in milliseconds)'
+            },
+            responsive: false,
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        display: false //this will remove only the label
+                    }
+                }]
+            }
+        }
+    });
+    var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
+    line_chart_load_time.style.backgroundColor = new_light_color;
 </script>
 {% endblock %}
