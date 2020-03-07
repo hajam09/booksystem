@@ -1849,6 +1849,7 @@ def dashboard(request):
 	# 	return redirect("mainapp:permissiondenied")
 
 	records = Metrics.objects.all()[0].metrics_data
+	records["page_visit_counter"]["signup"] = records["page_visit_counter"]["signup"]//2 # Make two requests on each refresh
 	records["user_count"] = User.objects.all().count()
 	records["book_count"] = Book.objects.all().count()
 	records["reviews_count"] = Review.objects.all().count()
