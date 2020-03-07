@@ -34,7 +34,7 @@
                 <li class="active"><a href="#section1" data-toggle="tab">Dashboard</a></li>
                 <li><a href="#section2" data-toggle="tab">Pages</a></li>
                 <li><a href="#section3" data-toggle="tab">Charts</a></li>
-                <li><a href="#section3" data-toggle="tab">Tables</a></li>
+                <li><a href="#section4" data-toggle="tab">Map</a></li>
             </ul>
             <br>
         </div>
@@ -160,7 +160,15 @@
                     </div>
                 </div>
             </div>
-            <div class="tab-pane" id="section4">Settings Tab.</div>
+            <div class="tab-pane" id="section4">
+                <div class="row" style="justify-content: center;" id="world_map">
+                    <!-- World map showing client's location -->
+                    <div class="col-sm-6">
+                        <!-- <canvas id="line-chart" width="1000" height="300"></canvas> -->
+                        <div id="regions_div" style="width: 140%;"></div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -168,17 +176,11 @@
     var page_visit_data = String("{{page_visit_counter}}".split("&#39;").join(""));
     page_visit_data = page_visit_data.replace("{","").replace("}","").split(",");
     var total_visit_count = 0;
-    var page_name = [];
-    var page_bar_colour = [];
-    var page_count = [];
 
     for (var i = 0; i < page_visit_data.length; i++) {
         page_value_data = page_visit_data[i].trim().split(": ");//may need to declare var here but works fine now
         $("#page-table").find('tbody').append("<tr><th scope='row'>"+i+"</th><td>"+page_value_data[0]+"</td><td>"+page_value_data[1]+"</td>");
         total_visit_count+=parseInt(page_value_data[1]);
-        page_name.push(page_value_data[0]);
-        page_bar_colour.push(getRandomColor());
-        page_count.push(parseInt(page_value_data[1]));
     }
     $("#page-table").find('tbody').append("<tr><th scope='row'>"+10+"</th><td>Total</td><td>"+total_visit_count+"</td>");
 
@@ -322,6 +324,34 @@
         }
     });
     var new_light_color = 'rgb(' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ',' + (Math.floor((256-229)*Math.random()) + 230) + ')';
-    line_chart_load_time.style.backgroundColor = new_light_color;
+    line_chart_load_time.style.backgroundColor = getRandomColor;
+
+    // World map showing client's location
+    var country_list = [['Country', 'Number of Users']]
+    var countries = String("{{countries}}".split("&#39;").join(""));
+    countries = countries.replace("{","").replace("}","").split(",");
+
+    for (var i = 0; i < countries.length; i++){
+        var country = countries[i].trim().split(": ");
+        country[1] = parseInt(country[1]);
+        country_list.push(country)
+    }
+
+    country_list = [['Country', 'Number of Users'], ['Aruba', 38], ['Afghanistan', 23], ['Angola', 40], ['Anguilla', 29], ['Åland Islands', 27], ['Albania', 21], ['Andorra', 25], ['United Arab Emirates', 37], ['Argentina', 20], ['Armenia', 33], ['American Samoa', 21], ['Antarctica', 33], ['French Southern Territories', 29], ['Antigua and Barbuda', 40], ['Australia', 33], ['Austria', 32], ['Azerbaijan', 26], ['Burundi', 36], ['Belgium', 35], ['Benin', 27], ['Bonaire, Sint Eustatius and Saba', 32], ['Burkina Faso', 22], ['Bangladesh', 37], ['Bulgaria', 24], ['Bahrain', 35], ['Bahamas', 28], ['Bosnia and Herzegovina', 39], ['Saint Barthélemy', 40], ['Belarus', 35], ['Belize', 37], ['Bermuda', 34], ['Bolivia, Plurinational State of', 36], ['Brazil', 27], ['Barbados', 35], ['Brunei Darussalam', 30], ['Bhutan', 25], ['Bouvet Island', 31], ['Botswana', 25], ['Central African Republic', 28], ['Canada', 25], ['Cocos (Keeling) Islands', 33], ['Switzerland', 25], ['Chile', 35], ['China', 29], ["Côte d'Ivoire", 25], ['Cameroon', 33], ['Congo, The Democratic Republic of the', 38], ['Congo', 26], ['Cook Islands', 29], ['Colombia', 38], ['Comoros', 33], ['Cabo Verde', 25], ['Costa Rica', 40], ['Cuba', 31], ['Curaçao', 24], ['Christmas Island', 34], ['Cayman Islands', 40], ['Cyprus', 33], ['Czechia', 25], ['Germany', 26], ['Djibouti', 27], ['Dominica', 32], ['Denmark', 27], ['Dominican Republic', 34], ['Algeria', 31], ['Ecuador', 29], ['Egypt', 33], ['Eritrea', 37], ['Western Sahara', 37], ['Spain', 35], ['Estonia', 38], ['Ethiopia', 32], ['Finland', 40], ['Fiji', 36], ['Falkland Islands (Malvinas)', 29], ['France', 35], ['Faroe Islands', 29], ['Micronesia, Federated States of', 31], ['Gabon', 34], ['United Kingdom', 34], ['Georgia', 27], ['Guernsey', 34], ['Ghana', 30], ['Gibraltar', 32], ['Guinea', 32], ['Guadeloupe', 26], ['Gambia', 32], ['Guinea-Bissau', 31], ['Equatorial Guinea', 30], ['Greece', 30], ['Grenada', 32], ['Greenland', 26], ['Guatemala', 37], ['French Guiana', 34], ['Guam', 20], ['Guyana', 35], ['Hong Kong', 23], ['Heard Island and McDonald Islands', 35], ['Honduras', 38], ['Croatia', 30], ['Haiti', 33], ['Hungary', 24], ['Indonesia', 26], ['Isle of Man', 36], ['India', 20], ['British Indian Ocean Territory', 24], ['Ireland', 22], ['Iran, Islamic Republic of', 20], ['Iraq', 32], ['Iceland', 31], ['Israel', 35], ['Italy', 36], ['Jamaica', 38], ['Jersey', 39], ['Jordan', 27], ['Japan', 38], ['Kazakhstan', 38], ['Kenya', 21], ['Kyrgyzstan', 26], ['Cambodia', 24], ['Kiribati', 28], ['Saint Kitts and Nevis', 29], ['Korea, Republic of', 22], ['Kuwait', 34], ["Lao People's Democratic Republic", 40], ['Lebanon', 27], ['Liberia', 40], ['Libya', 37], ['Saint Lucia', 31], ['Liechtenstein', 34], ['Sri Lanka', 26], ['Lesotho', 40], ['Lithuania', 25], ['Luxembourg', 39], ['Latvia', 23], ['Macao', 37], ['Saint Martin (French part)', 32], ['Morocco', 21], ['Monaco', 31], ['Moldova, Republic of', 25], ['Madagascar', 36], ['Maldives', 40], ['Mexico', 34], ['Marshall Islands', 25], ['North Macedonia', 23], ['Mali', 39], ['Malta', 25], ['Myanmar', 36], ['Montenegro', 30], ['Mongolia', 36], ['Northern Mariana Islands', 35], ['Mozambique', 31], ['Mauritania', 31], ['Montserrat', 34], ['Martinique', 37], ['Mauritius', 35], ['Malawi', 38], ['Malaysia', 24], ['Mayotte', 20], ['Namibia', 35], ['New Caledonia', 26], ['Niger', 29], ['Norfolk Island', 29], ['Nigeria', 31], ['Nicaragua', 37], ['Niue', 20], ['Netherlands', 28], ['Norway', 34], ['Nepal', 38], ['Nauru', 21], ['New Zealand', 29], ['Oman', 29], ['Pakistan', 32], ['Panama', 21], ['Pitcairn', 23], ['Peru', 37], ['Philippines', 37], ['Palau', 39], ['Papua New Guinea', 30], ['Poland', 39], ['Puerto Rico', 24], ["Korea, Democratic People's Republic of", 20], ['Portugal', 32], ['Paraguay', 28], ['Palestine, State of', 25], ['French Polynesia', 25], ['Qatar', 35], ['Réunion', 34], ['Romania', 23], ['Russian Federation', 38], ['Rwanda', 39], ['Saudi Arabia', 38], ['Sudan', 40], ['Senegal', 22], ['Singapore', 33], ['South Georgia and the South Sandwich Islands', 25], ['Saint Helena, Ascension and Tristan da Cunha', 39], ['Svalbard and Jan Mayen', 33], ['Solomon Islands', 37], ['Sierra Leone', 22], ['El Salvador', 21], ['San Marino', 30], ['Somalia', 25], ['Saint Pierre and Miquelon', 20], ['Serbia', 36], ['South Sudan', 23], ['Sao Tome and Principe', 36], ['Suriname', 30], ['Slovakia', 37], ['Slovenia', 24], ['Sweden', 22], ['Eswatini', 34], ['Sint Maarten (Dutch part)', 36], ['Seychelles', 40], ['Syrian Arab Republic', 40], ['Turks and Caicos Islands', 24], ['Chad', 34], ['Togo', 34], ['Thailand', 32], ['Tajikistan', 38], ['Tokelau', 29], ['Turkmenistan', 27], ['Timor-Leste', 40], ['Tonga', 32], ['Trinidad and Tobago', 34], ['Tunisia', 29], ['Turkey', 33], ['Tuvalu', 30], ['Taiwan, Province of China', 22], ['Tanzania, United Republic of', 23], ['Uganda', 29], ['Ukraine', 37], ['United States Minor Outlying Islands', 30], ['Uruguay', 21], ['United States', 24], ['Uzbekistan', 34], ['Holy See (Vatican City State)', 25], ['Saint Vincent and the Grenadines', 24], ['Venezuela, Bolivarian Republic of', 25], ['Virgin Islands, British', 37], ['Virgin Islands, U.S.', 29], ['Viet Nam', 40], ['Vanuatu', 40], ['Wallis and Futuna', 26], ['Samoa', 20], ['Yemen', 27], ['South Africa', 35], ['Zambia', 35], ['Zimbabwe', 28]];
+
+    google.charts.load('current', {
+        'packages': ['geochart'],
+        // Note: you will need to get a mapsApiKey for your project.
+        // See: https://developers.google.com/chart/interactive/docs/basic_load_libs#load-settings
+        'mapsApiKey': 'AIzaSyD-9tSrke72PouQMnMX-a7eZSW0jkFMBWY'
+    });
+    google.charts.setOnLoadCallback(drawRegionsMap);
+
+    function drawRegionsMap() {
+        var data = google.visualization.arrayToDataTable(country_list)
+        var options = {};
+        var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+        chart.draw(data, options);
+    }
 </script>
 {% endblock %}
