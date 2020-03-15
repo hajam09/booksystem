@@ -1141,6 +1141,10 @@ def book_page(request, isbn_13):
 	if request.method == "POST" and not user_pk:
 		return HttpResponse("not_authenticated")
 
+	if request.user.is_superuser:
+		if request.method == "PUT" or request.method == "POST":
+			return HttpResponse("You cannot perform this action!")
+
 	#Need to add leading zero's to ISBN 10 and 13.
 	#remaining_zero = "0"*(10-len(isbn_10))
 	#isbn_10 = remaining_zero+isbn_10
@@ -1214,7 +1218,7 @@ def book_page(request, isbn_13):
 			comment_valid = False
 		review_validity.append(comment_valid)
 
-	if user_pk:
+	if user_pk and not request.user.is_superuser:# To allow admin to go into book page
 		#If user is logged we can get more personal data
 		# Initially below 2 lines were sufficient, but then the try/except is added.
 		# customer_account = User.objects.get(pk=user_pk)

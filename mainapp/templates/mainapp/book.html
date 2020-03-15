@@ -305,7 +305,8 @@
         var user_review = document.getElementById("user_review").value;
         var user_rating = $('#count').attr("value");
         if(user_review=="" || user_rating==0) {
-            alert("You need to give text and star rating!");
+            Swal.fire({ icon: 'error', title: 'Oops...', text: 'You need to give text and star rating!'})
+            // alert("You need to give text and star rating!");
             return;
         }
 

@@ -47,7 +47,8 @@
             },
             success: function(info){
                 if(info=="Sorry! Username and Password didn't match, Please try again!"){
-                    alert("Sorry! Username and Password didn't match, Please try again!")
+                    Swal.fire({ icon: 'error', title: 'Oops...', text: "Sorry! Username and Password didn't match, Please try again!"})
+                    // alert("Sorry! Username and Password didn't match, Please try again!")
                 }
                 else{
                     window.location = "{% url 'mainapp:index' %}";

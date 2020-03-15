@@ -77,17 +77,21 @@
                 },
                 success: function(info){
                     if(info=="Your details are updated!"){
-                        alert(info);
+                        swal.fire({ title: "Good job!", text: info, icon: "success", button: "Continue", });
+                        // alert(info);
                         var url = "{% url 'mainapp:index' %}";
                         //document.location.href = url;
                     }else{
-                        alert(info);
+                        // This line of code will never be executed!!
+                        swal.fire({ title: "Warning!", text: info, icon: "warning", button: "Continue", });
+                        // alert(info);
                     }
                 }
             })
         }
         else{
-            alert("Please Fill All Required Field");
+            swal.fire({ title: "Warning!", text: "Please Fill All Required Fields!", icon: "warning", button: "Continue", });
+            // alert("Please Fill All Required Field");
             return false;
         }
     }

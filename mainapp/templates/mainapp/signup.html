@@ -169,9 +169,11 @@
                 },
                 success: function(info){
                     if(info=="Password is not secure enough!"){
-                        alert(info);
+                        // alert(info);
+                        swal.fire({ title: "Warning!", text: info, icon: "warning", button: "Continue", });
                     } else if (info=="An account already exists for this email address, please try again!"){
-                        alert(info);
+                        // alert(info);
+                        swal.fire({ title: "Error!", text: info, icon: "error", button: "Continue", });
                     } else {
                         var url = "{% url 'mainapp:login' %}";
                         document.location.href = url;
