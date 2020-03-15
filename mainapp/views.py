@@ -1853,11 +1853,6 @@ def dashboard(request):
 	metric = Metrics.objects.all()[0].metrics_data
 	metric["total_page_visit"]+=1
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
-	# if not request.user.is_authenticated:
-	# 	return redirect('mainapp:login')
-	# if(request.user.username!="admin"):
-	# 	return redirect("mainapp:permissiondenied")
-
 	records = Metrics.objects.all()[0].metrics_data
 	records["page_visit_counter"]["signup"] = records["page_visit_counter"]["signup"]//2 # Makes two requests on each refresh
 	records["user_count"] = User.objects.all().count()
@@ -1865,4 +1860,5 @@ def dashboard(request):
 	records["reviews_count"] = Review.objects.all().count()
 	records["today_member_count"] = User.objects.filter(last_login__startswith=timezone.now().date()).count()
 	records["db_size"] = round(os.stat(os.getcwd()+"\\db.sqlite3").st_size*0.000001,2)
+	
 	return render(request,'mainapp/dashboard.html', records)
