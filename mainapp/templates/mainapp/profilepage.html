@@ -62,7 +62,14 @@
         var listofgenre = [];
         for (var ii = 0; ii < usergenre.childNodes.length; ii++){listofgenre.push(usergenre.childNodes[ii].id);}
 
-        if(fullname != null && fullname != "", email != null && email != "", listofgenre.length>=3)
+        if(fullname == null || fullname == "" || fullname.length<3 || email == null || email == "" || listofgenre.length<3){
+            var is_valid = false;
+        }else{
+            var is_valid = true;
+        }
+
+        // if(fullname != null || fullname != "" || fullname.length<3, email != null && email != "", listofgenre.length>=3)
+        if(is_valid)
         {//new password legnth not validated so user can entery less than 8 characters.
             listofgenre = String(listofgenre);
 
@@ -77,20 +84,20 @@
                 },
                 success: function(info){
                     if(info=="Your details are updated!"){
-                        swal.fire({ title: "Good job!", text: info, icon: "success", button: "Continue", });
+                        Swal.fire({ title: "Good job!", text: info, icon: "success", button: "Continue", });
                         // alert(info);
                         var url = "{% url 'mainapp:index' %}";
                         //document.location.href = url;
                     }else{
                         // This line of code will never be executed!!
-                        swal.fire({ title: "Warning!", text: info, icon: "warning", button: "Continue", });
+                        Swal.fire({ title: "Warning!", text: info, icon: "warning", button: "Continue", });
                         // alert(info);
                     }
                 }
             })
         }
         else{
-            swal.fire({ title: "Warning!", text: "Please Fill All Required Fields!", icon: "warning", button: "Continue", });
+            Swal.fire({ title: "Warning!", text: "Please Fill All Required Fields!", icon: "warning", button: "Continue", });
             // alert("Please Fill All Required Field");
             return false;
         }

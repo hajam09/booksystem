@@ -305,7 +305,7 @@
         var user_review = document.getElementById("user_review").value;
         var user_rating = $('#count').attr("value");
         if(user_review=="" || user_rating==0) {
-            Swal.fire({ icon: 'error', title: 'Oops...', text: 'You need to give text and star rating!'})
+            Swal.fire({ title: "Error!", text: "You need to give text and star rating!", icon: "error", button: "Continue", });
             // alert("You need to give text and star rating!");
             return;
         }
@@ -324,6 +324,9 @@
                 if(message=="not_authenticated") {
                     var url = "{% url 'mainapp:login' %}";
                     document.location.href = url;
+                }
+                if(message=="You cannot perform this action!"){
+                    Swal.fire({ title: "Warning!", text: message, icon: "warning", button: "Continue", });
                 }
                 
                 if (message.split("&nbsp;")[0]=="revew_created_successfully") {
@@ -616,6 +619,9 @@
                     var url = "{% url 'mainapp:login' %}";
                     document.location.href = url;
                 }
+                if(message=="You cannot perform this action!"){
+                    Swal.fire({ title: "Warning!", text: message, icon: "warning", button: "Continue", });
+                }
             }
         })
     });
@@ -641,6 +647,9 @@
                 if(message=="not_authenticated") {
                     var url = "{% url 'mainapp:login' %}";
                     document.location.href = url;
+                }
+                if(message=="You cannot perform this action!"){
+                    Swal.fire({ title: "Warning!", text: message, icon: "warning", button: "Continue", });
                 }
             }
         })
@@ -668,6 +677,9 @@
                     var url = "{% url 'mainapp:login' %}";
                     document.location.href = url;
                 }
+                if(message=="You cannot perform this action!"){
+                    Swal.fire({ title: "Warning!", text: message, icon: "warning", button: "Continue", });
+                }
             }
         })
     });
@@ -693,6 +705,9 @@
                 if(message=="not_authenticated") {
                     var url = "{% url 'mainapp:login' %}";
                     document.location.href = url;
+                }
+                if(message=="You cannot perform this action!"){
+                    Swal.fire({ title: "Warning!", text: message, icon: "warning", button: "Continue", });
                 }
             }
         })
@@ -729,6 +744,9 @@
                     var url = "{% url 'mainapp:login' %}";
                     document.location.href = url;
                 }
+                if(message=="You cannot perform this action!"){
+                    Swal.fire({ title: "Warning!", text: message, icon: "warning", button: "Continue", });
+                }
             }
         })
     }
@@ -764,6 +782,9 @@
                 if(message=="not_authenticated") {
                     var url = "{% url 'mainapp:login' %}";
                     document.location.href = url;
+                }
+                if(message=="You cannot perform this action!"){
+                    Swal.fire({ title: "Warning!", text: message, icon: "warning", button: "Continue", });
                 }
             }
         })
