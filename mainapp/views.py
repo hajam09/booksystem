@@ -641,7 +641,7 @@ def signup(request):
 			Metrics.objects.filter(id=1).update(metrics_data=metric)
 			#
 
-			return render(request,'mainapp/login.html', {})
+			return render(request,'mainapp/login.html', {})#return redirect('mainapp:login')
 		return HttpResponse("An account already exists for this email address, please try again!")
 	#Retrive all the categories from the database
 	all_categories = Category.objects.all()
@@ -690,6 +690,8 @@ def login(request):
 	metric["page_load"]["login"] = all_times
 
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
+	if request.user.is_authenticated:
+		return redirect("mainapp:index")
 	return render(request,'mainapp/login.html', {})
 
 
