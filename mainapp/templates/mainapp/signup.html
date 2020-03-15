@@ -152,8 +152,17 @@
         var usergenre = document.getElementById("usergenre");
         var listofgenre = [];
         for (var ii = 0; ii < usergenre.childNodes.length; ii++){listofgenre.push(usergenre.childNodes[ii].id);}
-        if(fullname != null && fullname != "", email != null && email != "", password != null && password != "", birthDate != null && birthDate != "", gender != null && gender != "", listofgenre.length>=3, check_box==true)
-        {
+        if(fullname == null || fullname == "" || fullname.length<3){
+            Swal.fire({ title: "Error!", text: "Please check your full name field", icon: "error", button: "Continue", });
+        } else if(email == null | email == "" || email.includes(".")==false || email.includes("@")== false){
+            Swal.fire({ title: "Error!", text: "Please check your email field", icon: "error", button: "Continue", });
+        } else if(birthDate == null || birthDate == ""){
+            Swal.fire({ title: "Error!", text: "Please check your date-of-birth field", icon: "error", button: "Continue", });
+        } else if(listofgenre.length<3){
+            Swal.fire({ title: "Error!", text: "Ensure you have at-least 3 favourite genres", icon: "error", button: "Continue", });
+        } else if(check_box==false){
+            Swal.fire({ title: "Error!", text: "Please agree to out Terms & Conditions", icon: "error", button: "Continue", });
+        } else {
             listofgenre = String(listofgenre);
 
             $.ajax({
@@ -178,25 +187,53 @@
                         var url = "{% url 'mainapp:login' %}";
                         document.location.href = url;
                     }
-                    // if(info!="An account already exists for this email address, please try again!"){
-                    //     var url = "{% url 'mainapp:login' %}";
-                    //     document.location.href = url;
-                    // }
-                    // else{
-                    //     alert(info);
-                    // }
                 }
             })
         }
-        else{
-            Swal.fire({ title: "Warning!", text: "Please Fill All Required Field", icon: "warning", button: "Continue", });
-            // alert("Please Fill All Required Field");
-            return false;
-        }
-        
 
-        
+        // if(fullname != null && fullname != "", email != null && email != "", password != null && password != "", birthDate != null && birthDate != "", gender != null && gender != "", listofgenre.length>=3, check_box==true)
+        // {
+        //     listofgenre = String(listofgenre);
+
+        //     $.ajax({
+        //         type: "POST",
+        //         data: {
+        //             fullname: fullname,
+        //             email: email,
+        //             password: password,
+        //             birthDate: birthDate,
+        //             gender: gender,
+        //             listofgenre: listofgenre,
+        //             csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+        //         },
+        //         success: function(info){
+        //             if(info=="Password is not secure enough!"){
+        //                 // alert(info);
+        //                 Swal.fire({ title: "Warning!", text: info, icon: "warning", button: "Continue", });
+        //             } else if (info=="An account already exists for this email address, please try again!"){
+        //                 // alert(info);
+        //                 Swal.fire({ title: "Error!", text: info, icon: "error", button: "Continue", });
+        //             } else {
+        //                 var url = "{% url 'mainapp:login' %}";
+        //                 document.location.href = url;
+        //             }
+        //             // if(info!="An account already exists for this email address, please try again!"){
+        //             //     var url = "{% url 'mainapp:login' %}";
+        //             //     document.location.href = url;
+        //             // }
+        //             // else{
+        //             //     alert(info);
+        //             // }
+        //         }
+        //     })
+        // }
+        // else{
+        //     // Swal.fire({ title: "Warning!", text: "Please Fill All Required Field", icon: "warning", button: "Continue", });
+        //     // alert("Please Fill All Required Field");
+        //     return false;
+        // }
     }
+    
 	function addgenres(buttonELement){
 		var ugenre = document.getElementById("currentgenre").value;
 		if(ugenre && !document.getElementById(ugenre)){
