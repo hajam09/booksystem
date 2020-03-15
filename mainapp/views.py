@@ -1853,6 +1853,10 @@ def dashboard(request):
 	metric = Metrics.objects.all()[0].metrics_data
 	metric["total_page_visit"]+=1
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
+	if not request.user.is_authenticated:
+		return redirect('mainapp:login')
+	if not request.user.is_superuser:
+		return redirect('mainapp:permissiondenied')
 	records = Metrics.objects.all()[0].metrics_data
 	records["page_visit_counter"]["signup"] = records["page_visit_counter"]["signup"]//2 # Makes two requests on each refresh
 	records["user_count"] = User.objects.all().count()
