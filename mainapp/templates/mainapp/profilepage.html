@@ -63,11 +63,11 @@
         for (var ii = 0; ii < usergenre.childNodes.length; ii++){listofgenre.push(usergenre.childNodes[ii].id);}
 
         if(fullname == null || fullname == "" || fullname.length<3){
-            Swal.fire({ title: "Error!", text: "Please check your full name field", icon: "error", button: "Continue", });
+            Swal.fire({ title: "Error!", text: "Please check your full name field!", icon: "error", button: "Continue", });
         } else if(email == null | email == "" || email.includes(".")==false || email.includes("@")== false){
-            Swal.fire({ title: "Error!", text: "Please check your email field", icon: "error", button: "Continue", });
+            Swal.fire({ title: "Error!", text: "Please check your email field!", icon: "error", button: "Continue", });
         } else if(listofgenre.length<3){
-            Swal.fire({ title: "Error!", text: "Ensure you have at-least 3 favourite genres", icon: "error", button: "Continue", });
+            Swal.fire({ title: "Error!", text: "Ensure you have at-least 3 favourite genres selected!", icon: "error", button: "Continue", });
         } else {
             listofgenre = String(listofgenre);
 

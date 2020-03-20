@@ -791,12 +791,13 @@
     }
 
     var bookPage = function(isbn_13) {
-            var current_URL = window.location.href;
-            current_URL = current_URL.split("/");
-            current_URL = current_URL.slice(0, 3);
-            current_URL[1]="//";
-            current_URL = current_URL.join("");
-            window.location = current_URL+"/book_page/"+isbn_13;
+            // var current_URL = window.location.href;
+            // current_URL = current_URL.split("/");
+            // current_URL = current_URL.slice(0, 3);
+            // current_URL[1]="//";
+            // current_URL = current_URL.join("");
+            // window.location = current_URL+"/book_page/"+isbn_13;
+            window.location = "{% url 'mainapp:book_page' 1234 %}".replace(/1234/, isbn_13.toString());
         }
 </script>
 {% endblock %}
