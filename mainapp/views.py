@@ -1869,6 +1869,8 @@ def dashboard(request):
 	records["book_count"] = Book.objects.all().count()
 	records["reviews_count"] = Review.objects.all().count()
 	records["today_member_count"] = User.objects.filter(last_login__startswith=timezone.now().date()).count()
-	records["db_size"] = round(os.stat(os.getcwd()+"\\db.sqlite3").st_size*0.000001,2)
-	
+	try:
+		records["db_size"] = round(os.stat(os.getcwd()+"\\db.sqlite3").st_size*0.000001,2)
+	except:
+		records["db_size"] = None
 	return render(request,'mainapp/dashboard.html', records)
