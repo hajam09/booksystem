@@ -8,6 +8,51 @@
     h4:hover {
         cursor: pointer;
     }
+    .MultiCarousel {
+        float: left;
+        overflow: hidden;
+        padding: 15px;
+        width: 100%;
+        position: relative;
+    }
+    
+    .MultiCarousel .MultiCarousel-inner {
+        transition: 1s ease all;
+        float: left;
+    }
+    
+    .MultiCarousel .MultiCarousel-inner .item {
+        float: left;
+    }
+    
+    .MultiCarousel .MultiCarousel-inner .item > div {
+        text-align: center;
+        padding: 10px;
+        margin: 10px;
+        background: #f1f1f1;
+        color: #666;
+    }
+    
+    .MultiCarousel .leftLst,
+    .MultiCarousel .rightLst {
+        position: absolute;
+        border-radius: 50%;
+        top: calc(50% - 20px);
+    }
+    
+    .MultiCarousel .leftLst {
+        left: 0;
+    }
+    
+    .MultiCarousel .rightLst {
+        right: 0;
+    }
+    
+    .MultiCarousel .leftLst.over,
+    .MultiCarousel .rightLst.over {
+        pointer-events: none;
+        background: #ccc;
+    }
 </style>
 {% block content %}
 <!-- Start of Image Carousel & Search -->
@@ -73,117 +118,272 @@
 <!-- Recently added books carousel -->
 <div class="container">
     <!-- <h1>Recently Added Books!</h1> -->
-    <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recently Added Books...</p>
-
-    <!--  <a href="https://github.com/rtpHarry/Bootstrap3-ShowManySlideOneCarousel">this code sample</a>   -->
     <div class="row">
+        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel" data-interval="1000">
+            <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recently Added Books...</p>
+            <div class="MultiCarousel-inner" id="carousel_items_1">
+                {% for books in recently_added_books %}
+                <div class="item">
+                    <div class="pad15">
+                        <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="btn btn-primary leftLst">
+                <</button>
+                <button class="btn btn-primary rightLst">
+                ></button>
+        </div>
+    </div>
+    <!--  <a href="https://github.com/rtpHarry/Bootstrap3-ShowManySlideOneCarousel">this code sample</a>   -->
+    <!-- <div class="row">
         <div class="col-md-12">
             <div class="carousel carousel-showmanymoveone slide" id="carousel-tilenav_1" data-interval="false">
                 <div class="carousel-inner">
                     {% for books in recently_added_books %}
                         <div class="item">
-                            <!-- <div class="col-xs-12 col-sm-6 col-md-2"> -->
+                            <div class="col-xs-12 col-sm-6 col-md-2">comment this line
                             <div class="col-xs-2">
                                 <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
                             </div>
                         </div>
                     {% endfor %}
                     <div class="item active">
-                        <!-- <div class="col-xs-12 col-sm-6 col-md-2">
-                            <a href="#"><img src="http://placehold.it/500/0054A6/fff/&amp;text=1" class="img-responsive"></a>
-                        </div> -->
+                        <div class="col-xs-12 col-sm-6 col-md-2"> comment this line
+                            <a href="#"><img src="http://placehold.it/500/0054A6/fff/&amp;text=1" class="img-responsive"></a>comment this line
+                        </div>comment this line
                     </div>
                 </div>
                 <a class="left carousel-control" href="#carousel-tilenav_1" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
                 <a class="right carousel-control" href="#carousel-tilenav_1" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
-<hr>
 <!-- average_rating_recommendation books carousel -->
 <div class="container">
-    <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Books Based on Ratings...</p>
+    <div class="row">
+        <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel" data-interval="1000">
+            <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Books Based on Ratings...</p>
+            <div class="MultiCarousel-inner" id="carousel_items_1">
+                {% for books in average_rating_recommendation %}
+                <div class="item">
+                    <div class="pad15">
+                        <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button class="btn btn-primary leftLst">
+                <</button>
+                <button class="btn btn-primary rightLst">
+                ></button>
+        </div>
+    </div>
 
     <!--  <a href="https://github.com/rtpHarry/Bootstrap3-ShowManySlideOneCarousel">this code sample</a>   -->
-    <div class="row">
+    <!-- <div class="row">
         <div class="col-md-12">
             <div class="carousel carousel-showmanymoveone slide" id="carousel-tilenav_2" data-interval="false">
                 <div class="carousel-inner">
                     {% for books in average_rating_recommendation %}
                         <div class="item">
-                            <!-- <div class="col-xs-12 col-sm-6 col-md-2"> -->
+                            <div class="col-xs-12 col-sm-6 col-md-2"> comment this line
                             <div class="col-xs-2">
                                 <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
                             </div>
                         </div>
                     {% endfor %}
                     <div class="item active">
-                        <!-- <div class="col-xs-12 col-sm-6 col-md-2">
-                            <a href="#"><img src="http://placehold.it/500/0054A6/fff/&amp;text=1" class="img-responsive"></a>
-                        </div> -->
+                        <div class="col-xs-12 col-sm-6 col-md-2">comment this line
+                            <a href="#"><img src="http://placehold.it/500/0054A6/fff/&amp;text=1" class="img-responsive"></a>comment this line
+                        </div>comment this line
                     </div>
                 </div>
                 <a class="left carousel-control" href="#carousel-tilenav_2" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
                 <a class="right carousel-control" href="#carousel-tilenav_2" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
             </div>
         </div>
-    </div>
+    </div> -->
 </div>
 <hr>
 <!-- other_user_favourite_books books carousel -->
 {% if user.is_authenticated %}
     {% if other_user_favourite_books %}
         <div class="container">
-            <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Favourite books from similar users'...</p>
+            <div class="row">
+                <div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel" data-interval="1000">
+                    <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Favourite books from similar users'...</p>
+                    <div class="MultiCarousel-inner" id="carousel_items_1">
+                        {% for books in other_user_favourite_books %}
+                        <div class="item">
+                            <div class="pad15">
+                                <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <button class="btn btn-primary leftLst">
+                        <</button>
+                        <button class="btn btn-primary rightLst">></button>
+                </div>
+            </div>
 
             <!--  <a href="https://github.com/rtpHarry/Bootstrap3-ShowManySlideOneCarousel">this code sample</a>   -->
-            <div class="row">
+            <!-- <div class="row">
                 <div class="col-md-12">
                     <div class="carousel carousel-showmanymoveone slide" id="carousel-tilenav_3" data-interval="false">
                         <div class="carousel-inner">
                             {% for books in other_user_favourite_books %}
                                 <div class="item">
-                                    <!-- <div class="col-xs-12 col-sm-6 col-md-2"> -->
+                                     <div class="col-xs-12 col-sm-6 col-md-2"> comment this line
                                     <div class="col-xs-2">
                                         <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
                                     </div>
                                 </div>
                             {% endfor %}
                             <div class="item active">
-                                <!-- <div class="col-xs-12 col-sm-6 col-md-2">
-                                    <a href="#"><img src="http://placehold.it/500/0054A6/fff/&amp;text=1" class="img-responsive"></a>
-                                </div> -->
+                                 <div class="col-xs-12 col-sm-6 col-md-2">comment this line
+                                    <a href="#"><img src="http://placehold.it/500/0054A6/fff/&amp;text=1" class="img-responsive"></a>comment this line
+                                </div> comment this line
                             </div>
                         </div>
                         <a class="left carousel-control" href="#carousel-tilenav_3" data-slide="prev"><i class="glyphicon glyphicon-chevron-left"></i></a>
                         <a class="right carousel-control" href="#carousel-tilenav_3" data-slide="next"><i class="glyphicon glyphicon-chevron-right"></i></a>
                     </div>
                 </div>
-            </div>
+            </div> -->
         </div>
     {% endif %}
 {% endif %}
 <script type="text/javascript">
-    (function() {
-        $('.carousel-showmanymoveone .item').each(function() {
-            var itemToClone = $(this);
+    // for carousel
+    $(document).ready(function() {
+        var itemsMainDiv = ('.MultiCarousel');
+        var itemsDiv = ('.MultiCarousel-inner');
+        var itemWidth = "";
 
-            for (var i = 1; i < 6; i++) {
-                itemToClone = itemToClone.next();
-
-                // wrap around if at end of item collection
-                if (!itemToClone.length) {
-                    itemToClone = $(this).siblings(':first');
-                }
-
-                // grab item, clone, add marker class, add to collection
-                itemToClone.children(':first-child').clone()
-                .addClass("cloneditem-" + (i))
-                .appendTo($(this));
-            }
+        $('.leftLst, .rightLst').click(function() {
+            var condition = $(this).hasClass("leftLst");
+            if (condition)
+                click(0, this);
+            else
+                click(1, this)
         });
-    }());
+
+        ResCarouselSize();
+
+        $(window).resize(function() {
+            ResCarouselSize();
+        });
+
+        //this function define the size of the items
+        function ResCarouselSize() {
+            var incno = 0;
+            var dataItems = ("data-items");
+            var itemClass = ('.item');
+            var id = 0;
+            var btnParentSb = '';
+            var itemsSplit = '';
+            var sampwidth = $(itemsMainDiv).width();
+            var bodyWidth = $('body').width();
+            $(itemsDiv).each(function() {
+                id = id + 1;
+                var itemNumbers = $(this).find(itemClass).length;
+                btnParentSb = $(this).parent().attr(dataItems);
+                itemsSplit = btnParentSb.split(',');
+                $(this).parent().attr("id", "MultiCarousel" + id);
+
+                if (bodyWidth >= 1200) {
+                    incno = itemsSplit[3];
+                    itemWidth = sampwidth / incno;
+                } else if (bodyWidth >= 992) {
+                    incno = itemsSplit[2];
+                    itemWidth = sampwidth / incno;
+                } else if (bodyWidth >= 768) {
+                    incno = itemsSplit[1];
+                    itemWidth = sampwidth / incno;
+                } else {
+                    incno = itemsSplit[0];
+                    itemWidth = sampwidth / incno;
+                }
+                $(this).css({
+                    'transform': 'translateX(0px)',
+                    'width': itemWidth * itemNumbers
+                });
+                $(this).find(itemClass).each(function() {
+                    $(this).outerWidth(itemWidth);
+                });
+
+                $(".leftLst").addClass("over");
+                $(".rightLst").removeClass("over");
+
+            });
+        }
+
+        //this function used to move the items
+        function ResCarousel(e, el, s) {
+            var leftBtn = ('.leftLst');
+            var rightBtn = ('.rightLst');
+            var translateXval = '';
+            var divStyle = $(el + ' ' + itemsDiv).css('transform');
+            var values = divStyle.match(/-?[\d\.]+/g);
+            var xds = Math.abs(values[4]);
+            if (e == 0) {
+                translateXval = parseInt(xds) - parseInt(itemWidth * s);
+                $(el + ' ' + rightBtn).removeClass("over");
+
+                if (translateXval <= itemWidth / 2) {
+                    translateXval = 0;
+                    $(el + ' ' + leftBtn).addClass("over");
+                }
+            } else if (e == 1) {
+                var itemsCondition = $(el).find(itemsDiv).width() - $(el).width();
+                translateXval = parseInt(xds) + parseInt(itemWidth * s);
+                $(el + ' ' + leftBtn).removeClass("over");
+
+                if (translateXval >= itemsCondition - itemWidth / 2) {
+                    translateXval = itemsCondition;
+                    $(el + ' ' + rightBtn).addClass("over");
+                }
+            }
+            $(el + ' ' + itemsDiv).css('transform', 'translateX(' + -translateXval + 'px)');
+        }
+
+        //It is used to get some elements from btn
+        function click(ell, ee) {
+            var Parent = "#" + $(ee).parent().attr("id");
+            var slide = $(Parent).attr("data-slide");
+            ResCarousel(ell, Parent, slide);
+        }
+
+    });
+
+    // End of carousel
+
+    // Old carousel code
+    // (function() {
+    //     $('.carousel-showmanymoveone .item').each(function() {
+    //         var itemToClone = $(this);
+
+    //         for (var i = 1; i < 6; i++) {
+    //             itemToClone = itemToClone.next();
+
+    //             // wrap around if at end of item collection
+    //             if (!itemToClone.length) {
+    //                 itemToClone = $(this).siblings(':first');
+    //             }
+
+    //             // grab item, clone, add marker class, add to collection
+    //             itemToClone.children(':first-child').clone()
+    //             .addClass("cloneditem-" + (i))
+    //             .appendTo($(this));
+    //         }
+    //     });
+    // }());
+    // End of Old carousel code
+    
     // if (window.performance && window.performance.navigation.type == window.performance.navigation.TYPE_BACK_FORWARD) {
         //only display when user goes form book page to front page of some backpage to frontpage.html
     //     "{% if recent_search %}"
