@@ -51,7 +51,8 @@
                     // alert("Sorry! Username and Password didn't match, Please try again!")
                 }
                 else{
-                    window.location = "{% url 'mainapp:index' %}";
+                    // window.location = "{% url 'mainapp:index' %}";
+                    history.back(-2);
                 }
                 // Code for returing to privous page after successfull login
                 // else{
