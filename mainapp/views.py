@@ -659,6 +659,8 @@ def signup(request):
 		all_times = all_times[-50:]
 	metric["page_load"]["signup"] = all_times
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
+	if request.user.is_authenticated:
+		return redirect("mainapp:index")
 	return render(request,'mainapp/signup.html', {"categories": categories})
 
 def login(request):
@@ -708,8 +710,6 @@ def log_out(request):
 def passwordforgotten(request):
 	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
-	if request.user.is_authenticated:
-		return redirect('mainapp:index')
 	if request.method == 'POST':
 		metric["post_request_count"] +=1
 		Metrics.objects.filter(id=1).update(metrics_data=metric)
@@ -748,6 +748,8 @@ def passwordforgotten(request):
 	metric["page_load"]["forgotpassword"] = all_times
 
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
+	if request.user.is_authenticated:
+		return redirect('mainapp:index')
 	return render(request,'mainapp/forgotpassword.html',{})
 
 @csrf_exempt
