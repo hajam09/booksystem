@@ -82,7 +82,8 @@
                 <div class="carousel-inner">
                     {% for books in recently_added_books %}
                         <div class="item">
-                            <div class="col-xs-12 col-sm-6 col-md-2">
+                            <!-- <div class="col-xs-12 col-sm-6 col-md-2"> -->
+                            <div class="col-xs-2">
                                 <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
                             </div>
                         </div>
@@ -111,7 +112,8 @@
                 <div class="carousel-inner">
                     {% for books in average_rating_recommendation %}
                         <div class="item">
-                            <div class="col-xs-12 col-sm-6 col-md-2">
+                            <!-- <div class="col-xs-12 col-sm-6 col-md-2"> -->
+                            <div class="col-xs-2">
                                 <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
                             </div>
                         </div>
@@ -142,7 +144,8 @@
                         <div class="carousel-inner">
                             {% for books in other_user_favourite_books %}
                                 <div class="item">
-                                    <div class="col-xs-12 col-sm-6 col-md-2">
+                                    <!-- <div class="col-xs-12 col-sm-6 col-md-2"> -->
+                                    <div class="col-xs-2">
                                         <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')"><p class="lead img-responsive"><img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;"></p><p>{{books.title}}</p></a>
                                     </div>
                                 </div>
