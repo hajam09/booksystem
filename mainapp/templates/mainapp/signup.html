@@ -156,10 +156,22 @@
         var usergenre = document.getElementById("usergenre");
         var listofgenre = [];
         for (var ii = 0; ii < usergenre.childNodes.length; ii++){listofgenre.push(usergenre.childNodes[ii].id);}
-        if(fullname == null || fullname == "" || fullname.length<3){
-            Swal.fire({ title: "Error!", text: "Please check your full name field", icon: "error", button: "Continue", });
+        if(fullname == null || fullname == "" || fullname.length<5){
+        	if(fullname == null || fullname == ""){
+        		Swal.fire({ title: "Error!", text: "Please check if your full name entered in the full name field is not empty!", icon: "error", button: "Continue", });
+        	} else if(fullname.length<5){
+        		Swal.fire({ title: "Error!", text: "Your full name is too short! Please enter at least 4 characters!", icon: "error", button: "Continue", });
+        	} else{
+        		Swal.fire({ title: "Error!", text: "Please check your full name field", icon: "error", button: "Continue", });
+        	}
         } else if(email == null | email == "" || email.includes(".")==false || email.includes("@")== false){
-            Swal.fire({ title: "Error!", text: "Please check your email field", icon: "error", button: "Continue", });
+        	if(email == null | email == ""){
+        		Swal.fire({ title: "Error!", text: "Please check if e-mail entered in the e-mail field is not empty!", icon: "error", button: "Continue", });
+        	} else if(email.includes("@")== false || email.includes(".")==false){
+        		Swal.fire({ title: "Error!", text: "Please check if e-mail entered in the e-mail field is valid!", icon: "error", button: "Continue", });
+        	} else{
+        		Swal.fire({ title: "Error!", text: "Please check your email field", icon: "error", button: "Continue", });
+        	}     
         } else if(birthDate == null || birthDate == ""){
             Swal.fire({ title: "Error!", text: "Please check your date-of-birth field", icon: "error", button: "Continue", });
         } else if(listofgenre.length<3){
