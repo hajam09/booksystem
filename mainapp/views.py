@@ -567,7 +567,7 @@ def index(request):
 			book_item = {"isbn_13": items.isbn_13, "isbn_10": items.isbn_10, "title": items.title, "thumbnail": the_data["thumbnail"]}
 			highly_rated_books.append(book_item)
 	other_user_favourite_books = []
-	if request.user.is_authenticated and request.user.username!="admin":
+	if request.user.is_authenticated and not request.user.is_superuser:
 		other_user_favourite_books = content_based_similar_user_items(request)
 	# Metric update
 	metric["total_page_visit"] +=1
