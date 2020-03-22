@@ -438,8 +438,8 @@ def index(request):
 					"categories": categories, "averageRating": averageRating, "ratingsCount": ratingsCount,
 					"thumbnail": thumbnail}
 
-					Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
-					print("Create New Book")
+					# Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+					# print("Create New Book")
 
 					book_genre = " ".join(categories)
 					book_genre = book_genre.replace("&", "").replace("  ", " ")
@@ -495,6 +495,10 @@ def index(request):
 						br_writer.write(br_write)
 						bi_writer.write(bi_write)
 						bd_writer.write(bd_write)
+
+						# Only create books when successfully written to csv
+						Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
+						print("Create New Book")
 					# # Writing isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating to book_rating.csv
 					# with open('book_rating.csv', 'a') as csv_file:
 					# 	# Fields are isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count

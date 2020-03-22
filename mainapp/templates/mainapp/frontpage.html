@@ -122,7 +122,7 @@
         <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recently Added Books...</p>
         <div class="slick_carousel MultiCarousel">
             {% for books in recently_added_books %}
-                <div class="mt-2 col-md-12">
+                <div class="col-md-12">
                     <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')">
                         <p class="lead img-responsive">
                             <img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;">
@@ -182,7 +182,7 @@
         <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Books Based on Ratings...</p>
         <div class="slick_carousel MultiCarousel">
             {% for books in average_rating_recommendation %}
-                <div class="mt-2 col-md-12">
+                <div class="col-md-12">
                     <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')">
                         <p class="lead img-responsive">
                             <img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;">
@@ -246,7 +246,7 @@
                 <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Favourite books from similar users'...</p>
                 <div class="slick_carousel MultiCarousel">
                     {% for books in other_user_favourite_books %}
-                        <div class="mt-2 col-md-12">
+                        <div class="col-md-12">
                             <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')">
                                 <p class="lead img-responsive">
                                     <img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;">

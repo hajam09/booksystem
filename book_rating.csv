@@ -282,7 +282,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780140011135,Fiction,0,0,0,0,8,10
 9781538759844,Fiction,0,0,0,0,0.0,0
 9781250089052,Fiction,0,0,0,0,9.0,11
-9781466828797,Young Adult Fiction,0,0,0,0,10,1
+9781466828797,Young Adult Fiction,1,1,1,1,8.0,2
 9781945863387,Fiction,0,0,0,0,0.0,0
 9780516020709,Mice,0,0,0,0,0.0,0
 9780470398258,Philosophy,0,0,0,0,9.0,5
@@ -294,3 +294,39 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781503613584,Medical,0,0,0,0,10,1
 9781458720009,None,0,0,0,0,8,2
 9780008235642,Fiction,0,0,0,0,0.0,0
+9781434297280,Juvenile Fiction,0,0,0,0,0.0,0
+9781401272999,Comics Graphic Novels,0,0,0,0,0.0,0
+9781400068661,Social Science,0,0,0,0,7.0,19
+9781594741135,Social Science,0,0,0,0,7.0,5
+9780743417143,Fiction,0,0,0,0,6,3
+9781401209391,Comics Graphic Novels,0,0,0,0,4,1
+9781434215680,Juvenile Fiction,0,0,0,0,6,1
+9780744008074,Games,0,0,0,0,0.0,0
+9780735638723,Computers,0,0,0,0,8,2
+9780893914127,Computers,0,0,0,0,0.0,0
+9788190675772,None,0,0,0,0,8,5
+9788184314663,None,0,0,0,0,10,1
+9781576904619,Education,0,0,0,0,0.0,0
+9780818670947,Computers,0,0,0,0,10,1
+9788184315639,Computer Networks,0,0,0,0,6,1
+9780750694940,Computers,0,0,0,0,10,3
+9780877780571,Computer-Assisted Instruction,0,0,0,0,0.0,0
+9780241209363,Political Science,0,0,0,0,8,2
+9781465441072,Political Science,0,0,0,0,0.0,0
+9780745698502,Political Science,0,0,0,0,0.0,0
+9781782399742,Political Science,0,0,0,0,8,1
+9781448217878,Political Science,0,0,0,0,0.0,0
+9780192559494,Political Science,0,0,0,0,0.0,0
+9780745652481,Language Arts Disciplines,0,0,0,0,0.0,0
+9781907994555,Political Science,0,0,0,0,10,1
+9780674024885,Philosophy,0,0,0,0,10,1
+9780393652253,Business Economics,0,0,0,0,10,1
+9781780673059,Juvenile Nonfiction,0,0,0,0,8,1
+9780878056941,Antiques Collectibles,0,0,0,0,8,2
+9781451418040,Religion,0,0,0,0,0.0,0
+9781427023117,None,0,0,0,0,0.0,0
+9780750658379,Business Economics,0,0,0,0,0.0,0
+9781448866762,Juvenile Nonfiction,0,0,0,0,0.0,0
+9780387259086,Computers,0,0,0,0,0.0,0
+9780553384734,Business Economics,0,0,0,0,7.0,21
+9780977790845,Art,0,0,0,0,5.0,1
