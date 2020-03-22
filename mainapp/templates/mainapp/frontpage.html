@@ -120,7 +120,7 @@
     <!-- <h1>Recently Added Books!</h1> -->
     <div class="row">
         <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recently Added Books...</p>
-        <div class="slick_test MultiCarousel">
+        <div class="slick_carousel MultiCarousel">
             {% for books in recently_added_books %}
                 <div class="mt-2 col-md-12">
                     <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')">
@@ -180,7 +180,7 @@
 <div class="container">
     <div class="row">
         <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Books Based on Ratings...</p>
-        <div class="slick_test MultiCarousel">
+        <div class="slick_carousel MultiCarousel">
             {% for books in average_rating_recommendation %}
                 <div class="mt-2 col-md-12">
                     <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')">
@@ -244,7 +244,7 @@
         <div class="container">
             <div class="row">
                 <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Favourite books from similar users'...</p>
-                <div class="slick_test MultiCarousel">
+                <div class="slick_carousel MultiCarousel">
                     {% for books in other_user_favourite_books %}
                         <div class="mt-2 col-md-12">
                             <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')">
@@ -304,7 +304,7 @@
 {% endif %}
 <script type="text/javascript">
     $(document).ready(function(){
-        $('.slick_test').slick({
+        $('.slick_carousel').slick({
             accessibility:true,
             arrows:true,
             prevArrow:'<button class="btn btn-primary leftLst"><</button>',
@@ -318,7 +318,7 @@
             touchMove:true,
         });
     });
-    $('.slick_test').on('wheel', (function(e){
+    $('.slick_carousel').on('wheel', (function(e){
         e.preventDefault();
         if (e.originalEvent.deltaY < 0){
             $(this).slick('slickNext');
