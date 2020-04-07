@@ -1774,62 +1774,6 @@ def pearson_correlation_collaborative_filtering(request):
 			pass
 	return list_of_books
 
-
-def pearson_correlation_collaborative_filtering_2(request):
-	#needs testing
-	books = pd.read_csv("book_info.csv")
-	books.columns = ['isbn_13','title','authors','publisher','publishedDate']
-
-	ratings = pd.read_csv("user_rating.csv")
-	ratings.columns = ['user_id','isbn_13','rating_score']
-
-	# Recommendation Based on Rating Counts
-	rating_count = pd.DataFrame(ratings.groupby('isbn_13')['rating_score'].count())
-	rating_count.sort_values('rating_score', ascending=False).head()
-
-	#Recommendations based on correlations
-
-	#We use Pearsons’R correlation coefficient to measure the linear correlation between two variables,
-	#in our case, the ratings for two books.
-
-	#First, we need to find out the average rating, and the number of ratings each book received.
-
-	average_rating = pd.DataFrame(ratings.groupby('isbn_13')['rating_score'].mean())
-	average_rating['ratingCount'] = pd.DataFrame(ratings.groupby('isbn_13')['rating_score'].count())
-	average_rating.sort_values('ratingCount', ascending=False).head()
-
-	# The book that received most rating had low mean rating_score, thus recommending this book is not wise.
-	#value 5 and 3 used to be 200 and 100
-	counts1 = ratings['user_id'].value_counts()
-	ratings = ratings[ratings['user_id'].isin(counts1[counts1 >= 5].index)]
-	counts = ratings['rating_score'].value_counts()
-	ratings = ratings[ratings['rating_score'].isin(counts[counts >= 3].index)]
-
-	# ratings_pivot = ratings.pivot(index='userID', columns='ISBN').bookRating
-	ratings_pivot = ratings.pivot_table(index='user_id', columns='isbn_13').rating_score
-	user_id = ratings_pivot.index
-	isbn_13 = ratings_pivot.columns
-	ratings_pivot.head()
-	isbn_from_pivot = [9781435221482]
-	for isbns in isbn_from_pivot:
-		try:
-			bones_ratings = ratings_pivot[isbns]
-			similar_to_bones = ratings_pivot.corrwith(bones_ratings)
-			corr_bones = pd.DataFrame(similar_to_bones, columns=['pearsonR'])
-			corr_bones.dropna(inplace=True)
-			corr_summary = corr_bones.join(average_rating['ratingCount'])
-			# 10 should be greated than some value such as 300
-			corr_summary = corr_summary[corr_summary['ratingCount']>=10].sort_values('pearsonR', ascending=False).head(10)
-			result_isbn = corr_summary[corr_summary['pearsonR']>=0.5].sort_values('pearsonR', ascending=False).head(10)
-			list_of_index = list(result_isbn.head().index)
-
-			#We obtained the books’ ISBNs, but we need to find out the titles of the books to see whether they make sense.
-			books_corr_to_bones = pd.DataFrame(list_of_index, index=np.arange(len(list_of_index)), columns=['isbn_13'])
-			corr_books = pd.merge(books_corr_to_bones, books, on='isbn_13')
-			final_isbns = list(corr_books['isbn_13'])
-		except:
-			pass
-
 def add_user_country_browser(request):
 	if request.method == "POST":
 		user_country = request.POST["user_country"]
