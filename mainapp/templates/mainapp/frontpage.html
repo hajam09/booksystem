@@ -58,17 +58,17 @@
 <!-- Start of Image Carousel & Search -->
 <div class="container">
 
-	<form class="col-xl-12" id="searchForm">
+    <form class="col-xl-12" id="searchForm">
         {% csrf_token %}
-		<div class="input-group col-md-12">
-			<input style="  font-size: 15px !important;" type="text" name="booksearch" class="form-control input-lg" placeholder="Search for book"/>
-			<span class="input-group-btn">
-				<button style="background-color: white; border-style:none; border-left: solid 1px #ccc;" class="btn btn-info btn-lg" type="submit" onclick="makeSearch();return false;">
-					<i style="color:black;" class="glyphicon glyphicon-search"></i>
-				</button>
-			</span>
-		</div>
-	</form>
+        <div class="input-group col-md-12">
+            <input style="  font-size: 15px !important;" type="text" name="booksearch" class="form-control input-lg" placeholder="Search for book"/>
+            <span class="input-group-btn">
+                <button style="background-color: white; border-style:none; border-left: solid 1px #ccc;" class="btn btn-info btn-lg" type="submit" onclick="makeSearch();return false;">
+                    <i style="color:black;" class="glyphicon glyphicon-search"></i>
+                </button>
+            </span>
+        </div>
+    </form>
     <div id="myCarousel" class="carousel slide" data-ride="carousel">
         <!-- Indicators -->
         <ol class="carousel-indicators">
@@ -95,7 +95,7 @@
             <div class="item">
                 <img src="{% static 'assets/library4.jpg' %}" alt="Library Image">
             </div>
-		</div>
+        </div>
 
         <!-- Left and right controls -->
         <a class="left carousel-control" href="#myCarousel" data-slide="prev">
