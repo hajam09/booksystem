@@ -7,7 +7,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780674631113,Science,1,1,1,1,8.0,2
 9780141389103,Juvenile Fiction,0,1,0,1,8.4,9
 9781350035959,Literary Criticism,0,0,0,0,0.0,0
-9781442456860,Juvenile Fiction,2,2,2,2,7.8,9
+9781442456860,Juvenile Fiction,2,2,2,2,6.0,110
 9780141185101,Fiction,0,0,0,0,8,3278
 9780738665474,Study Aids,0,0,0,0,8,1
 9780313330568,Literary Criticism,0,0,0,0,0.0,0
@@ -332,3 +332,23 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9780977790845,Art,0,0,0,0,5.0,1
 9781408897317,None,0,0,0,0,10,1
 9781548602659,None,0,0,0,0,0.0,0
+9783527344321,Science,0,0,0,0,0.0,0
+9781789460292,None,0,0,0,0,0.0,0
+9781682224281,None,0,0,0,0,0.0,0
+9781682224304,None,0,0,0,0,0.0,0
+9781603427692,Technology Engineering,0,0,0,0,8.0,1
+9788757125405,Brugerindflydelse,0,0,0,0,0.0,0
+9788497633864,Fiction,0,0,0,0,3.0,4
+9781682224328,None,0,0,0,0,0.0,0
+9781473619777,Fiction,0,0,0,0,8.0,77
+9787810821551,Basic (Computer Program Language),0,0,0,0,0.0,0
+9781449718602,Religion,0,0,0,0,0.0,0
+9780343565343,None,0,0,0,0,0.0,0
+9781711283968,None,0,0,0,0,0.0,0
+9781790613113,None,0,0,0,0,0.0,0
+9780763780470,Medical,0,0,0,0,10.0,1
+9781090701022,None,0,0,0,0,0.0,0
+9781351721271,Business Economics,0,0,0,0,0.0,0
+9781523480890,None,0,0,0,0,8.0,1
+9780470627358,Philosophy,0,0,0,0,8.0,24
+9781910085073,Mice As Pets,0,0,0,0,0.0,0

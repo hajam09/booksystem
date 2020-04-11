@@ -408,12 +408,19 @@ def index(request):
 								# Only create books when successfully written to csv
 								Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
 								print("Create New Book")
-						requested_books.append({"uid":uid, "averageRating":averageRating, "ratingsCount":ratingsCount, "authors":authors,"isbn_13": ISBN_13, "isbn_10": ISBN_10, "title": title, "thumbnail": thumbnail})
+						requested_books.append(ISBN_13)
+						# requested_books.append({"uid":uid, "averageRating":averageRating, "ratingsCount":ratingsCount, "authors":authors,"isbn_13": ISBN_13, "isbn_10": ISBN_10, "title": title, "thumbnail": thumbnail})
 				except:
 					pass
 		except:
 			pass
-		return render(request,"mainapp/frontpage.html", {"bookresults":requested_books,"booksearch":booksearch})
+		required_book_objects = []
+		for isbn_13 in requested_books:
+			book_object = Book.objects.get(isbn_13=isbn_13)
+			the_data = book_object.book_data
+			required_book_objects.append({"uid":the_data["id"], "averageRating":the_data["averageRating"], "ratingsCount":the_data["ratingsCount"], "authors":the_data["authors"],"isbn_13": the_data["ISBN_13"], "isbn_10": the_data["ISBN_10"], "title": the_data["title"], "thumbnail": the_data["thumbnail"]})
+			
+		return render(request,"mainapp/frontpage.html", {"bookresults":required_book_objects,"booksearch":booksearch})
 	#Can use this for displaying this items in book.html with tag: Book's with good ratings.
 	try:
 		average_rating_recommendation = weighted_average_and_favourite_score(request)
@@ -1378,15 +1385,6 @@ def get_item_based_recommendation(csv_file):
 def replace_last_occurence(s, old, new, occurrence):
 	li = s.rsplit(old, occurrence)
 	return new.join(li)
-
-@csrf_exempt
-def clear_session(request):
-	#Function called when One Book button or Home button is clicked in base.html
-	if 'search_result' in request.session:
-		request.session['search_result'] = []
-		return redirect("mainapp:index")
-	return redirect("mainapp:index")
-	#return HttpResponse("session-cleared")
 
 def content_based_similar_user_items(request):
 	# Used in front_page under Favourite books from similar users'...

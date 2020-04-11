@@ -41,10 +41,10 @@
 	    <nav class="navbar navbar-inverse" style="background-color: #002952"><!--navbar-default for white navbar-->
 	    	<div class="container-fluid">
 	    		<div class="navbar-header">
-	    			<a class="navbar-brand" href="{% url 'mainapp:clear_session' %}" >BookWire</a>
+	    			<a class="navbar-brand" href="{% url 'mainapp:index' %}" >BookWire</a>
 	    		</div>
 	    		<ul class="nav navbar-nav navbar-right" style="background-color: #002952">
-	    			<li class="active"><a href="{% url 'mainapp:clear_session' %}" style="background-color: #002952">Home</a></li>
+	    			<li class="active"><a href="{% url 'mainapp:index' %}" style="background-color: #002952">Home</a></li>
 	    			{% if user.is_authenticated %}
 	    				{% if user.is_superuser %}
 	    					<li class="dropdown">
@@ -97,19 +97,4 @@
 	<!-- <script src="//instant.page/3.0.0" type="module" defer integrity="sha384-OeDn4XE77tdHo8pGtE1apMPmAipjoxUQ++eeJa6EtJCfHlvijigWiJpD7VDPWXV1"></script> for faster page load -->
 
 	</body>
-	<script type="text/javascript">
-		function clearSession(){
-			$.ajax({
-				type: "PUT",
-				url: "clearsession/",
-				data: {
-					functionality: 'clear-session',
-					csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
-				},
-				success: function(){
-					console.log("cleard the sessions successfully");
-				}
-			})
-		}
-	</script>
 </html>
