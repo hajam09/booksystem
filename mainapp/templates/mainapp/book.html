@@ -140,7 +140,7 @@
                 <div class="slick_carousel MultiCarousel">
                     {% for books in similar_books %}
                         <div class="mt-2 col-md-12">
-                            <a style="cursor: pointer;" onclick="bookPage('{{books.isbn_13}}')">
+                            <a style="cursor: pointer;" href='/book_page/{{books.isbn_13}}'>
                                 <p class="lead img-responsive">
                                     <img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;">
                                 </p>

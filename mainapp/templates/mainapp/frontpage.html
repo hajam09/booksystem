@@ -151,7 +151,7 @@
         <div class="slick_carousel MultiCarousel">
             {% for books in recently_added_books %}
                 <div class="col-md-12">
-                    <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')">
+                    <a style="cursor: pointer;" href='/book_page/{{books.isbn_13}}'>
                         <p class="lead img-responsive">
                             <img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;">
                         </p>
@@ -171,7 +171,7 @@
         <div class="slick_carousel MultiCarousel">
             {% for books in average_rating_recommendation %}
                 <div class="col-md-12">
-                    <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')">
+                    <a style="cursor: pointer;" href='/book_page/{{books.isbn_13}}'>
                         <p class="lead img-responsive">
                             <img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;">
                         </p>
@@ -192,7 +192,7 @@
                 <div class="slick_carousel MultiCarousel">
                     {% for books in other_user_favourite_books %}
                         <div class="col-md-12">
-                            <a style="cursor: pointer;" onclick="goToBookPage('{{books.isbn_13}}')">
+                            <a style="cursor: pointer;" href='/book_page/{{books.isbn_13}}'>
                                 <p class="lead img-responsive">
                                     <img src={{books.thumbnail}} alt="No Image" style="width:100%; display: inline-block; height: 200px;">
                                 </p>
