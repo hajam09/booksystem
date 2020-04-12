@@ -136,7 +136,7 @@
             <!-- https://bootsnipp.com/snippets/zDQkr -->
             <hr>
             <div class="row">
-                <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Similar Book's...</p>
+                <p style="font-weight:bold;font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Similar Book's...</p>
                 <div class="slick_carousel MultiCarousel">
                     {% for books in similar_books %}
                         <div class="mt-2 col-md-12">
@@ -177,6 +177,7 @@
             mobileFirst:false,
             slidesPerRow: 6,
             slidesToShow: 6,
+            slidesToScroll: 6,
             infinite:true,
             touchMove:true,
         });
@@ -612,9 +613,9 @@
         //     block_review_button();
         // "{% endif %}"
 
-        "{% for reviews in book_reviews %}"
-            //console.log("#############", "{{reviews}}", "{{reviews.bookID}}");
-        "{% endfor %}"
+        // "{% for reviews in book_reviews %}"
+        //     //console.log("#############", "{{reviews}}", "{{reviews.bookID}}");
+        // "{% endfor %}"
 
         // "{% for books in similar_books %}"
         //     var isbn_13 = "{{books.isbn_13}}";
