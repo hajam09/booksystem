@@ -1,5 +1,5 @@
 isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
-9781447218296,Fiction,1,2,2,3,7.8,22
+9781447218296,Fiction,1,2,2,3,7.0,137
 9780822208389,Drama,0,0,0,0,7.0,14
 9780399549199,Juvenile Fiction,1,2,2,2,8.0,27
 9780764118128,Pets,1,2,2,3,5.8,113
@@ -36,7 +36,7 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781911641926,Crafts Hobbies,0,0,0,0,0.0,0
 9780563533375,None,0,0,0,0,9.0,15
 9781781106464,Juvenile Fiction,0,0,0,0,9.0,9
-9781781100226,Juvenile Fiction,2,2,2,2,9.0,2293
+9781781100226,Juvenile Fiction,2,2,2,2,9.0,2401
 9781476635521,None,0,0,0,0,0.0,0
 9781781109502,Juvenile Nonfiction,0,0,0,0,8,5
 9780715141069,Church Work With Youth,0,0,0,0,6.0,2
@@ -352,3 +352,38 @@ isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_co
 9781523480890,None,0,0,0,0,8.0,1
 9780470627358,Philosophy,0,0,0,0,8.0,24
 9781910085073,Mice As Pets,0,0,0,0,0.0,0
+9780544183056,Literary Criticism,0,0,0,0,4.0,1
+9781571431592,Literary Criticism,0,0,0,0,10.0,2
+9781999819118,None,0,0,0,0,0.0,0
+9780008278595,Privateering,0,0,0,0,5.0,3
+9781781083451,None,0,0,0,0,0.0,0
+9781897126158,Drama,0,0,0,0,0.0,0
+9780790612164,Technology Engineering,0,0,0,0,0.0,0
+9789401445658,Business Economics,0,0,0,0,0.0,0
+9780575101807,Fiction,0,0,0,0,6.0,1
+9780446549899,Fiction,0,0,0,0,6.0,11
+9780674022324,Philosophy,0,0,0,0,10.0,1
+9789401445467,Business Economics,0,0,0,0,0.0,0
+9780860701330,None,0,0,0,0,0.0,0
+9781576875605,Nature,0,0,0,0,0.0,0
+9781532660214,Religion,0,0,0,0,0.0,0
+9780439513203,Juvenile Fiction,0,0,0,0,10.0,2
+9781782021520,Children'S Stories,0,0,0,0,0.0,0
+9780439814171,Juvenile Fiction,0,0,0,0,2.0,1
+9781496565822,Juvenile Fiction,0,0,0,0,9.4,3
+9781524788261,Juvenile Nonfiction,0,0,0,0,10.0,1
+9781684461479,Juvenile Nonfiction,0,0,0,0,0.0,0
+9781570361807,Juvenile Fiction,0,0,0,0,0.0,0
+9781515725909,Juvenile Nonfiction,0,0,0,0,0.0,0
+9781434297785,Juvenile Fiction,0,0,0,0,0.0,0
+9780439284868,Juvenile Fiction,0,0,0,0,0.0,0
+9780007488308,Baggins Frodo (Fictitious Character),0,0,0,0,8.0,2402
+9780547951942,Fiction,0,0,0,0,9.0,67
+9780786484737,Performing Arts,0,0,0,0,0.0,0
+9789042016828,Social Science,0,0,0,0,0.0,0
+9780007488377,None,0,0,0,0,10.0,1
+9780618002252,None,0,0,0,0,9.0,362
+9781904764823,Performing Arts,0,0,0,0,10.0,1
+9780820463964,Performing Arts,0,0,0,0,0.0,0
+9780547952017,Fiction,0,0,0,0,9.0,94
+9781438113999,Literary Criticism,0,0,0,0,6.0,1

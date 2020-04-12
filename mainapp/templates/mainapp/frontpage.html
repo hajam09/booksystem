@@ -1,59 +1,5 @@
 {% extends "mainapp/base.html" %}
 {% load static %}
-<style type="text/css">
-    .carousel {
-        width:640px;
-        height:360px;
-    }
-    h4:hover {
-        cursor: pointer;
-    }
-    .MultiCarousel {
-        float: left;
-        overflow: hidden;
-        padding: 15px;
-        width: 100%;
-        position: relative;
-    }
-    
-    .MultiCarousel .MultiCarousel-inner {
-        transition: 1s ease all;
-        float: left;
-    }
-    
-    .MultiCarousel .MultiCarousel-inner .item {
-        float: left;
-    }
-    
-    .MultiCarousel .MultiCarousel-inner .item > div {
-        text-align: center;
-        padding: 10px;
-        margin: 10px;
-        background: #f1f1f1;
-        color: #666;
-    }
-    
-    .MultiCarousel .leftLst,
-    .MultiCarousel .rightLst {
-        position: absolute;
-        border-radius: 50%;
-        top: calc(50% - 20px);
-    }
-    
-    .MultiCarousel .leftLst {
-        left: 0;
-    }
-    
-    .MultiCarousel .rightLst {
-        right: 0;
-    }
-    
-    .MultiCarousel .leftLst.over,
-    .MultiCarousel .rightLst.over {
-        pointer-events: none;
-        background: #ccc;
-    }
-</style>
 {% block content %}
 <!-- Start of Image Carousel & Search -->
 <div class="container">
@@ -147,7 +93,7 @@
 <div class="container">
     <!-- <h1>Recently Added Books!</h1> -->
     <div class="row">
-        <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recently Added Books...</p>
+        <p style="font-weight:bold;font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Recently Added Books...</p>
         <div class="slick_carousel MultiCarousel">
             {% for books in recently_added_books %}
                 <div class="col-md-12">
@@ -167,7 +113,7 @@
 {% if average_rating_recommendation %}
 <div class="container">
     <div class="row">
-        <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Books Based on Ratings...</p>
+        <p style="font-weight:bold;font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Books Based on Ratings...</p>
         <div class="slick_carousel MultiCarousel">
             {% for books in average_rating_recommendation %}
                 <div class="col-md-12">
@@ -188,7 +134,7 @@
     {% if other_user_favourite_books %}
         <div class="container">
             <div class="row">
-                <p style="font-weight:bold; color: grey; font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Favourite books from similar users'...</p>
+                <p style="font-weight:bold;font-size: 20px">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Favourite books from similar users'...</p>
                 <div class="slick_carousel MultiCarousel">
                     {% for books in other_user_favourite_books %}
                         <div class="col-md-12">
@@ -217,6 +163,7 @@
             mobileFirst:false,
             slidesPerRow: 6,
             slidesToShow: 6,
+            slidesToScroll: 6,
             infinite:true,
             touchMove:true,
         });

@@ -3,84 +3,216 @@
     margin: 0 auto;
 }
 
-.carousel-control { 
+.carousel-control {
     width: 8%;
     width: 0px;
 }
+
 .carousel-control.left,
-.carousel-control.right { 
+.carousel-control.right {
     margin-right: 40px;
-    margin-left: 32px; 
+    margin-left: 32px;
     background-image: none;
     opacity: 1;
 }
+
 .carousel-control > a > span {
     color: white;
-	  font-size: 29px !important;
+    font-size: 29px !important;
 }
 
-.carousel-col { 
-    position: relative; 
-    min-height: 1px; 
-    padding: 5px; 
+.carousel-col {
+    position: relative;
+    min-height: 1px;
+    padding: 5px;
     float: left;
- }
+}
 
- .active > div { display:none; }
- .active > div:first-child { display:block; }
+.active > div {
+    display: none;
+}
+
+.active > div:first-child {
+    display: block;
+}
+
 
 /*xs*/
+
 @media (max-width: 767px) {
-  .carousel-inner .active.left { left: -50%; }
-  .carousel-inner .active.right { left: 50%; }
-	.carousel-inner .next        { left:  50%; }
-	.carousel-inner .prev		     { left: -50%; }
-  .carousel-col                { width: 50%; }
-	.active > div:first-child + div { display:block; }
+    .carousel-inner .active.left {
+        left: -50%;
+    }
+    .carousel-inner .active.right {
+        left: 50%;
+    }
+    .carousel-inner .next {
+        left: 50%;
+    }
+    .carousel-inner .prev {
+        left: -50%;
+    }
+    .carousel-col {
+        width: 50%;
+    }
+    .active > div:first-child + div {
+        display: block;
+    }
 }
+
 
 /*sm*/
+
 @media (min-width: 768px) and (max-width: 991px) {
-  .carousel-inner .active.left { left: -50%; }
-  .carousel-inner .active.right { left: 50%; }
-	.carousel-inner .next        { left:  50%; }
-	.carousel-inner .prev		     { left: -50%; }
-  .carousel-col                { width: 50%; }
-	.active > div:first-child + div { display:block; }
+    .carousel-inner .active.left {
+        left: -50%;
+    }
+    .carousel-inner .active.right {
+        left: 50%;
+    }
+    .carousel-inner .next {
+        left: 50%;
+    }
+    .carousel-inner .prev {
+        left: -50%;
+    }
+    .carousel-col {
+        width: 50%;
+    }
+    .active > div:first-child + div {
+        display: block;
+    }
 }
+
 
 /*md*/
+
 @media (min-width: 992px) and (max-width: 1199px) {
-  .carousel-inner .active.left { left: -33%; }
-  .carousel-inner .active.right { left: 33%; }
-	.carousel-inner .next        { left:  33%; }
-	.carousel-inner .prev		     { left: -33%; }
-  .carousel-col                { width: 33%; }
-	.active > div:first-child + div { display:block; }
-  .active > div:first-child + div + div { display:block; }
+    .carousel-inner .active.left {
+        left: -33%;
+    }
+    .carousel-inner .active.right {
+        left: 33%;
+    }
+    .carousel-inner .next {
+        left: 33%;
+    }
+    .carousel-inner .prev {
+        left: -33%;
+    }
+    .carousel-col {
+        width: 33%;
+    }
+    .active > div:first-child + div {
+        display: block;
+    }
+    .active > div:first-child + div + div {
+        display: block;
+    }
 }
 
+
 /*lg*/
+
 @media (min-width: 1200px) {
-  .carousel-inner .active.left { left: -25%; }
-  .carousel-inner .active.right{ left:  25%; }
-	.carousel-inner .next        { left:  25%; }
-	.carousel-inner .prev		     { left: -25%; }
-  .carousel-col                { width: 25%; }
-	.active > div:first-child + div { display:block; }
-  .active > div:first-child + div + div { display:block; }
-	.active > div:first-child + div + div + div { display:block; }
+    .carousel-inner .active.left {
+        left: -25%;
+    }
+    .carousel-inner .active.right {
+        left: 25%;
+    }
+    .carousel-inner .next {
+        left: 25%;
+    }
+    .carousel-inner .prev {
+        left: -25%;
+    }
+    .carousel-col {
+        width: 25%;
+    }
+    .active > div:first-child + div {
+        display: block;
+    }
+    .active > div:first-child + div + div {
+        display: block;
+    }
+    .active > div:first-child + div + div + div {
+        display: block;
+    }
 }
 
 .block {
-	width: 306px;
-	height: 230px;
+    width: 306px;
+    height: 230px;
 }
 
-.red {background: red;}
+.red {
+    background: red;
+}
 
-.blue {background: blue;}
+.blue {
+    background: blue;
+}
 
-.green {background: green;}
+.green {
+    background: green;
+}
 
-.yellow {background: yellow;}
+.yellow {
+    background: yellow;
+}
+
+.carousel {
+    width: 640px;
+    height: 360px;
+}
+
+h4:hover {
+    cursor: pointer;
+}
+
+.MultiCarousel {
+    float: left;
+    overflow: hidden;
+    padding: 15px;
+    width: 100%;
+    position: relative;
+}
+
+.MultiCarousel .MultiCarousel-inner {
+    transition: 1s ease all;
+    float: left;
+}
+
+.MultiCarousel .MultiCarousel-inner .item {
+    float: left;
+}
+
+.MultiCarousel .MultiCarousel-inner .item > div {
+    text-align: center;
+    padding: 10px;
+    margin: 10px;
+    background: #f1f1f1;
+    color: #666;
+}
+
+.MultiCarousel .leftLst,
+.MultiCarousel .rightLst {
+    position: absolute;
+    border-radius: 50%;
+    top: calc(50% - 20px);
+}
+
+.MultiCarousel .leftLst {
+    left: 0;
+}
+
+.MultiCarousel .rightLst {
+    right: 0;
+}
+
+.MultiCarousel .leftLst.over,
+.MultiCarousel .rightLst.over {
+    pointer-events: none;
+    background: #ccc;
+}

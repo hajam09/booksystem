@@ -1,27 +1,27 @@
 from django.shortcuts import render, redirect
 from django.utils import timezone
-from django.http import HttpResponse, Http404, QueryDict, HttpResponseRedirect, JsonResponse
-from django.template import RequestContext, loader
+from django.http import HttpResponse, QueryDict, JsonResponse#, HttpResponseRedirect, Http404
+# from django.template import RequestContext, loader
 from django.contrib.sessions.models import Session
-from django.contrib.auth.hashers import make_password
-from django.db import IntegrityError
+# from django.contrib.auth.hashers import make_password
+# from django.db import IntegrityError
 from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.auth import logout, authenticate, login as auth_login
-from django.urls import reverse
+# from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Book, Review, Category, Metrics
-import string, random, csv, re, os, uuid, unidecode, time, smtplib, ssl, requests
-from django.contrib.auth.forms import PasswordChangeForm
+import string, random, csv, re, os, unidecode, time, requests#, ssl, smtplib, uuid
+# from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import sigmoid_kernel
-from scipy import sparse
-from sklearn.metrics.pairwise import cosine_similarity
+# from scipy import sparse
+# from sklearn.metrics.pairwise import cosine_similarity
 from datetime import date
 from django.core.mail import send_mail
 # Create your views here.
@@ -1393,11 +1393,9 @@ def content_based_similar_user_items(request):
             strip_accents='unicode', analyzer='word',token_pattern=r'\w{1,}',
             ngram_range=(1, 3))
 
-	# Fitting the TF-IDF on the 'genres' text
-	tfv_matrix = tfv.fit_transform(users['genres'])
-
-	# Compute the sigmoid kernel
-	sig = sigmoid_kernel(tfv_matrix, tfv_matrix)
+	
+	tfv_matrix = tfv.fit_transform(users['genres'])# Fitting the TF-IDF on the 'genres' text
+	sig = sigmoid_kernel(tfv_matrix, tfv_matrix)# Compute the sigmoid kernel
 
 	# Reverse mapping of indices and book titles
 	# If more than one user has same genre list, then considering one of them is sufficient.
@@ -1411,8 +1409,8 @@ def content_based_similar_user_items(request):
 	    sig_scores = list(enumerate(sig[idx]))
 	    sig_scores = sorted(sig_scores, key=lambda x: x[1], reverse=True)
 	    sig_scores = sig_scores[1:11]
-	    movie_indices = [i[0] for i in sig_scores]
-	    return users['genres'].iloc[movie_indices]
+	    book_indices = [i[0] for i in sig_scores]
+	    return users['genres'].iloc[book_indices]
 
 	user_pk = request.user.pk
 	customer_account = User.objects.get(pk=user_pk)
@@ -1480,8 +1478,8 @@ def weighted_average_and_favourite_score(request):
 	book_rating_cleaned[['normalized_weight_average','normalized_popularity']]= book_normalized
 
 	book_rating_cleaned['score'] = book_rating_cleaned['normalized_weight_average'] * 0.5 + book_rating_cleaned['normalized_popularity'] * 0.5
-	movies_scored_df = book_rating_cleaned.sort_values(['score'], ascending=False)
-	final_result = movies_scored_df[['isbn_13', 'title', 'normalized_weight_average', 'normalized_popularity', 'score']].head(15)
+	books_scored_df = book_rating_cleaned.sort_values(['score'], ascending=False)
+	final_result = books_scored_df[['isbn_13', 'title', 'normalized_weight_average', 'normalized_popularity', 'score']].head(15)
 
 	list_of_isbn = list(final_result['isbn_13'])
 	list_of_books = []
@@ -1499,52 +1497,35 @@ def content_based_similar_items(request, title):
 	rating = pd.read_csv("book_rating.csv")
 	description = pd.read_csv("book_description.csv")
 
-	movies_df_merge = books.merge(rating, on='isbn_13')
-	movies_cleaned_df = movies_df_merge.drop(columns=['reading_now_count', 'to_read_count', 'have_read_count'])
-	movies_cleaned_df = movies_df_merge.merge(description, on='isbn_13')
+	books_df_merge = books.merge(rating, on='isbn_13')
+	books_cleaned_df = books_df_merge.drop(columns=['reading_now_count', 'to_read_count', 'have_read_count'])
+	books_cleaned_df = books_df_merge.merge(description, on='isbn_13')
 
 	# Content Based Recommendation System
 	# Make a recommendations based on the books’s description given in the description column.
 	# So if our user gives us a book title, our goal is to recommend books that share similar description summaries.
-	movies_df_merge.drop(columns=['reading_now_count', 'to_read_count', 'have_read_count'])
+	books_df_merge.drop(columns=['reading_now_count', 'to_read_count', 'have_read_count'])
 	tfv = TfidfVectorizer(min_df=3,  max_features=None, 
             strip_accents='unicode', analyzer='word',token_pattern=r'\w{1,}',
             ngram_range=(1, 3),
             stop_words = 'english')
 
-	# Filling NaNs with empty string
-	movies_cleaned_df['description'] = movies_cleaned_df['description'].fillna('')
-
-	# Fitting the TF-IDF on the 'overview' text
-	tfv_matrix = tfv.fit_transform(movies_cleaned_df['description'])
-	# Compute the sigmoid kernel
-	sig = sigmoid_kernel(tfv_matrix, tfv_matrix)
-
-	# Reverse mapping of indices and book titles
-	indices = pd.Series(movies_cleaned_df.index, index=movies_cleaned_df['title']).drop_duplicates()
+	books_cleaned_df['description'] = books_cleaned_df['description'].fillna('')# Filling NaNs with empty string
+	tfv_matrix = tfv.fit_transform(books_cleaned_df['description'])# Fitting the TF-IDF on the 'overview' text
+	sig = sigmoid_kernel(tfv_matrix, tfv_matrix)# Compute the sigmoid kernel
+	indices = pd.Series(books_cleaned_df.index, index=books_cleaned_df['title']).drop_duplicates()# Reverse mapping of indices and book titles
 
 	def give_rec(title, sig=sig):
 	    # Get the index corresponding to title
-	    
 	    try:
 	        idx = indices[title].iloc[0]
 	    except:
 	        idx = indices[title]
-
-	    # Get the pairwsie similarity scores 
-	    sig_scores = list(enumerate(sig[idx]))
-
-	    # Sort the movies 
-	    sig_scores = sorted(sig_scores, key=lambda x: x[1], reverse=True)
-
-	    # Scores of the 10 most similar movies
-	    sig_scores = sig_scores[1:11]
-
-	    # Movie indices
-	    movie_indices = [i[0] for i in sig_scores]
-
-	    # Top 10 most similar movies
-	    return movies_cleaned_df['title'].iloc[movie_indices]
+	    sig_scores = list(enumerate(sig[idx]))# Get the pairwsie similarity scores 
+	    sig_scores = sorted(sig_scores, key=lambda x: x[1], reverse=True)# Sort the books 
+	    sig_scores = sig_scores[1:11]# Scores of the 10 most similar books
+	    book_indices = [i[0] for i in sig_scores]# Book indices
+	    return books_cleaned_df['title'].iloc[book_indices]# Top 10 most similar books
 
 	# Testing our content-based recommendation system with the seminal film Of Mice and Men
 	#Loop thorugh user favourite book title/title of the user favourite book
@@ -1552,17 +1533,15 @@ def content_based_similar_items(request, title):
 	title = ''.join(e for e in title if e.isalnum() or e==" ")
 	title = re.sub(" +", " ", title)
 	title = unidecode.unidecode(title)
-	print("TITLE",title)
 	original_table = give_rec(title)
 
-	movies_cleaned_df = movies_cleaned_df[movies_cleaned_df.title.isin(list(original_table))]
-	movies_cleaned_df.drop(columns=['publisher','publishedDate','favourites_count','reading_now_count','to_read_count','have_read_count','have_read_count'])
+	books_cleaned_df = books_cleaned_df[books_cleaned_df.title.isin(list(original_table))]
+	books_cleaned_df.drop(columns=['publisher','publishedDate','favourites_count','reading_now_count','to_read_count','have_read_count','have_read_count'])
 
-	isbns_columns = movies_cleaned_df["isbn_13"]
+	isbns_columns = books_cleaned_df["isbn_13"]
 	all_similar_books = list(isbns_columns)
 
 	list_of_books = []
-
 	for isbn_13 in all_similar_books:
 		the_book = Book.objects.get(isbn_13=str(isbn_13))
 		the_data = the_book.book_data
@@ -1574,17 +1553,16 @@ def content_based_similar_items(request, title):
 def pearson_correlation_collaborative_filtering(request):
 	# Used in user_shelf
 	ratings = pd.read_csv('user_rating.csv')
-	movies = pd.read_csv('book_info.csv')
-	ratings = pd.merge(movies,ratings).drop(['authors','publisher','publishedDate'],axis=1)
+	books = pd.read_csv('book_info.csv')
+	ratings = pd.merge(books,ratings).drop(['authors','publisher','publishedDate'],axis=1)
 
 	userRatings = ratings.pivot_table(index=['user_id'],columns=['title'],values='rating_score')
 	# Fixing books that have less than 10 user ratings. Uncomment this in the future
 	#userRatings = userRatings.dropna(thresh=10, axis=1).fillna(0,axis=1)
-
 	corrMatrix = userRatings.corr(method='pearson')
 
-	def get_similar(movie_name,rating):
-	    similar_ratings = corrMatrix[movie_name]*(rating-2.5)
+	def get_similar(book_name,rating):
+	    similar_ratings = corrMatrix[book_name]*(rating-2.5)
 	    similar_ratings = similar_ratings.sort_values(ascending=False)
 	    return similar_ratings
 

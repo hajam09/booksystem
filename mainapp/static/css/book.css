@@ -1,4 +1,9 @@
-
+@media (max-width: 1024px)
+{
+   .image_tile{
+    display: none;
+}
+}
 body{
     margin-top:20px;
     background:#eee;
