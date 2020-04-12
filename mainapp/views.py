@@ -419,7 +419,6 @@ def index(request):
 			book_object = Book.objects.get(isbn_13=isbn_13)
 			the_data = book_object.book_data
 			required_book_objects.append({"uid":the_data["id"], "averageRating":the_data["averageRating"], "ratingsCount":the_data["ratingsCount"], "authors":the_data["authors"],"isbn_13": the_data["ISBN_13"], "isbn_10": the_data["ISBN_10"], "title": the_data["title"], "thumbnail": the_data["thumbnail"]})
-		print(required_book_objects)
 		return render(request,"mainapp/frontpage.html", {"bookresults":required_book_objects,"booksearch":booksearch})
 	#Can use this for displaying this items in book.html with tag: Book's with good ratings.
 	try:
