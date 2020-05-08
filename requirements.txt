@@ -8,3 +8,4 @@ Unidecode
 scikit-learn
 seaborn
 selenium==3.0.2
+coverage
