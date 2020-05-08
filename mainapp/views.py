@@ -26,245 +26,8 @@ from datetime import date
 from django.core.mail import send_mail
 # Create your views here.
 
-
-# user_pk = request.user.pk
-# 	customer_account = User.objects.get(pk=user_pk)
-# 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-# 	this_user_genres = eval(customer_details.userfavouritegenre)
-# 	this_user_genres.sort()
-# 	this_user_genres = " ".join(this_user_genres)
-# # 	this_user_favourite_book = Book.objects.filter(favourites__id=customer_details.pk)[::1]
-
-# if(functionality=="add-to-favourites"):
-# 				favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
-# 				if(b1 not in favourite_Book):
-# 					customer_details.favourites.add(b1)
-# 					add_feature_value(isbn_13, "favourites_count")
-# 					return HttpResponse("new_object")
-
-def add_favourite_books():
-	all_users = User.objects.all()
-	for users in all_users:
-		try:
-			customer_account =  User.objects.get(pk=users.pk)
-			customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-
-			this_user_high_rated = Review.objects.filter(customerID=customer_details.pk).filter(rating_value=5).order_by('-rating_value')# |  Review.objects.filter(customerID=customer_details.pk).filter(rating_value=5).order_by('-rating_value')
-			this_user_favourite_book = Book.objects.filter(favourites__id=customer_details.pk)
-			the_books = [i.bookID for i in this_user_high_rated]
-
-			# for books in the_books:
-			# 	if books not in this_user_favourite_book:
-			# 		customer_details.favourites.add(books)
-		except:
-			pass
-def createaccount():
-	file = open("names.txt", "r").readlines()
-	file2 = open("genres.txt", "r").readlines()
-	all_names = [names.replace("\n", "") for names in file]
-	all_genres = [genres.replace("\n", "") for genres in file2]
-
-	start_dt = date.today().replace(day=1, month=1).toordinal()
-	end_dt = date.today().toordinal()
-
-	def domains():
-	    return random.choice(["@yahoo.com","@gmail.com","@hotmail.com","@outlook.com","@hotmail.fr"])
-
-	def gender():
-	    return random.choice(["Male", "Female"])
-
-	for i in all_names:
-		email = i.split(" ")[0].lower()+"."+i.split(" ")[1].lower()+str(random.randint(0,99))+domains()
-		password ="Maideen69"
-		first_name = i.split(" ")[0]
-		last_name = i.split(" ")[1]
-		birthDate = str(date.fromordinal(random.randint(start_dt, end_dt)))
-		genders = gender()
-		random_genre = random.sample(all_genres, random.randint(3, 9))
-		random_genre.sort()
-		random_genre = str(random_genre)
-		print(username,email,password,first_name,last_name, birthDate,genders,random_genre)
-
-		checkAccountExist = User.objects.filter(email=email)
-		if(len(checkAccountExist)==0):
-			user = User.objects.create_user(username=email, email=email, password=password, first_name=first_name, last_name=last_name)
-			print("New user object")
-
-			#Creating the profile for the user
-			user.customeraccountprofile_set.create(birthDate=birthDate, gender=genders, userfavouritegenre=random_genre)
-			print("new customer profile object")
-
-			listofgenre = eval(random_genre)
-			genre_to_csv = " ".join(listofgenre)
-			genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ").replace("-", " ")
-			genre_to_csv = ''.join(e for e in genre_to_csv if e.isalnum() or e==" ")
-			genre_to_csv = re.sub(" +", " ", genre_to_csv)
-			genre_to_csv = unidecode.unidecode(genre_to_csv)
-
-			with open('user_genre.csv', 'a') as csv_file:
-				# Fields are user_id,genres
-				towrite = "\n"+email+","+genre_to_csv
-				csv_file.write(towrite)
-
-		time.sleep(1)
-def add_books_to_system(booksearch):
-	response = requests.get("https://www.googleapis.com/books/v1/volumes?q="+booksearch)
-	try:
-		json_response = response.json()["items"]
-		for book in json_response:
-			try:
-				if(len(book['volumeInfo']['industryIdentifiers'])==2):
-					uid = book['id']
-					etag = book['etag']
-					title = book['volumeInfo']['title']
-
-					if('authors' in  book['volumeInfo']):
-						authors = book['volumeInfo']['authors']
-						authors.sort()
-						authors = ",".join(authors)
-					else:
-						authors = "None"
-
-					if('publisher' in book['volumeInfo']):
-						publisher = book['volumeInfo']['publisher']
-					else:
-						publisher = "None"
-
-					if('publishedDate' in book['volumeInfo']):
-						publishedDate = book['volumeInfo']['publishedDate']
-					else:
-						publishedDate = "None"
-
-					if('description' in book['volumeInfo']):
-						description = book['volumeInfo']['description']
-					else:
-						description = "None"
-
-					ISBN_13 = None
-					ISBN_10 = None
-					if(book['volumeInfo']['industryIdentifiers'][0]['type'] == "ISBN_10"):
-						ISBN_10 = book['volumeInfo']['industryIdentifiers'][0]['identifier']
-					elif(book['volumeInfo']['industryIdentifiers'][0]['type'] == "ISBN_13"):
-						ISBN_13 = book['volumeInfo']['industryIdentifiers'][0]['identifier']
-
-					if(book['volumeInfo']['industryIdentifiers'][1]['type'] == "ISBN_10"):
-						ISBN_10 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
-					elif(book['volumeInfo']['industryIdentifiers'][1]['type'] == "ISBN_13"):
-						ISBN_13 = book['volumeInfo']['industryIdentifiers'][1]['identifier']
-
-					if('categories' in book['volumeInfo']):
-						categorie = book['volumeInfo']['categories']
-						categories = [i.title().replace(",", " &").replace("  ", "") for i in categorie]
-					else:
-						categories = ["None"]
-
-					if('averageRating' in book['volumeInfo']):
-						averageRating = book['volumeInfo']['averageRating']
-					else:
-						averageRating = 0.0
-					averageRating = round(averageRating,1)
-
-					if('ratingsCount' in book['volumeInfo']):
-						ratingsCount = book['volumeInfo']['ratingsCount']
-					else:
-						ratingsCount = 0
-
-					print(ISBN_13)
-					try:
-						if('thumbnail' in book['volumeInfo']['imageLinks']):
-							thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
-					except:
-						thumbnail = "None"
-
-					# if('thumbnail' in book['volumeInfo']['imageLinks']):
-					# 	thumbnail = book['volumeInfo']['imageLinks']['thumbnail']
-					# else:
-					# 	thumbnail = "None"
-
-					checkBookExist = Book.objects.filter(isbn_13=ISBN_13)
-					if(len(checkBookExist)==0):
-						print("New book")
-						book_data = {"id": uid, "etag": etag, "title": title,
-						"authors": authors, "publisher": publisher, "publishedDate": publishedDate,
-						"description": description, "ISBN_10": ISBN_10, "ISBN_13": ISBN_13,
-						"categories": categories, "averageRating": averageRating, "ratingsCount": ratingsCount,
-						"thumbnail": thumbnail}
-
-						Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
-						print("Create New Book")
-
-						book_genre = " ".join(categories)
-						book_genre = book_genre.replace("&", "").replace("  ", " ")
-
-						# Adding the genre/category to DB.
-						category_db = "".join(categories)
-						category_db = category_db.split("&")
-
-						for item in category_db:
-							if(item!="None"):
-								split_item = list(item)
-								if(split_item[0]==" "):
-									split_item = split_item[1:]
-								if(split_item[len(split_item)-1]==" "):
-									split_item = split_item[:len(split_item)-1]
-								item = "".join(split_item)
-								item = item.replace(",", " ").replace("-", " ").replace("  ", " ")
-								item = ''.join(e for e in item if e.isalnum() or e==" ")
-								item = re.sub(" +", " ", item)
-								item = unidecode.unidecode(item)
-								checkGenreExist = Category.objects.filter(name=item)
-								if(len(checkGenreExist)==0):
-									Category.objects.create(name=item)
-
-						with open('book_rating.csv', 'a') as br_writer, open('book_info.csv', 'a') as bi_writer, open('book_description.csv', 'a') as bd_writer:
-							# Fields are isbn_13,book_genre,favourites_count,reading_now_count,to_read_count,have_read_count,average_rating,rating_count
-							br_write = "\n"+ISBN_13+","+book_genre+","+"0"+","+"0"+","+"0"+","+"0"+","+str(2*averageRating)+","+str(ratingsCount)
-							
-							# Fields are isbn_13,title,authors,publisher,publishedDate
-							authors = authors.replace(",", " ").replace("-", " ").replace("–", " ")
-							authors = ''.join(e for e in authors if e.isalnum() or e==" ")
-							authors = re.sub(" +", " ", authors)
-							authors = unidecode.unidecode(authors)
-
-							publisher = publisher.replace(",", " ").replace("-", " ").replace("–", " ")
-							publisher = ''.join(e for e in publisher if e.isalnum() or e==" ")
-							publisher = re.sub(" +", " ", publisher)
-							publisher = unidecode.unidecode(publisher)
-
-							title = title.replace(",", " ").replace("-", " ").replace("–", " ")
-							title = ''.join(e for e in title if e.isalnum() or e==" ")
-							title = re.sub(" +", " ", title)
-							title = unidecode.unidecode(title)
-							#Use regular expression to allow letters numbers and brackets
-							bi_write = "\n"+ISBN_13+","+title+","+authors+","+publisher.title()+","+publishedDate.replace("-","/")
-
-							description = description.replace(",", " ").replace("-", " ").replace("–", " ")
-							description = ''.join(e for e in description if e.isalnum() or e==" ")
-							description = re.sub(" +", " ", description)
-							description = unidecode.unidecode(description)
-							bd_write = "\n"+ISBN_13+","+description
-
-							br_writer.write(br_write)
-							bi_writer.write(bi_write)
-							bd_writer.write(bd_write)
-			except:
-				pass
-	except:
-		pass
-	return
-
 @csrf_exempt
 def index(request):
-
-	##//
-	# This code is for to adding 2000000 books to the database
-	# with open("BX-Books.csv","r") as reader:
-	# 	for row in reader:
-	# 		line = row.split(";")[1].replace('"',"")
-	# 		print(line)
-	# 		add_books_to_system(line)
-	##//
-
 	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 
@@ -409,7 +172,6 @@ def index(request):
 								Book.objects.create(isbn_13=ISBN_13, isbn_10=ISBN_10, title=title, book_data=book_data)
 								print("Create New Book")
 						requested_books.append(ISBN_13)
-						# requested_books.append({"uid":uid, "averageRating":averageRating, "ratingsCount":ratingsCount, "authors":authors,"isbn_13": ISBN_13, "isbn_10": ISBN_10, "title": title, "thumbnail": thumbnail})
 				except:
 					pass
 		except:
@@ -471,8 +233,6 @@ def signup(request):
 
 		# Checking if the password is secure.
 		if(len(password)<8 or any(letter.isalpha() for letter in password)==False or any(capital.isupper() for capital in password)==False or any(number.isdigit() for number in password)==False):
-			#any(letter.isalpha() for letter in password)==False is not necessary because if checking for capitals it should check
-			#for letters as well.
 			return HttpResponse("Password is not secure enough!")
 		#Check if the account with same email id exist before creating a new one
 		checkAccountExist = User.objects.filter(email=email)
@@ -483,11 +243,8 @@ def signup(request):
 
 			#Creating an account for the user
 			user = User.objects.create_user(username=email, email=email, password=password, first_name=fname, last_name=sname)
-			print("New user object")
-
 			#Creating the profile for the user
 			user.customeraccountprofile_set.create(birthDate=birthDate, gender=gender, userfavouritegenre=listOfUserGenre)
-			print("new customer profile object")
 
 			#Updating the genres to CSV for Data Mining
 			listofgenre = eval(listOfUserGenre)
@@ -510,7 +267,6 @@ def signup(request):
 			else:
 				metric["domains"][domain_email] += 1
 			Metrics.objects.filter(id=1).update(metrics_data=metric)
-			#
 
 			return render(request,'mainapp/login.html', {})#return redirect('mainapp:login')
 		return HttpResponse("An account already exists for this email address, please try again!")
@@ -628,7 +384,7 @@ def update_profile(request):
 	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
 	user_pk = request.user.pk
-	if not request.user.is_authenticated:#used to be if(not user_pk):
+	if not request.user.is_authenticated:
 		return redirect('mainapp:login')
 
 	#Return 404 page if no profile found
@@ -669,8 +425,6 @@ def update_profile(request):
 			# User wants to change the password
 			# Checking if the password is secure.
 			if(len(password)<8 or any(letter.isalpha() for letter in password)==False or any(capital.isupper() for capital in password)==False or any(number.isdigit() for number in password)==False):
-				#any(letter.isalpha() for letter in password)==False is not necessary because if checking for capitals it should check
-				#for letters as well.
 				return HttpResponse("Password is not secure enough!")
 			u.set_password(put.get('password'))
 			u.save()
@@ -680,10 +434,6 @@ def update_profile(request):
 		listofgenre.sort()
 		update_genre = str(listofgenre)
 		CustomerAccountProfile.objects.filter(pk=int(customer_details.pk)).update(userfavouritegenre=update_genre)
-
-		#Updating the genres to CSV for Data Mining
-		#listofgenre = eval(listofgenre)
-		#listofgenre.sort()
 
 		genre_to_csv = " ".join(listofgenre)
 		genre_to_csv = genre_to_csv.replace(",", "").replace("  ", " ").replace("-", " ")
@@ -776,12 +526,6 @@ def user_shelf(request):
 	except User.DoesNotExist:
 		return redirect('mainapp:login')
 
-	# try:
-	# 	customer_account = User.objects.get(pk=user_pk)
-	# 	customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-	# except:
-	# 	return redirect('mainapp:login')
-
 	#Need to check if the Book are already in favourites, reading now, to read and have read.
 	favourite_Book = Book.objects.filter(favourites__id=customer_details.pk)
 	reading_Book = Book.objects.filter(readingnow__id=customer_details.pk)
@@ -810,20 +554,10 @@ def user_shelf(request):
 		isbn_13 = put.get("isbn_13")
 		isbn_10 = put.get("isbn_10")
 
-		#Need to add leading zero's to ISBN 10 and 13.
-		# remaining_zero = "0"*(10-len(isbn_10))
-		# isbn_10 = remaining_zero+isbn_10
-		# remaining_zero = ""
-		# remaining_zero = "0"*(13-len(isbn_13))
-		# isbn_13 = remaining_zero+isbn_13
-
-		#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 		try:
-			# Not sure if this is necessary or just leave it as  b1 = Book.objects.get(isbn_13=isbn_13)
 			b1 = Book.objects.get(isbn_13=isbn_13)
 		except Book.DoesNotExist:
 			return redirect('mainapp:not_found')
-		# b1 = Book.objects.get(isbn_13=isbn_13)
 
 		if(functionality=="remove-from-favourites"):
 			if(b1 in favourite_Book):
@@ -856,51 +590,23 @@ def user_shelf(request):
 	visited_Book = []
 
 	for i in favourite_Book:
-		#line = get_row_from_csv(i.isbn_13, i.isbn_10)
-		#categories = replace_last_occurence(line[7], '|', ' & ', 1)
-		#categories = re.sub("[|]", ", ", categories)
-		#book_attributes = {"isbn_13": i.isbn_13, "isbn_10": i.isbn_10, "title": i.title, "categories": categories, "average_rating": line[8]}
-		#favourite_Book[i] = book_attributes
-		#favourite_book.append(book_attributes)
 		book_detail = i.book_data
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
-		# favourite_Book[i] = book_attributes
 		favourite_book.append(book_attributes)
 
 	for j in reading_Book:
-		# line = get_row_from_csv(j.isbn_13, j.isbn_10)
-		# categories = replace_last_occurence(line[7], '|', ' & ', 1)
-		# categories = re.sub("[|]", ", ", categories)
-		#book_attributes = {"isbn_13": j.isbn_13, "isbn_10": j.isbn_10, "title": j.title, "categories": categories, "average_rating": line[8]}
-		#reading_Book[i] = book_attributes
-		#reading_now_book.append(book_attributes)
 		book_detail = j.book_data
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
-		# reading_Book[i] = book_attributes
 		reading_now_book.append(book_attributes)
 
 	for k in to_read_Book:
-		# line = get_row_from_csv(k.isbn_13, k.isbn_10)
-		# categories = replace_last_occurence(line[7], '|', ' & ', 1)
-		# categories = re.sub("[|]", ", ", categories)
-		#book_attributes = {"isbn_13": k.isbn_13, "isbn_10": k.isbn_10, "title": k.title, "categories": categories, "average_rating": line[8]}
-		#to_read_Book[i] = book_attributes
-		#toread_book.append(book_attributes)
 		book_detail = k.book_data
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
-		# to_read_Book[i] = book_attributes
 		toread_book.append(book_attributes)
 
 	for l in have_read_Book:
-		# line = get_row_from_csv(l.isbn_13, l.isbn_10)
-		# categories = replace_last_occurence(line[7], '|', ' & ', 1)
-		# categories = re.sub("[|]", ", ", categories)
-		#book_attributes = {"isbn_13": l.isbn_13, "isbn_10": l.isbn_10, "title": l.title, "categories": categories, "average_rating": line[8]}
-		#have_read_Book[i] = book_attributes
-		#haveread_book.append(book_attributes)
 		book_detail = l.book_data
 		book_attributes = {"isbn_13": book_detail["ISBN_13"], "isbn_10": book_detail["ISBN_10"], "title": book_detail["title"], "categories": ",".join(book_detail["categories"]), "average_rating": book_detail["averageRating"]}
-		# have_read_Book[i] = book_attributes
 		haveread_book.append(book_attributes)
 
 	for m in user_reviewed_Book:
@@ -933,78 +639,10 @@ def user_shelf(request):
 	context = {'favourite_Book':favourite_book, 'reading_Book':reading_now_book, 'to_read_Book':toread_book, 'have_read_Book':haveread_book, 'reviewed_Book': reviewed_Book, 'visited_Book': visited_Book, 'personalized_books': personalized_books}
 	return render(request,'mainapp/usershelf.html', context)
 
-def get_row_from_csv(isbn_13, isbn_10):
-	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
-	for row in csv_file:
-		if(row[1]==isbn_13 and row[2]==isbn_10):
-			return row
-	return None
-
-def create_review():
-	i = 0
-	with open("user_rating.csv", "r") as reader:
-		for lines in reader:
-			try:
-				lines = lines.replace("\n","").split(",")
-				emails = lines[0]
-				isbn_13 = lines[1]
-				user_rating = int(eval(lines[2])/2)
-
-				b1 = Book.objects.get(isbn_13=isbn_13)
-
-				customer_account = User.objects.get(email=emails)
-				customer_details = CustomerAccountProfile.objects.get(userid=customer_account)
-
-				if(user_rating==2):
-					user_review = random.choice(["Worst book ever!!!","I just don't get it!", "I wasted my time reading this.", "AWFUL"])
-				elif(user_rating==4):
-					user_review = random.choice(["Some confusion, but alright", "Could be better!", "MEh!!!!!!!", "Could have given better thought!!!"])
-				elif(user_rating==6):
-					user_review = random.choice(["This book is alright, but I wouldn't recommend this to anyone.", "OK I guess", "3/5 I would say"])
-				elif(user_rating==8):
-					user_review = random.choice(["I highly recommend this book to anyone","I liked the twist at the end!", "One of the best books I've ever read"])
-				else:
-					user_review = random.choice(["This author is the best","This book is AWESOME!", "I love this book"])
-
-				created_date = dt.now()
-
-				Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
-				
-				book_detail = b1.book_data
-
-				new_rating_count = book_detail["ratingsCount"]+1
-
-				#Calculating new average rating
-				total_rating_points = book_detail["ratingsCount"]*book_detail["averageRating"]
-				total_rating_points = total_rating_points+user_rating
-				new_average_rating = round(total_rating_points/new_rating_count, 1)
-				book_detail["ratingsCount"] = new_rating_count
-				book_detail["averageRating"] = new_average_rating
-
-				#Updating the database with the new rating count and new average rating value.
-				Book.objects.filter(isbn_13=isbn_13).update(book_data=book_detail)
-				i = i+1
-				if(i%1000==0):
-					print(i)
-			except:
-				pass
-	#new_review = Review.objects.create(bookID=b1, customerID=customer_details, description=user_review, rating_value=user_rating, created_at=created_date)
-
 @csrf_exempt
 def book_page(request, isbn_13):
 	start_time = time.time()
 	metric = Metrics.objects.all()[0].metrics_data
-
-
-	# if 'search_result' not in request.session:
-	# 	request.session['search_result'] = []
-	# else:
-	# 	search_result = request.session['search_result']
-	# 	if isbn_13 not in search_result:
-	# 		search_result.append(isbn_13)
-	# 	request.session['search_result'] = search_result
-	##########################
-
 
 	user_pk = request.user.pk
 
@@ -1018,38 +656,7 @@ def book_page(request, isbn_13):
 		if request.method == "PUT" or request.method == "POST":
 			return HttpResponse("You cannot perform this action!")
 
-	#Need to add leading zero's to ISBN 10 and 13.
-	#remaining_zero = "0"*(10-len(isbn_10))
-	#isbn_10 = remaining_zero+isbn_10
-	# remaining_zero = ""
-	# remaining_zero = "0"*(13-len(isbn_13))
-	# isbn_13 = remaining_zero+isbn_13
-
 	csv_file = csv.reader(open('book_info.csv', "r"), delimiter=",")
-	# line = None
-
-	# #Need threading to improve search efficiency
-	# for row in csv_file:
-	# 	if(row[1]==isbn_13 or row[2]==isbn_10):#used to be and instead of or
-	# 		line = row
-	# 		break
-	# #Need to read file book_description file to get the description
-	# file = open("book_descriptions.txt", "r").readlines()
-	# description_line = None
-	# for row in file:
-	# 	c_line = row.split("|")
-	# 	if((c_line[0]==isbn_13 or c_line[0]=="0"+isbn_13) and (c_line[1]==isbn_10 or c_line[1]=="0"+isbn_10)):
-	# 		description_line = c_line[2].strip()
-	# 		break
-
-	#categories = replace_last_occurence(line[7], '|', ' & ', 1)#has some errors
-	#categories = re.sub("[|]", ", ", line[7])
-
-	#Set of books to display for suggestions.
-	#item_based_recommendation = get_item_based_recommendation(csv_file)
-	
-	#Need to get all the reviews associated with the book.
-	#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 	# Redirecting to 404 page if book is not found
 	try:
 		b1 = Book.objects.get(isbn_13=isbn_13)
@@ -1071,7 +678,6 @@ def book_page(request, isbn_13):
 		return redirect('mainapp:not_found')
 	average_rating_recommendation = weighted_average_and_favourite_score(request)# Not sure if this is used in book.html
 	book_detail = b1.book_data
-	#b1 = Book.objects.filter(isbn_13=isbn_13) | Book.objects.filter(isbn_10=isbn_10)
 	book_reviews = Review.objects.filter(bookID=b1.pk)
 
 	book_title = b1.title
@@ -1107,8 +713,6 @@ def book_page(request, isbn_13):
 		except User.DoesNotExist:
 			return redirect('mainapp:login')
 
-
-		#b1 = Book.objects.get(isbn_13=isbn_13, isbn_10=isbn_10)
 		# Ajax requests when the review button is clicked on the book.html
 		if request.method == "POST":
 			metric["post_request_count"]+=1
@@ -1166,7 +770,6 @@ def book_page(request, isbn_13):
 						writer.write(row)
 
 				os.remove('book_rating_temp.csv')
-				#os.rename('book_info_temp.csv', 'book_info.csv')
 				return HttpResponse(response_items)
 
 		#Ajax requests when user clicks like or dislikes the comment
@@ -1255,16 +858,6 @@ def book_page(request, isbn_13):
 		in_to_read_Book = True if b1 in in_to_read_Book else False
 		in_have_read_Book = True if b1 in in_have_read_Book else False
 
-		# similar_books = []
-		# if in_favourite_Book:
-		# 	#This book is one of the favourite books of this user.
-		# 	#So we can suggest similar book from this favourite book.
-		# 	book_title = b1.title
-		# 	similar_books = content_based_similar_items(request, book_title)
-		# 	#Need to display this in the book.html
-		# 	print(similar_books)
-
-
 		context = {'isbn_13': book_detail["ISBN_13"], 'isbn_10': book_detail["ISBN_10"],
 					'title': book_detail["title"], 'authors': book_detail["authors"],
 					'publisher': book_detail["publisher"], 'publishedDate': book_detail["publishedDate"],
@@ -1275,15 +868,6 @@ def book_page(request, isbn_13):
 					'in_have_read_Book': in_have_read_Book, 'average_rating_recommendation': average_rating_recommendation,
 					'book_reviews': book_reviews, 'review_validity': review_validity, 'similar_books': similar_books}
 
-		# context = {'isbn_13':line[1], 'isbn_10': line[2],
-		# 			'title': line[3], 'authors': line[4].replace("|", ","),
-		# 			'publisher': line[5].replace("|", ","), 'publishedDate': line[6] ,
-		# 			'categories': categories, 'averageRating': line[8],
-		# 			'ratingsCount': line[9], 'thumbnail': line[14],
-		# 			'description': description_line, 'in_favourite_Book': in_favourite_Book,
-		# 			'in_reading_Book': in_reading_Book, 'in_to_read_Book': in_to_read_Book,
-		# 			'in_have_read_Book': in_have_read_Book, 'item_based_recommendation': item_based_recommendation,
-		# 			'book_reviews': book_reviews}
 		metric["total_page_visit"]+=1
 		metric["get_request_count"]+=1
 		metric["page_visit_counter"]["book"]+=1
@@ -1364,26 +948,7 @@ def subtract_feature_value(isbn_13, feature):
 		for row in reader:
 			writer.write(row)
 	os.remove('book_rating_temp.csv')
-	#os.rename('book_info_temp.csv', 'book_info.csv')
 	return
-
-def get_item_based_recommendation(csv_file):
-	all_books = Book.objects.all()
-	books_Objects2 = []
-	books_Objects = []
-	while(len(books_Objects)!=10):
-		random_num = random.randint(0, len(all_books)-1)
-		a_book = all_books[random_num]
-		if a_book not in books_Objects2:
-			books_Objects2.append(a_book)
-			book_detail = a_book.book_data
-			book_item = {"isbn_13": a_book.isbn_13, "isbn_10": a_book.isbn_10, "title": a_book.title, "thumbnail": book_detail["thumbnail"]}
-			books_Objects.append(book_item)
-	return books_Objects
-
-def replace_last_occurence(s, old, new, occurrence):
-	li = s.rsplit(old, occurrence)
-	return new.join(li)
 
 def content_based_similar_user_items(request):
 	# Used in front_page under Favourite books from similar users'...
@@ -1426,9 +991,6 @@ def content_based_similar_user_items(request):
 	#Top 5 users who are similar to this user
 	book_df = book_df[:5] if len(book_df)>5 else A[:]
 
-	#Testing
-	#book_df = ["hajam09@yahoo.com", "oliverqueen12@gmail.com"]
-	###
 	to_recommended_books = []
 	for users in book_df:
 		customer_account = User.objects.get(email=users)
@@ -1526,7 +1088,6 @@ def content_based_similar_items(request, title):
 	    book_indices = [i[0] for i in sig_scores]# Book indices
 	    return books_cleaned_df['title'].iloc[book_indices]# Top 10 most similar books
 
-	# Testing our content-based recommendation system with the seminal film Of Mice and Men
 	#Loop thorugh user favourite book title/title of the user favourite book
 	title = title.replace(",", "").replace("-", "").replace("–", "")
 	title = ''.join(e for e in title if e.isalnum() or e==" ")
@@ -1641,7 +1202,6 @@ def dashboard_live_data(request):
 	return JsonResponse(records)
 
 def dashboard(request):
-	# add_user_country_browser(request)
 	metric = Metrics.objects.all()[0].metrics_data
 	metric["total_page_visit"]+=1
 	Metrics.objects.filter(id=1).update(metrics_data=metric)
