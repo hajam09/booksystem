@@ -11,7 +11,7 @@ from django.contrib.auth import logout, authenticate, login as auth_login
 # from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from .models import CustomerAccountProfile, Book, Review, Category, Metrics
-import string, random, csv, re, os, unidecode, time, requests#, ssl, smtplib, uuid
+import string, random, csv, re, os, unidecode, time, requests, ssl, smtplib, uuid
 # from django.contrib.auth.forms import PasswordChangeForm
 from datetime import datetime as dt
 import pandas as pd
